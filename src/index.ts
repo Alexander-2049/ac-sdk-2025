@@ -2,6 +2,8 @@
 import { PhysicsData } from "./types/physics.d";
 const AC_SDK = require("../build/Release/AssettoCorsaSDK.node");
 
+// console.log(AC_SDK.getArrayOfArrays());
+
 setInterval(() => {
   // Fetch raw physics array
   const physicsArray: any[] = AC_SDK.getPhysics();

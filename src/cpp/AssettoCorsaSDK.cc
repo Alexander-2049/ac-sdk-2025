@@ -35,6 +35,29 @@ void initPhysics()
     }
 }
 
+void GetArrayOfArrays(const Nan::FunctionCallbackInfo<v8::Value> &info)
+{
+    // Create an inner array with numbers (first array)
+    v8::Local<v8::Array> innerArray1 = Nan::New<v8::Array>(3);
+    Nan::Set(innerArray1, 0, Nan::New(1));
+    Nan::Set(innerArray1, 1, Nan::New(2));
+    Nan::Set(innerArray1, 2, Nan::New(3));
+
+    // Create another inner array with numbers (second array)
+    v8::Local<v8::Array> innerArray2 = Nan::New<v8::Array>(3);
+    Nan::Set(innerArray2, 0, Nan::New(4));
+    Nan::Set(innerArray2, 1, Nan::New(5));
+    Nan::Set(innerArray2, 2, Nan::New(6));
+
+    // Create the outer array that will hold the inner arrays
+    v8::Local<v8::Array> outerArray = Nan::New<v8::Array>(2);
+    Nan::Set(outerArray, 0, innerArray1);
+    Nan::Set(outerArray, 1, innerArray2);
+
+    // Return the outer array to JavaScript
+    info.GetReturnValue().Set(outerArray);
+}
+
 void GetPhysics(const Nan::FunctionCallbackInfo<v8::Value> &info)
 {
     initPhysics();
@@ -138,6 +161,8 @@ void Initialize(v8::Local<v8::Object> exports)
 {
     Nan::Set(exports, Nan::New("getPhysics").ToLocalChecked(),
              Nan::GetFunction(Nan::New<v8::FunctionTemplate>(GetPhysics)).ToLocalChecked());
+    Nan::Set(exports, Nan::New("getArrayOfArrays").ToLocalChecked(),
+             Nan::GetFunction(Nan::New<v8::FunctionTemplate>(GetArrayOfArrays)).ToLocalChecked());
 }
 
 NODE_MODULE(addon, Initialize)
