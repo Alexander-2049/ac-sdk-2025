@@ -1,6 +1,5 @@
 import { SelectedGame } from "./selectedGame";
 
-// physics.d.ts
 export interface PhysicsData {
   selectedGame: SelectedGame;
   packetId: number;
