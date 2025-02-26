@@ -72,7 +72,7 @@ struct SPageFilePhysics
     float brake = 0;
     float fuel = 0;
     int gear = 0;
-    int rpms = 0;
+    int rpm = 0;
     float steerAngle = 0;
     float speedKmh = 0;
     float velocity[3];
