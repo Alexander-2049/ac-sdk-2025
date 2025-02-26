@@ -1,7 +1,7 @@
 // physics.d.ts
 export interface PhysicsData {
   packetId: number;
-  gas: number;
+  throttle: number;
   brake: number;
   fuel: number;
   gear: number;
