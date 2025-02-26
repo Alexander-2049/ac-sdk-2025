@@ -79,7 +79,7 @@ struct SPageFilePhysics
     float accG[3];
     float wheelSlip[4];
     float wheelLoad[4];
-    float wheelsPressure[4];
+    float wheelPressure[4];
     float wheelAngularSpeed[4];
     float tyreWear[4];
     float tyreDirtyLevel[4];
