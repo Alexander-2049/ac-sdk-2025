@@ -35,6 +35,20 @@ void initPhysics()
     }
 }
 
+void cleanupPhysics()
+{
+    if (m_physics.mapFileBuffer)
+    {
+        UnmapViewOfFile(m_physics.mapFileBuffer);
+        m_physics.mapFileBuffer = nullptr;
+    }
+    if (m_physics.hMapFile)
+    {
+        CloseHandle(m_physics.hMapFile);
+        m_physics.hMapFile = nullptr;
+    }
+}
+
 void GetPhysics(const Nan::FunctionCallbackInfo<v8::Value> &info)
 {
     initPhysics();
@@ -170,6 +184,8 @@ void GetPhysics(const Nan::FunctionCallbackInfo<v8::Value> &info)
     Nan::Set(resultArray, 25, carDamage);
 
     info.GetReturnValue().Set(resultArray);
+
+    cleanupPhysics();
 }
 
 void Initialize(v8::Local<v8::Object> exports)
