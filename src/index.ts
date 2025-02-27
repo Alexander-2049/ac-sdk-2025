@@ -1,7 +1,11 @@
-// main.ts
 import { EventEmitter } from "stream";
 import { parsePhysicsArray } from "./utils/parsePhysicsArray";
+import { PhysicsData } from "./types/physics";
 const AC_SDK = require("../build/Release/AssettoCorsaSDK.node");
+
+interface AssettoCorsaEvents {
+  physics: PhysicsData;
+}
 
 interface ACSDKConstructorInterface {
   updateIntervalMs?: number;
@@ -36,17 +40,31 @@ export default class AssettoCorsaSDK extends EventEmitter {
 
     this.interval = setInterval(() => {
       const physicsRawArray = AC_SDK.getPhysics();
-      const physics = parsePhysicsArray(physicsRawArray);
-      this.emit("PHYSICS", physics);
+      const physics: PhysicsData = parsePhysicsArray(physicsRawArray);
+      this.emit("physics", physics);
     }, this.updateIntervalMs);
   }
+
+  // Type-safe emit method
+  emit<Event extends keyof AssettoCorsaEvents>(
+    event: Event,
+    data: AssettoCorsaEvents[Event]
+  ): boolean {
+    return super.emit(event, data);
+  }
+
+  // Type-safe event listener methods
+  addListener<Event extends keyof AssettoCorsaEvents>(
+    event: Event,
+    listener: (data: AssettoCorsaEvents[Event]) => void
+  ): this {
+    return super.addListener(event, listener);
+  }
+
+  on<Event extends keyof AssettoCorsaEvents>(
+    event: Event,
+    listener: (data: AssettoCorsaEvents[Event]) => void
+  ): this {
+    return super.on(event, listener);
+  }
 }
-
-const acsdk = new AssettoCorsaSDK({
-  broadcastName: "",
-  broadcastPassword: "",
-});
-
-acsdk.addListener("PHYSICS", (physics) => {
-  console.log(physics);
-})
