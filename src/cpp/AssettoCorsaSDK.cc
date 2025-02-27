@@ -18,7 +18,15 @@ struct SMElement
     unsigned char *mapFileBuffer;
 };
 
+SMElement m_graphics;
 SMElement m_physics;
+SMElement m_static;
+
+void dismiss(SMElement element)
+{
+	UnmapViewOfFile(element.mapFileBuffer);
+	CloseHandle(element.hMapFile);
+}
 
 void initPhysics()
 {
@@ -35,18 +43,34 @@ void initPhysics()
     }
 }
 
-void cleanupPhysics()
+void initGraphics()
 {
-    if (m_physics.mapFileBuffer)
-    {
-        UnmapViewOfFile(m_physics.mapFileBuffer);
-        m_physics.mapFileBuffer = nullptr;
-    }
-    if (m_physics.hMapFile)
-    {
-        CloseHandle(m_physics.hMapFile);
-        m_physics.hMapFile = nullptr;
-    }
+	TCHAR szName[] = TEXT("Local\\acpmf_graphics");
+	m_graphics.hMapFile = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(SPageFileGraphics), szName);
+	if (!m_graphics.hMapFile)
+	{
+		MessageBoxA(GetActiveWindow(), "CreateFileMapping failed", "ACCS", MB_OK);
+	}
+	m_graphics.mapFileBuffer = (unsigned char*)MapViewOfFile(m_graphics.hMapFile, FILE_MAP_READ, 0, 0, sizeof(SPageFileGraphics));
+	if (!m_graphics.mapFileBuffer)
+	{
+		MessageBoxA(GetActiveWindow(), "MapViewOfFile failed", "ACCS", MB_OK);
+	}
+}
+
+void initStatic()
+{
+	TCHAR szName[] = TEXT("Local\\acpmf_static");
+	m_static.hMapFile = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(SPageFileStatic), szName);
+	if (!m_static.hMapFile)
+	{
+		MessageBoxA(GetActiveWindow(), "CreateFileMapping failed", "ACCS", MB_OK);
+	}
+	m_static.mapFileBuffer = (unsigned char*)MapViewOfFile(m_static.hMapFile, FILE_MAP_READ, 0, 0, sizeof(SPageFileStatic));
+	if (!m_static.mapFileBuffer)
+	{
+		MessageBoxA(GetActiveWindow(), "MapViewOfFile failed", "ACCS", MB_OK);
+	}
 }
 
 void GetPhysics(const Nan::FunctionCallbackInfo<v8::Value> &info)
@@ -185,7 +209,41 @@ void GetPhysics(const Nan::FunctionCallbackInfo<v8::Value> &info)
 
     info.GetReturnValue().Set(resultArray);
 
-    cleanupPhysics();
+    dismiss(m_physics);
+}
+
+void GetGraphics(const Nan::FunctionCallbackInfo<v8::Value> &info) {
+    initGraphics();
+
+    SPageFileGraphics *pf = (SPageFileGraphics *)m_graphics.mapFileBuffer;
+
+    // Create an array to hold all the values
+    const size_t arraySize = 2; // Adjust based on the number of elements in your struct
+
+    v8::Local<v8::Array> resultArray = Nan::New<v8::Array>(arraySize);
+
+    // Set simple scalar values (int and float) directly
+    Nan::Set(resultArray, 0, Nan::New<v8::Number>(pf->packetId));
+    Nan::Set(resultArray, 1, Nan::New<v8::Number>(pf->status));
+
+    dismiss(m_graphics);
+}
+
+void GetStatic(const Nan::FunctionCallbackInfo<v8::Value> &info) {
+    initStatic();
+
+    SPageFileStatic *pf = (SPageFileStatic *)m_static.mapFileBuffer;
+
+    // Create an array to hold all the values
+    const size_t arraySize = 2; // Adjust based on the number of elements in your struct
+
+    v8::Local<v8::Array> resultArray = Nan::New<v8::Array>(arraySize);
+
+    // Set simple scalar values (int and float) directly
+    Nan::Set(resultArray, 0, Nan::New<v8::Number>(pf->numberOfSessions)); // REWORK
+    Nan::Set(resultArray, 1, Nan::New<v8::Number>(pf->numCars));
+
+    dismiss(m_static);
 }
 
 void Initialize(v8::Local<v8::Object> exports)

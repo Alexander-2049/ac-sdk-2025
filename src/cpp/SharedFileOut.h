@@ -156,7 +156,7 @@ struct SPageFilePhysics
 };
 
 
-struct SPageFileGraphic
+struct SPageFileGraphics
 {
     int packetId = 0;
     AC_STATUS status = AC_OFF;
