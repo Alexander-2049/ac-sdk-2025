@@ -1,6 +1,10 @@
 import { EventEmitter } from "stream";
 import { parsePhysicsArray } from "./utils/parsePhysicsArray";
 import { PhysicsData } from "./types/physics";
+import { GraphicsData } from "./types/graphics";
+import { StaticData } from "./types/static";
+import { parseGraphicsArray } from "./utils/parseGraphicsArray";
+import { parseStaticArray } from "./utils/parseStaticArray";
 
 const AC_SDK: {
   getPhysics: () => any[];
@@ -10,6 +14,8 @@ const AC_SDK: {
 
 interface AssettoCorsaEvents {
   physics: PhysicsData;
+  graphics: GraphicsData;
+  static: StaticData;
 }
 
 interface ACSDKConstructorInterface {
@@ -47,6 +53,14 @@ export default class AssettoCorsaSDK extends EventEmitter {
       const physicsRawArray = AC_SDK.getPhysics();
       const physics: PhysicsData = parsePhysicsArray(physicsRawArray);
       this.emit("physics", physics);
+
+      const graphicsRawArray = AC_SDK.getGraphics();
+      const graphics: GraphicsData = parseGraphicsArray(graphicsRawArray);
+      this.emit("graphics", graphics);
+
+      const staticRawArray = AC_SDK.getStatic();
+      const staticData: StaticData = parseStaticArray(staticRawArray);
+      this.emit("static", staticData);
     }, this.updateIntervalMs);
   }
 
