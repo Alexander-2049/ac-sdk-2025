@@ -18,17 +18,22 @@ interface AssettoCorsaEvents {
   static: StaticData;
 }
 
-interface ACSDKConstructorInterface {
-  updateIntervalMs?: number;
+interface ACSDKBroadcastInterface {
   broadcastName: string;
   broadcastPassword: string;
   broadcastCmdPassword?: string;
   broadcastPort?: number;
 }
 
+interface ACSDKConstructorInterface {
+  updateIntervalMs?: number;
+  broadcast: ACSDKBroadcastInterface | null;
+}
+
 export default class AssettoCorsaSDK extends EventEmitter {
   private interval: NodeJS.Timeout | null = null;
   private updateIntervalMs: number;
+  private broadcast: 
   private broadcastName: string;
   private broadcastPassword: string;
   private broadcastPort: number;
@@ -43,11 +48,11 @@ export default class AssettoCorsaSDK extends EventEmitter {
   }: ACSDKConstructorInterface) {
     super();
 
-    this.updateIntervalMs = updateIntervalMs;
-    this.broadcastName = broadcastName;
-    this.broadcastPassword = broadcastPassword;
-    this.broadcastPort = broadcastPort;
-    this.broadcastCmdPassword = broadcastCmdPassword;
+    // this.updateIntervalMs = updateIntervalMs;
+    // this.broadcastName = broadcastName;
+    // this.broadcastPassword = broadcastPassword;
+    // this.broadcastPort = broadcastPort;
+    // this.broadcastCmdPassword = broadcastCmdPassword;
 
     this.interval = setInterval(() => {
       const physicsRawArray = AC_SDK.getPhysics();
