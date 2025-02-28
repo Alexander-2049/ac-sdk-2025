@@ -227,6 +227,8 @@ void GetGraphics(const Nan::FunctionCallbackInfo<v8::Value> &info)
     Nan::Set(resultArray, 0, Nan::New<v8::Number>(pf->packetId));
     Nan::Set(resultArray, 1, Nan::New<v8::Number>(pf->status));
 
+    info.GetReturnValue().Set(resultArray);
+
     dismiss(m_graphics);
 }
 
@@ -244,6 +246,8 @@ void GetStatic(const Nan::FunctionCallbackInfo<v8::Value> &info)
     // Set simple scalar values (int and float) directly
     Nan::Set(resultArray, 0, Nan::New<v8::Number>(pf->numberOfSessions)); // REWORK
     Nan::Set(resultArray, 1, Nan::New<v8::Number>(pf->numCars));
+
+    info.GetReturnValue().Set(resultArray);
 
     dismiss(m_static);
 }
