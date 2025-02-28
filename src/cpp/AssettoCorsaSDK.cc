@@ -24,8 +24,8 @@ SMElement m_static;
 
 void dismiss(SMElement element)
 {
-	UnmapViewOfFile(element.mapFileBuffer);
-	CloseHandle(element.hMapFile);
+    UnmapViewOfFile(element.mapFileBuffer);
+    CloseHandle(element.hMapFile);
 }
 
 void initPhysics()
@@ -45,32 +45,32 @@ void initPhysics()
 
 void initGraphics()
 {
-	TCHAR szName[] = TEXT("Local\\acpmf_graphics");
-	m_graphics.hMapFile = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(SPageFileGraphics), szName);
-	if (!m_graphics.hMapFile)
-	{
-		MessageBoxA(GetActiveWindow(), "CreateFileMapping failed", "ACCS", MB_OK);
-	}
-	m_graphics.mapFileBuffer = (unsigned char*)MapViewOfFile(m_graphics.hMapFile, FILE_MAP_READ, 0, 0, sizeof(SPageFileGraphics));
-	if (!m_graphics.mapFileBuffer)
-	{
-		MessageBoxA(GetActiveWindow(), "MapViewOfFile failed", "ACCS", MB_OK);
-	}
+    TCHAR szName[] = TEXT("Local\\acpmf_graphics");
+    m_graphics.hMapFile = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(SPageFileGraphics), szName);
+    if (!m_graphics.hMapFile)
+    {
+        MessageBoxA(GetActiveWindow(), "CreateFileMapping failed", "ACCS", MB_OK);
+    }
+    m_graphics.mapFileBuffer = (unsigned char *)MapViewOfFile(m_graphics.hMapFile, FILE_MAP_READ, 0, 0, sizeof(SPageFileGraphics));
+    if (!m_graphics.mapFileBuffer)
+    {
+        MessageBoxA(GetActiveWindow(), "MapViewOfFile failed", "ACCS", MB_OK);
+    }
 }
 
 void initStatic()
 {
-	TCHAR szName[] = TEXT("Local\\acpmf_static");
-	m_static.hMapFile = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(SPageFileStatic), szName);
-	if (!m_static.hMapFile)
-	{
-		MessageBoxA(GetActiveWindow(), "CreateFileMapping failed", "ACCS", MB_OK);
-	}
-	m_static.mapFileBuffer = (unsigned char*)MapViewOfFile(m_static.hMapFile, FILE_MAP_READ, 0, 0, sizeof(SPageFileStatic));
-	if (!m_static.mapFileBuffer)
-	{
-		MessageBoxA(GetActiveWindow(), "MapViewOfFile failed", "ACCS", MB_OK);
-	}
+    TCHAR szName[] = TEXT("Local\\acpmf_static");
+    m_static.hMapFile = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(SPageFileStatic), szName);
+    if (!m_static.hMapFile)
+    {
+        MessageBoxA(GetActiveWindow(), "CreateFileMapping failed", "ACCS", MB_OK);
+    }
+    m_static.mapFileBuffer = (unsigned char *)MapViewOfFile(m_static.hMapFile, FILE_MAP_READ, 0, 0, sizeof(SPageFileStatic));
+    if (!m_static.mapFileBuffer)
+    {
+        MessageBoxA(GetActiveWindow(), "MapViewOfFile failed", "ACCS", MB_OK);
+    }
 }
 
 void GetPhysics(const Nan::FunctionCallbackInfo<v8::Value> &info)
@@ -212,7 +212,8 @@ void GetPhysics(const Nan::FunctionCallbackInfo<v8::Value> &info)
     dismiss(m_physics);
 }
 
-void GetGraphics(const Nan::FunctionCallbackInfo<v8::Value> &info) {
+void GetGraphics(const Nan::FunctionCallbackInfo<v8::Value> &info)
+{
     initGraphics();
 
     SPageFileGraphics *pf = (SPageFileGraphics *)m_graphics.mapFileBuffer;
@@ -229,7 +230,8 @@ void GetGraphics(const Nan::FunctionCallbackInfo<v8::Value> &info) {
     dismiss(m_graphics);
 }
 
-void GetStatic(const Nan::FunctionCallbackInfo<v8::Value> &info) {
+void GetStatic(const Nan::FunctionCallbackInfo<v8::Value> &info)
+{
     initStatic();
 
     SPageFileStatic *pf = (SPageFileStatic *)m_static.mapFileBuffer;
@@ -250,6 +252,12 @@ void Initialize(v8::Local<v8::Object> exports)
 {
     Nan::Set(exports, Nan::New("getPhysics").ToLocalChecked(),
              Nan::GetFunction(Nan::New<v8::FunctionTemplate>(GetPhysics)).ToLocalChecked());
+            
+    Nan::Set(exports, Nan::New("getGraphics").ToLocalChecked(),
+             Nan::GetFunction(Nan::New<v8::FunctionTemplate>(GetGraphics)).ToLocalChecked());
+             
+    Nan::Set(exports, Nan::New("getStatic").ToLocalChecked(),
+             Nan::GetFunction(Nan::New<v8::FunctionTemplate>(GetStatic)).ToLocalChecked());
 }
 
 NODE_MODULE(addon, Initialize)
