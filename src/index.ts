@@ -1,7 +1,12 @@
 import { EventEmitter } from "stream";
 import { parsePhysicsArray } from "./utils/parsePhysicsArray";
 import { PhysicsData } from "./types/physics";
-const AC_SDK = require("../build/Release/AssettoCorsaSDK.node");
+
+const AC_SDK: {
+  getPhysics: () => any[];
+  getGraphics: () => any[];
+  getStatic: () => any[];
+} = require("../build/Release/AssettoCorsaSDK.node");
 
 interface AssettoCorsaEvents {
   physics: PhysicsData;
