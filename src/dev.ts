@@ -1,9 +1,9 @@
 import AssettoCorsaSDK from ".";
 
 const acsdk = new AssettoCorsaSDK({
-  broadcastName: "",
-  broadcastPassword: "",
-  updateIntervalMs: 500,
+  sharedMemory: {
+    updateIntervalMs: 1000 / 2,
+  },
 });
 
 acsdk.addListener("physics", (physics) => {
