@@ -19,54 +19,63 @@ interface AssettoCorsaEvents {
 }
 
 interface ACSDKBroadcastInterface {
-  broadcastName: string;
-  broadcastPassword: string;
-  broadcastCmdPassword?: string;
-  broadcastPort?: number;
+  name: string;
+  password: string;
+  cmdPassword?: string;
+  port?: number;
+}
+
+interface ACSDKSharedMemoryInterface {
+  updateIntervalMs?: number;
 }
 
 interface ACSDKConstructorInterface {
-  updateIntervalMs?: number;
-  broadcast: ACSDKBroadcastInterface | null;
+  sharedMemory?: ACSDKSharedMemoryInterface;
+  broadcast?: ACSDKBroadcastInterface;
 }
 
 export default class AssettoCorsaSDK extends EventEmitter {
-  private interval: NodeJS.Timeout | null = null;
-  private updateIntervalMs: number;
-  private broadcast: 
-  private broadcastName: string;
-  private broadcastPassword: string;
-  private broadcastPort: number;
-  private broadcastCmdPassword: string;
+  private sharedMemoryInterval?: NodeJS.Timeout;
+  private sharedMemory?: {
+    updateIntervalMs: number;
+  };
+  private broadcast?: {
+    password: string;
+    name: string;
+    cmdPassword: string;
+    port: number;
+  };
 
-  constructor({
-    updateIntervalMs = 1000 / 60, // 60 Updates per second
-    broadcastName,
-    broadcastPassword,
-    broadcastPort = 9000,
-    broadcastCmdPassword = "",
-  }: ACSDKConstructorInterface) {
+  constructor({ broadcast, sharedMemory }: ACSDKConstructorInterface) {
     super();
 
-    // this.updateIntervalMs = updateIntervalMs;
-    // this.broadcastName = broadcastName;
-    // this.broadcastPassword = broadcastPassword;
-    // this.broadcastPort = broadcastPort;
-    // this.broadcastCmdPassword = broadcastCmdPassword;
+    this.broadcast = broadcast && {
+      name: broadcast.name,
+      cmdPassword: broadcast.cmdPassword || "",
+      password: broadcast.password,
+      port: broadcast.port || 9000,
+    };
 
-    this.interval = setInterval(() => {
-      const physicsRawArray = AC_SDK.getPhysics();
-      const physics: PhysicsData = parsePhysicsArray(physicsRawArray);
-      this.emit("physics", physics);
+    this.sharedMemory = sharedMemory && {
+      updateIntervalMs:
+        sharedMemory.updateIntervalMs || 1000 / 60 /* 60 Updates Per Second */,
+    };
 
-      const graphicsRawArray = AC_SDK.getGraphics();
-      const graphics: GraphicsData = parseGraphicsArray(graphicsRawArray);
-      this.emit("graphics", graphics);
+    if (this.sharedMemory) {
+      this.sharedMemoryInterval = setInterval(() => {
+        const physicsRawArray = AC_SDK.getPhysics();
+        const physics: PhysicsData = parsePhysicsArray(physicsRawArray);
+        this.emit("physics", physics);
 
-      const staticRawArray = AC_SDK.getStatic();
-      const staticData: StaticData = parseStaticArray(staticRawArray);
-      this.emit("static", staticData);
-    }, this.updateIntervalMs);
+        const graphicsRawArray = AC_SDK.getGraphics();
+        const graphics: GraphicsData = parseGraphicsArray(graphicsRawArray);
+        this.emit("graphics", graphics);
+
+        const staticRawArray = AC_SDK.getStatic();
+        const staticData: StaticData = parseStaticArray(staticRawArray);
+        this.emit("static", staticData);
+      }, this.sharedMemory.updateIntervalMs);
+    }
   }
 
   // Type-safe emit method
