@@ -6,7 +6,7 @@ import { StaticData } from "./types/static";
 import { parseGraphicsArray } from "./utils/parseGraphicsArray";
 import { parseStaticArray } from "./utils/parseStaticArray";
 
-const AC_SDK: {
+export const AC_SDK: {
   getPhysics: () => any[];
   getGraphics: () => any[];
   getStatic: () => any[];
@@ -99,5 +99,10 @@ export default class AssettoCorsaSDK extends EventEmitter {
     listener: (data: AssettoCorsaEvents[Event]) => void
   ): this {
     return super.on(event, listener);
+  }
+
+  stop() {
+    clearInterval(this.sharedMemoryInterval);
+    return true;
   }
 }
