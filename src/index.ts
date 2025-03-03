@@ -101,7 +101,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
     return super.on(event, listener);
   }
 
-  stop() {
+  disconnect() {
     clearInterval(this.sharedMemoryInterval);
     return true;
   }

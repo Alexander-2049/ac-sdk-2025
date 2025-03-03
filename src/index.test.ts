@@ -46,7 +46,7 @@ describe("AssettoCorsaSDK", () => {
   });
 
   afterEach(() => {
-    sdk.stop();
+    sdk.disconnect();
   });
 
   it("should allow adding listeners for events", () => {
