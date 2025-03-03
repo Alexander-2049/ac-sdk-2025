@@ -1,5 +1,103 @@
-import { utf8Bytes } from "./utf8-bytes"; // Change utf8 to utf8Bytes
+import { utf8Bytes } from "./utf8-bytes";
 import { BinaryReader, BinaryWriter } from "./binutils";
+
+export interface RegistrationResult {
+  ConnectionId: number;
+  ConnectionSuccess: boolean;
+  isReadOnly: boolean;
+  errMsg: string;
+}
+
+interface RealTimeUpdate {
+  EventIndex: number;
+  SessionIndex: number;
+  SessionType: number;
+  Phase: number;
+  sessionTime: number;
+  sessionEndTime: number;
+  FocusedCarIndex: number;
+  ActiveCameraSet: string;
+  ActiveCamera: string;
+  CurrentHudPage: string;
+  IsReplayPlaying: boolean;
+  ReplaySessionTime?: number;
+  ReplayRemainingTime?: number;
+  TimeOfDay: number;
+  AmbientTemp: number;
+  TrackTemp: number;
+  Clouds: number;
+  RainLevel: number;
+  Wetness: number;
+  BestSessionLap: Lap;
+}
+
+interface RealTimeCarUpdate {
+  CarIndex: number;
+  DriverIndex: number;
+  DriverCount: number;
+  Gear: number;
+  WorldPosX: number;
+  WorldPosY: number;
+  Yaw: number;
+  CarLocation: number;
+  Kmh: number;
+  Position: number;
+  CupPosition: number;
+  TrackPosition: number;
+  SplinePosition: number;
+  Laps: number;
+  Delta: number;
+  BestSessionLap: Lap;
+  LastLap: Lap;
+  CurrentLap: Lap;
+}
+
+interface EntryListCar {
+  CarModelType: number;
+  TeamName: string;
+  RaceNumber: number;
+  CupCategory: number;
+  CurrentDriverIndex: number;
+  Nationality: number;
+  Drivers: Driver[];
+  CurrentDriver: Driver;
+}
+
+interface Driver {
+  FirstName: string;
+  LastName: string;
+  ShortName: string;
+  Category: number;
+  Nationality: number;
+}
+
+interface BroadcastEvent {
+  Type: number;
+  Msg: string;
+  TimeMS: number;
+  CarId: number;
+  Car?: EntryListCar;
+}
+
+interface TrackData {
+  ConnectionId: number;
+  TrackName: string;
+  TrackId: number;
+  TrackMeters: number;
+  CameraSets: Record<string, string[]>;
+  HUDPages: string[];
+}
+
+interface Lap {
+  LaptimeMS: number | null;
+  CarIndex: number;
+  DriverIndex: number;
+  Splits: (number | null)[];
+  IsInvalid: boolean;
+  IsValidForBest: boolean;
+  isOutlap: boolean;
+  isInlap: boolean;
+}
 
 const RegisterConnection = (
   displayName: string,
@@ -59,48 +157,48 @@ const parseEntryList = (br: BinaryReader): number[] => {
   return entryList;
 };
 
-const parseRegistrationResult = (br: BinaryReader) => {
-  const result: any = {};
-  result.ConnectionId = br.ReadInt32();
-  result.ConnectionSuccess = !!br.ReadUInt8();
-  result.isReadOnly = !br.ReadUInt8();
-  result.errMsg = parseString(br);
+const parseRegistrationResult = (br: BinaryReader): RegistrationResult => {
+  const result: RegistrationResult = {
+    ConnectionId: br.ReadInt32(),
+    ConnectionSuccess: !!br.ReadUInt8(),
+    isReadOnly: !br.ReadUInt8(),
+    errMsg: parseString(br),
+  };
 
   return result;
 };
 
-const parseRealTimeUpdate = (br: BinaryReader) => {
-  const update: any = {};
-  update.EventIndex = br.ReadUInt16();
-  update.SessionIndex = br.ReadUInt16();
-  update.SessionType = br.ReadUInt8();
-  update.Phase = br.ReadUInt8();
-  update.sessionTime = br.ReadFloat();
-  update.sessionEndTime = br.ReadFloat();
-  update.FocusedCarIndex = br.ReadInt32();
-  update.ActiveCameraSet = parseString(br);
-  update.ActiveCamera = parseString(br);
-  update.CurrentHudPage = parseString(br);
+const parseRealTimeUpdate = (br: BinaryReader): RealTimeUpdate => {
+  const update: RealTimeUpdate = {
+    EventIndex: br.ReadUInt16(),
+    SessionIndex: br.ReadUInt16(),
+    SessionType: br.ReadUInt8(),
+    Phase: br.ReadUInt8(),
+    sessionTime: br.ReadFloat(),
+    sessionEndTime: br.ReadFloat(),
+    FocusedCarIndex: br.ReadInt32(),
+    ActiveCameraSet: parseString(br),
+    ActiveCamera: parseString(br),
+    CurrentHudPage: parseString(br),
+    IsReplayPlaying: !!br.ReadUInt8(),
+    TimeOfDay: br.ReadFloat(),
+    AmbientTemp: br.ReadUInt8(),
+    TrackTemp: br.ReadUInt8(),
+    Clouds: br.ReadUInt8() / 10.0,
+    RainLevel: br.ReadUInt8() / 10.0,
+    Wetness: br.ReadUInt8() / 10.0,
+    BestSessionLap: parseLap(br),
+  };
 
-  update.IsReplayPlaying = !!br.ReadUInt8();
   if (update.IsReplayPlaying) {
     update.ReplaySessionTime = br.ReadFloat();
     update.ReplayRemainingTime = br.ReadFloat();
   }
 
-  update.TimeOfDay = br.ReadFloat();
-  update.AmbientTemp = br.ReadUInt8();
-  update.TrackTemp = br.ReadUInt8();
-  update.Clouds = br.ReadUInt8() / 10.0;
-  update.RainLevel = br.ReadUInt8() / 10.0;
-  update.Wetness = br.ReadUInt8() / 10.0;
-
-  update.BestSessionLap = parseLap(br);
-
   return update;
 };
 
-const parseRealTimeCarUpdate = (br: BinaryReader) => {
+const parseRealTimeCarUpdate = (br: BinaryReader): RealTimeCarUpdate => {
   return {
     CarIndex: br.ReadUInt16(),
     DriverIndex: br.ReadUInt16(),
@@ -123,17 +221,20 @@ const parseRealTimeCarUpdate = (br: BinaryReader) => {
   };
 };
 
-const parseEntryListCar = (br: BinaryReader, cars: Map<number, any>) => {
-  const carInfo: any = {};
-  const carId = br.ReadUInt16();
-
-  carInfo.CarModelType = br.ReadUInt8();
-  carInfo.TeamName = parseString(br);
-  carInfo.RaceNumber = br.ReadInt32();
-  carInfo.CupCategory = br.ReadUInt8(); // Cup: Overall/Pro = 0, ProAm = 1, Am = 2, Silver = 3, National = 4
-  carInfo.CurrentDriverIndex = br.ReadUInt8();
-  carInfo.Nationality = br.ReadUInt16();
-  carInfo.Drivers = [];
+const parseEntryListCar = (
+  br: BinaryReader,
+  cars: Map<number, EntryListCar>
+): EntryListCar => {
+  const carInfo: EntryListCar = {
+    CarModelType: br.ReadUInt8(),
+    TeamName: parseString(br),
+    RaceNumber: br.ReadInt32(),
+    CupCategory: br.ReadUInt8(),
+    CurrentDriverIndex: br.ReadUInt8(),
+    Nationality: br.ReadUInt16(),
+    Drivers: [],
+    CurrentDriver: {} as Driver, // Temporary type for assignment
+  };
 
   const driversOnCarCount = br.ReadUInt8();
   for (let i = 0; i < driversOnCarCount; i++) {
@@ -148,12 +249,15 @@ const parseEntryListCar = (br: BinaryReader, cars: Map<number, any>) => {
 
   carInfo.CurrentDriver = carInfo.Drivers[carInfo.CurrentDriverIndex];
 
-  cars.set(carId, carInfo);
+  cars.set(carInfo.RaceNumber, carInfo);
   return carInfo;
 };
 
-const parseBroadcastEvent = (br: BinaryReader, cars: Map<number, any>) => {
-  const event: any = {
+const parseBroadcastEvent = (
+  br: BinaryReader,
+  cars: Map<number, EntryListCar>
+): BroadcastEvent => {
+  const event: BroadcastEvent = {
     Type: br.ReadUInt8(),
     Msg: parseString(br),
     TimeMS: br.ReadInt32(),
@@ -165,16 +269,15 @@ const parseBroadcastEvent = (br: BinaryReader, cars: Map<number, any>) => {
   return event;
 };
 
-const parseTrackData = (br: BinaryReader) => {
-  const trackData: any = {
+const parseTrackData = (br: BinaryReader): TrackData => {
+  const trackData: TrackData = {
     CameraSets: {},
     HUDPages: [],
+    ConnectionId: br.ReadInt32(),
+    TrackName: parseString(br),
+    TrackId: br.ReadInt32(),
+    TrackMeters: br.ReadInt32(),
   };
-
-  trackData.ConnectionId = br.ReadInt32();
-  trackData.TrackName = parseString(br);
-  trackData.TrackId = br.ReadInt32();
-  trackData.TrackMeters = br.ReadInt32();
 
   const cameraSetCount = br.ReadUInt8();
   for (let i = 0; i < cameraSetCount; i++) {
@@ -196,12 +299,19 @@ const parseTrackData = (br: BinaryReader) => {
   return trackData;
 };
 
-const parseLap = (br: BinaryReader) => {
-  const lap: any = { Splits: [] };
+const parseLap = (br: BinaryReader): Lap => {
+  const lap: Lap = {
+    LaptimeMS: null, // Initialize with null since it may be set later
+    CarIndex: br.ReadUInt16(),
+    DriverIndex: br.ReadUInt16(),
+    Splits: [],
+    IsInvalid: !!br.ReadUInt8(),
+    IsValidForBest: !!br.ReadUInt8(),
+    isOutlap: !!br.ReadUInt8(),
+    isInlap: !!br.ReadUInt8(),
+  };
 
-  lap.LaptimeMS = br.ReadInt32();
-  lap.CarIndex = br.ReadUInt16();
-  lap.DriverIndex = br.ReadUInt16();
+  lap.LaptimeMS = br.ReadInt32(); // Set the LaptimeMS after initialization
 
   const splitCount = br.ReadUInt8();
 
@@ -209,15 +319,8 @@ const parseLap = (br: BinaryReader) => {
     lap.Splits.push(br.ReadInt32());
   }
 
-  lap.IsInvalid = !!br.ReadUInt8();
-  lap.IsValidForBest = !!br.ReadUInt8();
-  lap.isOutlap = !!br.ReadUInt8();
-  lap.isInlap = !!br.ReadUInt8();
-
   if (lap.LaptimeMS === 2147483647) lap.LaptimeMS = null;
-  lap.Splits = lap.Splits.map((split: any) =>
-    split === 2147483647 ? null : split
-  );
+  lap.Splits = lap.Splits.map((split) => (split === 2147483647 ? null : split));
 
   return lap;
 };
