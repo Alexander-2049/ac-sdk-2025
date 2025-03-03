@@ -14,7 +14,7 @@ import AssettoCorsaSDK from ".";
 //   console.log(graphics);
 // });
 
-import AccBroadcast from "./models/AccBroadcast";
+import AccBroadcast from "./models/UdpBroadcast/AccBroadcast";
 const accBroadcast = new AccBroadcast("My Application", "asd");
 
 accBroadcast.on("realtime_car_update", (update) => {

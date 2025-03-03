@@ -1,6 +1,6 @@
 import dgram from "dgram";
 import { EventEmitter } from "events";
-import { BinaryReader } from "../utils/binutils";
+import { BinaryReader } from "./BinaryReader";
 import {
   DeregisterConnection,
   parseBroadcastEvent,
@@ -13,7 +13,7 @@ import {
   RegisterConnection,
   RequestEntryList,
   RequestTrackData,
-} from "../utils/structs";
+} from "../../utils/broadcastStructs";
 
 class AccBroadcast extends EventEmitter {
   private socket: dgram.Socket;
@@ -24,7 +24,8 @@ class AccBroadcast extends EventEmitter {
     private name: string,
     private password: string,
     private cmdPassword: string = "",
-    private updateMS: number = 250
+    private updateMS: number = 250,
+    private port: number = 9000
   ) {
     super();
     this.socket = dgram.createSocket("udp4");
@@ -98,7 +99,7 @@ class AccBroadcast extends EventEmitter {
   }
 
   private send(buffer: Buffer): void {
-    this.socket.send(buffer, 0, buffer.length, 9000, "127.0.0.1");
+    this.socket.send(buffer, 0, buffer.length, this.port, "127.0.0.1");
   }
 }
 

@@ -1,5 +1,6 @@
+import { BinaryReader } from "../models/UdpBroadcast/BinaryReader";
+import { BinaryWriter } from "../models/UdpBroadcast/BinaryWriter";
 import { utf8Bytes } from "./utf8-bytes";
-import { BinaryReader, BinaryWriter } from "./binutils";
 
 export interface RegistrationResult {
   ConnectionId: number;
