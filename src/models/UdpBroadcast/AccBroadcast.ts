@@ -93,7 +93,7 @@ class AccBroadcast extends EventEmitter {
     this.send(RegisterConnection(name, password, cmdPassword, updateMS));
   }
 
-  private disconnect(): void {
+  public disconnect(): void {
     this.send(DeregisterConnection());
     process.exit(0);
   }
