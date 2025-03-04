@@ -1,104 +1,16 @@
 import { BinaryReader } from "../models/UdpBroadcast/BinaryReader";
 import { BinaryWriter } from "../models/UdpBroadcast/BinaryWriter";
+import { BroadcastingEvent } from "../types/broadcast/interfaces/broadcastingEvent";
+import { Car } from "../types/broadcast/interfaces/car";
+import { Driver } from "../types/broadcast/interfaces/driver";
+import {
+  Lap,
+  RealtimeCarUpdate,
+} from "../types/broadcast/interfaces/realtimeCarUpdate";
+import { RealtimeUpdate } from "../types/broadcast/interfaces/realtimeUpdate";
+import { RegistrationResults } from "../types/broadcast/interfaces/registrationResults";
+import { CameraSets, TrackData } from "../types/broadcast/interfaces/trackData";
 import { utf8Bytes } from "./utf8-bytes";
-
-export interface RegistrationResult {
-  ConnectionId: number;
-  ConnectionSuccess: boolean;
-  isReadOnly: boolean;
-  errMsg: string;
-}
-
-interface RealTimeUpdate {
-  EventIndex: number;
-  SessionIndex: number;
-  SessionType: number;
-  Phase: number;
-  sessionTime: number;
-  sessionEndTime: number;
-  FocusedCarIndex: number;
-  ActiveCameraSet: string;
-  ActiveCamera: string;
-  CurrentHudPage: string;
-  IsReplayPlaying: boolean;
-  ReplaySessionTime?: number;
-  ReplayRemainingTime?: number;
-  TimeOfDay: number;
-  AmbientTemp: number;
-  TrackTemp: number;
-  Clouds: number;
-  RainLevel: number;
-  Wetness: number;
-  BestSessionLap: Lap;
-}
-
-interface RealTimeCarUpdate {
-  CarIndex: number;
-  DriverIndex: number;
-  DriverCount: number;
-  Gear: number;
-  WorldPosX: number;
-  WorldPosY: number;
-  Yaw: number;
-  CarLocation: number;
-  Kmh: number;
-  Position: number;
-  CupPosition: number;
-  TrackPosition: number;
-  SplinePosition: number;
-  Laps: number;
-  Delta: number;
-  BestSessionLap: Lap;
-  LastLap: Lap;
-  CurrentLap: Lap;
-}
-
-interface EntryListCar {
-  CarModelType: number;
-  TeamName: string;
-  RaceNumber: number;
-  CupCategory: number;
-  CurrentDriverIndex: number;
-  Nationality: number;
-  Drivers: Driver[];
-  CurrentDriver: Driver;
-}
-
-interface Driver {
-  FirstName: string;
-  LastName: string;
-  ShortName: string;
-  Category: number;
-  Nationality: number;
-}
-
-interface BroadcastEvent {
-  Type: number;
-  Msg: string;
-  TimeMS: number;
-  CarId: number;
-  Car?: EntryListCar;
-}
-
-interface TrackData {
-  ConnectionId: number;
-  TrackName: string;
-  TrackId: number;
-  TrackMeters: number;
-  CameraSets: Record<string, string[]>;
-  HUDPages: string[];
-}
-
-interface Lap {
-  LaptimeMS: number | null;
-  CarIndex: number;
-  DriverIndex: number;
-  Splits: (number | null)[];
-  IsInvalid: boolean;
-  IsValidForBest: boolean;
-  isOutlap: boolean;
-  isInlap: boolean;
-}
 
 const RegisterConnection = (
   displayName: string,
@@ -158,8 +70,8 @@ const parseEntryList = (br: BinaryReader): number[] => {
   return entryList;
 };
 
-const parseRegistrationResult = (br: BinaryReader): RegistrationResult => {
-  const result: RegistrationResult = {
+const parseRegistrationResult = (br: BinaryReader): RegistrationResults => {
+  const result: RegistrationResults = {
     ConnectionId: br.ReadInt32(),
     ConnectionSuccess: !!br.ReadUInt8(),
     isReadOnly: !br.ReadUInt8(),
@@ -169,8 +81,8 @@ const parseRegistrationResult = (br: BinaryReader): RegistrationResult => {
   return result;
 };
 
-const parseRealTimeUpdate = (br: BinaryReader): RealTimeUpdate => {
-  const update: RealTimeUpdate = {
+const parseRealTimeUpdate = (br: BinaryReader): RealtimeUpdate => {
+  const update: RealtimeUpdate = {
     EventIndex: br.ReadUInt16(),
     SessionIndex: br.ReadUInt16(),
     SessionType: br.ReadUInt8(),
@@ -199,7 +111,7 @@ const parseRealTimeUpdate = (br: BinaryReader): RealTimeUpdate => {
   return update;
 };
 
-const parseRealTimeCarUpdate = (br: BinaryReader): RealTimeCarUpdate => {
+const parseRealTimeCarUpdate = (br: BinaryReader): RealtimeCarUpdate => {
   return {
     CarIndex: br.ReadUInt16(),
     DriverIndex: br.ReadUInt16(),
@@ -222,11 +134,10 @@ const parseRealTimeCarUpdate = (br: BinaryReader): RealTimeCarUpdate => {
   };
 };
 
-const parseEntryListCar = (
-  br: BinaryReader,
-  cars: Map<number, EntryListCar>
-): EntryListCar => {
-  const carInfo: EntryListCar = {
+const parseEntryListCar = (br: BinaryReader, cars: Map<number, Car>): Car => {
+  const carId = br.ReadUInt16();
+
+  const carInfo: Car = {
     CarModelType: br.ReadUInt8(),
     TeamName: parseString(br),
     RaceNumber: br.ReadInt32(),
@@ -234,7 +145,7 @@ const parseEntryListCar = (
     CurrentDriverIndex: br.ReadUInt8(),
     Nationality: br.ReadUInt16(),
     Drivers: [],
-    CurrentDriver: {} as Driver, // Temporary type for assignment
+    CurrentDriver: {} as Driver,
   };
 
   const driversOnCarCount = br.ReadUInt8();
@@ -250,29 +161,42 @@ const parseEntryListCar = (
 
   carInfo.CurrentDriver = carInfo.Drivers[carInfo.CurrentDriverIndex];
 
-  cars.set(carInfo.RaceNumber, carInfo);
+  cars.set(carId, carInfo);
   return carInfo;
 };
 
 const parseBroadcastEvent = (
   br: BinaryReader,
-  cars: Map<number, EntryListCar>
-): BroadcastEvent => {
-  const event: BroadcastEvent = {
-    Type: br.ReadUInt8(),
-    Msg: parseString(br),
-    TimeMS: br.ReadInt32(),
-    CarId: br.ReadInt32(),
-  };
+  cars: Map<number, Car>
+): BroadcastingEvent => {
+  const Type = br.ReadUInt8();
+  const Msg = parseString(br);
+  const TimeMS = br.ReadInt32();
+  const CarId = br.ReadInt32();
+  const Car = cars.get(CarId) as Car;
 
-  event.Car = cars.get(event.CarId);
+  const event: BroadcastingEvent = {
+    Type,
+    Msg,
+    TimeMS,
+    CarId,
+    Car,
+  };
 
   return event;
 };
 
 const parseTrackData = (br: BinaryReader): TrackData => {
   const trackData: TrackData = {
-    CameraSets: {},
+    CameraSets: {
+      Drivable: [],
+      Helicam: [],
+      Onboard: [],
+      pitlane: [],
+      set1: [],
+      set2: [],
+      setVR: [],
+    },
     HUDPages: [],
     ConnectionId: br.ReadInt32(),
     TrackName: parseString(br),
@@ -283,12 +207,13 @@ const parseTrackData = (br: BinaryReader): TrackData => {
   const cameraSetCount = br.ReadUInt8();
   for (let i = 0; i < cameraSetCount; i++) {
     const camSetName = parseString(br);
-    trackData.CameraSets[camSetName] = [];
 
     const cameraCount = br.ReadUInt8();
     for (let j = 0; j < cameraCount; j++) {
       const cameraName = parseString(br);
-      trackData.CameraSets[camSetName].push(cameraName);
+      if (camSetName in trackData.CameraSets) {
+        trackData.CameraSets[camSetName as keyof CameraSets].push(cameraName);
+      }
     }
   }
 
