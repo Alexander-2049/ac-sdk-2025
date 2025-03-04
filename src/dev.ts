@@ -1,13 +1,15 @@
-import AssettoCorsaSDK from ".";
+// import AssettoCorsaSDK from ".";
 
 // const acsdk = new AssettoCorsaSDK({
 //   sharedMemory: {
-//     updateIntervalMs: 1000 / 2,
+//     updateIntervalMs: 1000 / 60,
 //   },
 // });
 
 // acsdk.addListener("physics", (physics) => {
-//   console.log(physics.speedKmh, physics.rpm, physics.gear);
+//   console.log({
+//     speed: physics.speedKmh, rpm: physics.rpm, gear: physics.gear
+//   });
 // });
 
 // acsdk.addListener("graphics", (graphics) => {
@@ -15,7 +17,7 @@ import AssettoCorsaSDK from ".";
 // });
 
 import AccBroadcast from "./models/UdpBroadcast/AccBroadcast";
-const accBroadcast = new AccBroadcast("My Application", "asd");
+const accBroadcast = new AccBroadcast("My Application", "asd", undefined, 1000/60);
 
 accBroadcast.on("realtime_car_update", (update) => {
   console.clear();

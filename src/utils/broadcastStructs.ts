@@ -328,8 +328,8 @@ const parseLap = (br: BinaryReader): Lap => {
 
 const parseString = (br: BinaryReader): string => {
   const length = br.ReadUInt16();
-  const string = br.ReadBytes(length);
-  return string.toString("utf8");
+  const stringBytes = br.ReadBytes(length);
+  return Buffer.from(stringBytes).toString("utf8");
 };
 
 export {

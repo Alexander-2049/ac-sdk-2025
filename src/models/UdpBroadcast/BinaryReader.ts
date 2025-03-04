@@ -1,5 +1,5 @@
 export class BinaryReader {
-  ByteBuffer: Buffer;
+  ByteBuffer: Uint8Array;
   Endianness: "big" | "little";
   Encoding: string;
   Length: number;
@@ -11,11 +11,11 @@ export class BinaryReader {
     p_Encoding: BufferEncoding = "ascii"
   ) {
     if (input instanceof Buffer) {
-      this.ByteBuffer = input;
+      this.ByteBuffer = new Uint8Array(input);
     } else if (Array.isArray(input)) {
-      this.ByteBuffer = Buffer.from(input);
+      this.ByteBuffer = new Uint8Array(input);
     } else if (typeof input === "string") {
-      this.ByteBuffer = Buffer.from(input, p_Encoding);
+      this.ByteBuffer = new Uint8Array(Buffer.from(input, p_Encoding));
     } else {
       throw new Error(`Invalid buffer input for BinaryReader: ${typeof input}`);
     }
@@ -26,119 +26,110 @@ export class BinaryReader {
     this.Position = 0;
   }
 
-  ReadUInt8(): number {
-    if (this.ByteBuffer.length < 1) {
-      return 0;
-    }
+  private getBuffer(): Buffer {
+    return Buffer.from(
+      this.ByteBuffer.buffer,
+      this.ByteBuffer.byteOffset,
+      this.ByteBuffer.byteLength
+    );
+  }
 
-    const s_Val = this.ByteBuffer.readUInt8(0);
+  ReadUInt8(): number {
+    if (this.ByteBuffer.length < 1) return 0;
+    const buffer = this.getBuffer();
+    const s_Val = buffer.readUInt8(0);
     this.ByteBuffer = this.ByteBuffer.slice(1);
     ++this.Position;
     return s_Val;
   }
 
   ReadUInt16(): number {
-    if (this.ByteBuffer.length < 2) {
-      return 0;
-    }
-
+    if (this.ByteBuffer.length < 2) return 0;
+    const buffer = this.getBuffer();
     const s_Val =
       this.Endianness === "little"
-        ? this.ByteBuffer.readUInt16LE(0)
-        : this.ByteBuffer.readUInt16BE(0);
+        ? buffer.readUInt16LE(0)
+        : buffer.readUInt16BE(0);
     this.ByteBuffer = this.ByteBuffer.slice(2);
     this.Position += 2;
     return s_Val;
   }
 
   ReadUInt32(): number {
-    if (this.ByteBuffer.length < 4) {
-      return 0;
-    }
-
+    if (this.ByteBuffer.length < 4) return 0;
+    const buffer = this.getBuffer();
     const s_Val =
       this.Endianness === "little"
-        ? this.ByteBuffer.readUInt32LE(0)
-        : this.ByteBuffer.readUInt32BE(0);
+        ? buffer.readUInt32LE(0)
+        : buffer.readUInt32BE(0);
     this.ByteBuffer = this.ByteBuffer.slice(4);
     this.Position += 4;
     return s_Val;
   }
 
   ReadInt8(): number {
-    if (this.ByteBuffer.length < 1) {
-      return 0;
-    }
-
-    const s_Val = this.ByteBuffer.readInt8(0);
+    if (this.ByteBuffer.length < 1) return 0;
+    const buffer = this.getBuffer();
+    const s_Val = buffer.readInt8(0);
     this.ByteBuffer = this.ByteBuffer.slice(1);
     ++this.Position;
     return s_Val;
   }
 
   ReadInt16(): number {
-    if (this.ByteBuffer.length < 2) {
-      return 0;
-    }
-
+    if (this.ByteBuffer.length < 2) return 0;
+    const buffer = this.getBuffer();
     const s_Val =
       this.Endianness === "little"
-        ? this.ByteBuffer.readInt16LE(0)
-        : this.ByteBuffer.readInt16BE(0);
+        ? buffer.readInt16LE(0)
+        : buffer.readInt16BE(0);
     this.ByteBuffer = this.ByteBuffer.slice(2);
     this.Position += 2;
     return s_Val;
   }
 
   ReadInt32(): number {
-    if (this.ByteBuffer.length < 4) {
-      return 0;
-    }
-
+    if (this.ByteBuffer.length < 4) return 0;
+    const buffer = this.getBuffer();
     const s_Val =
       this.Endianness === "little"
-        ? this.ByteBuffer.readInt32LE(0)
-        : this.ByteBuffer.readInt32BE(0);
+        ? buffer.readInt32LE(0)
+        : buffer.readInt32BE(0);
     this.ByteBuffer = this.ByteBuffer.slice(4);
     this.Position += 4;
     return s_Val;
   }
 
   ReadFloat(): number {
-    if (this.ByteBuffer.length < 4) {
-      return 0.0;
-    }
-
+    if (this.ByteBuffer.length < 4) return 0.0;
+    const buffer = this.getBuffer();
     const s_Val =
       this.Endianness === "little"
-        ? this.ByteBuffer.readFloatLE(0)
-        : this.ByteBuffer.readFloatBE(0);
+        ? buffer.readFloatLE(0)
+        : buffer.readFloatBE(0);
     this.ByteBuffer = this.ByteBuffer.slice(4);
     this.Position += 4;
     return s_Val;
   }
 
   ReadDouble(): number {
-    if (this.ByteBuffer.length < 8) {
-      return 0.0;
-    }
-
+    if (this.ByteBuffer.length < 8) return 0.0;
+    const buffer = this.getBuffer();
     const s_Val =
       this.Endianness === "little"
-        ? this.ByteBuffer.readDoubleLE(0)
-        : this.ByteBuffer.readDoubleBE(0);
+        ? buffer.readDoubleLE(0)
+        : buffer.readDoubleBE(0);
     this.ByteBuffer = this.ByteBuffer.slice(8);
     this.Position += 8;
     return s_Val;
   }
 
-  ReadBytes(p_Count: number): Buffer {
+  ReadBytes(p_Count: number): Uint8Array {
     if (p_Count > this.ByteBuffer.length) {
-      return Buffer.from([]);
+      return new Uint8Array(0);
     }
 
-    const s_Val = Buffer.alloc(p_Count);
-    this.ByteBuffer.copy(s_Val, 0, 0, p_Count);
+    const s_Val = this.ByteBuffer.slice(0, p_Count);
     this.ByteBuffer = this.ByteBuffer.slice(p_Count);
     this.Position += p_Count;
     return s_Val;

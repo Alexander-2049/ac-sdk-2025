@@ -99,7 +99,13 @@ class AccBroadcast extends EventEmitter {
   }
 
   private send(buffer: Buffer): void {
-    this.socket.send(buffer, 0, buffer.length, this.port, "127.0.0.1");
+    const offset = 0;
+    const length = buffer.length;
+    const port = this.port;
+    const address = "127.0.0.1";
+    const message = new Uint8Array(buffer);
+
+    this.socket.send(message, offset, length, port, address);
   }
 }
 
