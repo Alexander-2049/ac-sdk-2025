@@ -79,7 +79,7 @@ void GetPhysics(const Nan::FunctionCallbackInfo<v8::Value> &info)
     SPageFilePhysics *pf = (SPageFilePhysics *)m_physics.mapFileBuffer;
 
     // Create an array to hold all the values
-    const size_t arraySize = 26; // Adjust based on the number of elements in your struct
+    const size_t arraySize = 72; // Adjust based on the number of elements in your struct
 
     v8::Local<v8::Array> resultArray = Nan::New<v8::Array>(arraySize);
 
@@ -207,6 +207,190 @@ void GetPhysics(const Nan::FunctionCallbackInfo<v8::Value> &info)
     // Put carDamage[4] to resultArray
     Nan::Set(resultArray, 25, carDamage);
 
+    Nan::Set(resultArray, 26, Nan::New<v8::Number>(pf->numberOfTyresOut));
+    Nan::Set(resultArray, 27, Nan::New<v8::Number>(pf->pitLimiterOn));
+    Nan::Set(resultArray, 28, Nan::New<v8::Number>(pf->abs));
+    Nan::Set(resultArray, 29, Nan::New<v8::Number>(pf->kersCharge));
+    Nan::Set(resultArray, 30, Nan::New<v8::Number>(pf->kersInput));
+    Nan::Set(resultArray, 31, Nan::New<v8::Number>(pf->autoShifterOn));
+
+    // Create an array for rideHeight in global coordinates
+    v8::Local<v8::Array> rideHeight = Nan::New<v8::Array>(2);
+    Nan::Set(rideHeight, 0, Nan::New(pf->rideHeight[0]));
+    Nan::Set(rideHeight, 1, Nan::New(pf->rideHeight[1]));
+    // Put rideHeight[2] to resultArray
+    Nan::Set(resultArray, 32, rideHeight);
+
+    Nan::Set(resultArray, 33, Nan::New<v8::Number>(pf->turboBoost));
+    Nan::Set(resultArray, 34, Nan::New<v8::Number>(pf->ballast));
+    Nan::Set(resultArray, 35, Nan::New<v8::Number>(pf->airDensity));
+    Nan::Set(resultArray, 36, Nan::New<v8::Number>(pf->airTemp));
+    Nan::Set(resultArray, 37, Nan::New<v8::Number>(pf->roadTemp));
+
+    // Create an array for localAngularVel in global coordinates
+    v8::Local<v8::Array> localAngularVel = Nan::New<v8::Array>(3);
+    Nan::Set(localAngularVel, 0, Nan::New(pf->localAngularVel[0]));
+    Nan::Set(localAngularVel, 1, Nan::New(pf->localAngularVel[1]));
+    Nan::Set(localAngularVel, 2, Nan::New(pf->localAngularVel[2]));
+    // Put localAngularVel[3] to resultArray
+    Nan::Set(resultArray, 38, localAngularVel);
+
+    Nan::Set(resultArray, 39, Nan::New<v8::Number>(pf->finalFF));
+    Nan::Set(resultArray, 40, Nan::New<v8::Number>(pf->performanceMeter));
+    Nan::Set(resultArray, 41, Nan::New<v8::Number>(pf->engineBrake));
+    Nan::Set(resultArray, 42, Nan::New<v8::Number>(pf->ersRecoveryLevel));
+    Nan::Set(resultArray, 43, Nan::New<v8::Number>(pf->ersPowerLevel));
+    Nan::Set(resultArray, 44, Nan::New<v8::Number>(pf->ersHeatCharging));
+    Nan::Set(resultArray, 45, Nan::New<v8::Number>(pf->ersIsCharging));
+    Nan::Set(resultArray, 46, Nan::New<v8::Number>(pf->kersCurrentKJ));
+    Nan::Set(resultArray, 47, Nan::New<v8::Number>(pf->drsAvailable));
+    Nan::Set(resultArray, 48, Nan::New<v8::Number>(pf->drsEnabled));
+
+    // Create an array for brakeTemp in global coordinates
+    v8::Local<v8::Array> brakeTemp = Nan::New<v8::Array>(4);
+    Nan::Set(brakeTemp, 0, Nan::New(pf->brakeTemp[0]));
+    Nan::Set(brakeTemp, 1, Nan::New(pf->brakeTemp[1]));
+    Nan::Set(brakeTemp, 2, Nan::New(pf->brakeTemp[2]));
+    Nan::Set(brakeTemp, 3, Nan::New(pf->brakeTemp[3]));
+    // Put brakeTemp[4] to resultArray
+    Nan::Set(resultArray, 49, brakeTemp);
+
+    Nan::Set(resultArray, 50, Nan::New<v8::Number>(pf->clutch));
+
+    // Create an array for tyreTempI in global coordinates
+    v8::Local<v8::Array> tyreTempI = Nan::New<v8::Array>(4);
+    Nan::Set(tyreTempI, 0, Nan::New(pf->tyreTempI[0]));
+    Nan::Set(tyreTempI, 1, Nan::New(pf->tyreTempI[1]));
+    Nan::Set(tyreTempI, 2, Nan::New(pf->tyreTempI[2]));
+    Nan::Set(tyreTempI, 3, Nan::New(pf->tyreTempI[3]));
+    // Put tyreTempI[4] to resultArray
+    Nan::Set(resultArray, 51, tyreTempI);
+
+    // Create an array for tyreTempM in global coordinates
+    v8::Local<v8::Array> tyreTempM = Nan::New<v8::Array>(4);
+    Nan::Set(tyreTempM, 0, Nan::New(pf->tyreTempM[0]));
+    Nan::Set(tyreTempM, 1, Nan::New(pf->tyreTempM[1]));
+    Nan::Set(tyreTempM, 2, Nan::New(pf->tyreTempM[2]));
+    Nan::Set(tyreTempM, 3, Nan::New(pf->tyreTempM[3]));
+    // Put tyreTempM[4] to resultArray
+    Nan::Set(resultArray, 52, tyreTempM);
+
+    // Create an array for tyreTempO in global coordinates
+    v8::Local<v8::Array> tyreTempO = Nan::New<v8::Array>(4);
+    Nan::Set(tyreTempO, 0, Nan::New(pf->tyreTempO[0]));
+    Nan::Set(tyreTempO, 1, Nan::New(pf->tyreTempO[1]));
+    Nan::Set(tyreTempO, 2, Nan::New(pf->tyreTempO[2]));
+    Nan::Set(tyreTempO, 3, Nan::New(pf->tyreTempO[3]));
+    // Put tyreTempO[4] to resultArray
+    Nan::Set(resultArray, 53, tyreTempO);
+
+    Nan::Set(resultArray, 54, Nan::New<v8::Number>(pf->isAIControlled));
+
+    // Create a nested array for tyreContactPoint
+    v8::Local<v8::Array> tyreContactPoint = Nan::New<v8::Array>(4);
+    for (int i = 0; i < 4; i++)
+    {
+        v8::Local<v8::Array> point = Nan::New<v8::Array>(3);
+        Nan::Set(point, 0, Nan::New(pf->tyreContactPoint[i][0]));
+        Nan::Set(point, 1, Nan::New(pf->tyreContactPoint[i][1]));
+        Nan::Set(point, 2, Nan::New(pf->tyreContactPoint[i][2]));
+        Nan::Set(tyreContactPoint, i, point);
+    }
+    Nan::Set(resultArray, 55, tyreContactPoint);
+
+    // Create a nested array for tyreContactNormal
+    v8::Local<v8::Array> tyreContactNormal = Nan::New<v8::Array>(4);
+    for (int i = 0; i < 4; i++)
+    {
+        v8::Local<v8::Array> normal = Nan::New<v8::Array>(3);
+        Nan::Set(normal, 0, Nan::New(pf->tyreContactNormal[i][0]));
+        Nan::Set(normal, 1, Nan::New(pf->tyreContactNormal[i][1]));
+        Nan::Set(normal, 2, Nan::New(pf->tyreContactNormal[i][2]));
+        Nan::Set(tyreContactNormal, i, normal);
+    }
+    Nan::Set(resultArray, 56, tyreContactNormal);
+
+    // Create a nested array for tyreContactHeading
+    v8::Local<v8::Array> tyreContactHeading = Nan::New<v8::Array>(4);
+    for (int i = 0; i < 4; i++)
+    {
+        v8::Local<v8::Array> heading = Nan::New<v8::Array>(3);
+        Nan::Set(heading, 0, Nan::New(pf->tyreContactHeading[i][0]));
+        Nan::Set(heading, 1, Nan::New(pf->tyreContactHeading[i][1]));
+        Nan::Set(heading, 2, Nan::New(pf->tyreContactHeading[i][2]));
+        Nan::Set(tyreContactHeading, i, heading);
+    }
+    Nan::Set(resultArray, 57, tyreContactHeading);
+
+    Nan::Set(resultArray, 58, Nan::New<v8::Number>(pf->brakeBias));
+
+    // Create an array for localVelocity
+    v8::Local<v8::Array> localVelocity = Nan::New<v8::Array>(3);
+    Nan::Set(localVelocity, 0, Nan::New(pf->localVelocity[0]));
+    Nan::Set(localVelocity, 1, Nan::New(pf->localVelocity[1]));
+    Nan::Set(localVelocity, 2, Nan::New(pf->localVelocity[2]));
+    Nan::Set(resultArray, 59, localVelocity);
+
+    Nan::Set(resultArray, 60, Nan::New<v8::Number>(pf->P2PActivations));
+    Nan::Set(resultArray, 61, Nan::New<v8::Number>(pf->P2PStatus));
+    Nan::Set(resultArray, 62, Nan::New<v8::Number>(pf->currentMaxRpm));
+
+    // Create arrays for mz, fx, fy
+    v8::Local<v8::Array> mz = Nan::New<v8::Array>(4);
+    v8::Local<v8::Array> fx = Nan::New<v8::Array>(4);
+    v8::Local<v8::Array> fy = Nan::New<v8::Array>(4);
+    v8::Local<v8::Array> slipRatio = Nan::New<v8::Array>(4);
+    v8::Local<v8::Array> slipAngle = Nan::New<v8::Array>(4);
+
+    for (int i = 0; i < 4; i++)
+    {
+        Nan::Set(mz, i, Nan::New(pf->mz[i]));
+        Nan::Set(fx, i, Nan::New(pf->fx[i]));
+        Nan::Set(fy, i, Nan::New(pf->fy[i]));
+        Nan::Set(slipRatio, i, Nan::New(pf->slipRatio[i]));
+        Nan::Set(slipAngle, i, Nan::New(pf->slipAngle[i]));
+    }
+
+    Nan::Set(resultArray, 63, mz);
+    Nan::Set(resultArray, 64, fx);
+    Nan::Set(resultArray, 65, fy);
+    Nan::Set(resultArray, 66, slipRatio);
+    Nan::Set(resultArray, 67, slipAngle);
+
+    // Create arrays for suspensionDamage, tyreTemp, brakePressure, padLife, discLife
+    v8::Local<v8::Array> suspensionDamage = Nan::New<v8::Array>(4);
+    v8::Local<v8::Array> tyreTemp = Nan::New<v8::Array>(4);
+    // v8::Local<v8::Array> brakePressure = Nan::New<v8::Array>(4);
+    // v8::Local<v8::Array> padLife = Nan::New<v8::Array>(4);
+    // v8::Local<v8::Array> discLife = Nan::New<v8::Array>(4);
+
+    for (int i = 0; i < 4; i++)
+    {
+        Nan::Set(suspensionDamage, i, Nan::New(pf->suspensionDamage[i]));
+        Nan::Set(tyreTemp, i, Nan::New(pf->tyreTemp[i]));
+        // Nan::Set(brakePressure, i, Nan::New(pf->brakePressure[i]));
+        // Nan::Set(padLife, i, Nan::New(pf->padLife[i]));
+        // Nan::Set(discLife, i, Nan::New(pf->discLife[i]));
+    }
+
+    Nan::Set(resultArray, 68, Nan::New<v8::Number>(pf->tcinAction));
+    Nan::Set(resultArray, 69, Nan::New<v8::Number>(pf->absInAction));
+    Nan::Set(resultArray, 70, suspensionDamage);
+    Nan::Set(resultArray, 71, tyreTemp);
+    // Nan::Set(resultArray, 72, Nan::New<v8::Number>(pf->waterTemp));
+    // Nan::Set(resultArray, 73, brakePressure);
+    // Nan::Set(resultArray, 74, Nan::New<v8::Number>(pf->frontBrakeCompound));
+    // Nan::Set(resultArray, 75, Nan::New<v8::Number>(pf->rearBrakeCompound));
+    // Nan::Set(resultArray, 76, padLife);
+    // Nan::Set(resultArray, 77, discLife);
+    // Nan::Set(resultArray, 78, Nan::New<v8::Number>(pf->ignitionOn));
+    // Nan::Set(resultArray, 79, Nan::New<v8::Number>(pf->starterEngineOn));
+    // Nan::Set(resultArray, 80, Nan::New<v8::Number>(pf->isEngineRunning));
+    // Nan::Set(resultArray, 81, Nan::New<v8::Number>(pf->kerbVibration));
+    // Nan::Set(resultArray, 82, Nan::New<v8::Number>(pf->slipVibrations));
+    // Nan::Set(resultArray, 83, Nan::New<v8::Number>(pf->gVibrations));
+    // Nan::Set(resultArray, 84, Nan::New<v8::Number>(pf->absVibrations));
+
     info.GetReturnValue().Set(resultArray);
 
     dismiss(m_physics);
@@ -256,10 +440,10 @@ void Initialize(v8::Local<v8::Object> exports)
 {
     Nan::Set(exports, Nan::New("getPhysics").ToLocalChecked(),
              Nan::GetFunction(Nan::New<v8::FunctionTemplate>(GetPhysics)).ToLocalChecked());
-            
+
     Nan::Set(exports, Nan::New("getGraphics").ToLocalChecked(),
              Nan::GetFunction(Nan::New<v8::FunctionTemplate>(GetGraphics)).ToLocalChecked());
-             
+
     Nan::Set(exports, Nan::New("getStatic").ToLocalChecked(),
              Nan::GetFunction(Nan::New<v8::FunctionTemplate>(GetStatic)).ToLocalChecked());
 }
