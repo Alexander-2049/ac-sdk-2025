@@ -27,21 +27,15 @@ interface ACSDKBroadcastInterface {
   updateMs?: number;
 }
 
-interface ACSDKSharedMemoryInterface {
-  updateIntervalMs?: number;
-}
-
 interface ACSDKConstructorInterface {
-  sharedMemory?: ACSDKSharedMemoryInterface;
+  sharedMemoryUpdateIntervalMs?: number;
   broadcast?: ACSDKBroadcastInterface;
 }
 
 export default class AssettoCorsaSDK extends EventEmitter {
   private udpConnection: AccBroadcast | null = null;
   private sharedMemoryInterval?: NodeJS.Timeout;
-  private sharedMemory?: {
-    updateIntervalMs: number;
-  };
+  private sharedMemoryUpdateIntervalMs: number;
   private broadcast?: {
     password: string;
     name: string;
@@ -51,8 +45,14 @@ export default class AssettoCorsaSDK extends EventEmitter {
   };
   private status: GameStatus = GameStatus.OFF;
 
-  constructor({ broadcast, sharedMemory }: ACSDKConstructorInterface) {
+  constructor({
+    broadcast,
+    sharedMemoryUpdateIntervalMs,
+  }: ACSDKConstructorInterface) {
     super();
+
+    this.sharedMemoryUpdateIntervalMs =
+      sharedMemoryUpdateIntervalMs || 1000 / 60;
 
     this.broadcast = broadcast && {
       name: broadcast.name,
@@ -72,35 +72,28 @@ export default class AssettoCorsaSDK extends EventEmitter {
       );
     }
 
-    this.sharedMemory = sharedMemory && {
-      updateIntervalMs:
-        sharedMemory.updateIntervalMs || 1000 / 60 /* 60 Updates Per Second */,
-    };
+    this.sharedMemoryInterval = setInterval(() => {
+      const graphicsRawArray = AC_SDK.getGraphics();
+      const graphics: GraphicsData = parseGraphicsArray(graphicsRawArray);
+      const prevStatus = this.status;
+      this.status = graphics.status;
+      this.emit("graphics", graphics);
 
-    if (this.sharedMemory) {
-      this.sharedMemoryInterval = setInterval(() => {
-        const graphicsRawArray = AC_SDK.getGraphics();
-        const graphics: GraphicsData = parseGraphicsArray(graphicsRawArray);
-        const prevStatus = this.status;
-        this.status = graphics.status;
-        this.emit("graphics", graphics);
+      if (this.status !== prevStatus) {
+        const isGameClosed = this.status === GameStatus.OFF;
+        const isGameOpened = prevStatus === GameStatus.OFF;
+        if (isGameOpened) this.onGameOpen();
+        if (isGameClosed) return this.onGameClose();
+      }
 
-        if (this.status !== prevStatus) {
-          const isGameClosed = this.status === GameStatus.OFF;
-          const isGameOpened = prevStatus === GameStatus.OFF;
-          if (isGameOpened) this.onGameOpen();
-          if (isGameClosed) return this.onGameClose();
-        }
+      const physicsRawArray = AC_SDK.getPhysics();
+      const physics: PhysicsData = parsePhysicsArray(physicsRawArray);
+      this.emit("physics", physics);
 
-        const physicsRawArray = AC_SDK.getPhysics();
-        const physics: PhysicsData = parsePhysicsArray(physicsRawArray);
-        this.emit("physics", physics);
-
-        const staticRawArray = AC_SDK.getStatic();
-        const staticData: StaticData = parseStaticArray(staticRawArray);
-        this.emit("static", staticData);
-      }, this.sharedMemory.updateIntervalMs);
-    }
+      const staticRawArray = AC_SDK.getStatic();
+      const staticData: StaticData = parseStaticArray(staticRawArray);
+      this.emit("static", staticData);
+    }, this.sharedMemoryUpdateIntervalMs);
   }
 
   // Type-safe emit method

@@ -1,9 +1,7 @@
 import AssettoCorsaSDK from ".";
 
 const acsdk = new AssettoCorsaSDK({
-  sharedMemory: {
-    updateIntervalMs: 1000 / 60,
-  },
+  sharedMemoryUpdateIntervalMs: 1000 / 60,
   broadcast: {
     name: "asd",
     password: "asd",

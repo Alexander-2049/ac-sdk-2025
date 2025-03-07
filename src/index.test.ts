@@ -41,7 +41,11 @@ describe("AssettoCorsaSDK", () => {
     jest.clearAllMocks();
 
     sdk = new AssettoCorsaSDK({
-      sharedMemory: { updateIntervalMs: 1000 },
+      sharedMemoryUpdateIntervalMs: 1000 / 60,
+      broadcast: {
+        name: "asd",
+        password: "asd",
+      },
     });
   });
 
