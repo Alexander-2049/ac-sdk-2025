@@ -14,11 +14,12 @@ import {
   RequestEntryList,
   RequestTrackData,
 } from "../../utils/broadcastStructs";
+import { RegistrationResults } from "../../types/broadcast/interfaces/registrationResults";
 
 class AccBroadcast extends EventEmitter {
   private socket: dgram.Socket;
   private cars: Map<number, any>;
-  private registration: any;
+  private registration: RegistrationResults | null = null;
 
   constructor(
     private name: string,
@@ -31,7 +32,6 @@ class AccBroadcast extends EventEmitter {
     this.socket = dgram.createSocket("udp4");
     this.socket.on("message", this.onMessage.bind(this));
 
-    this.connect(name, password, cmdPassword, updateMS);
     this.cars = new Map();
 
     process.on("SIGINT", this.disconnect.bind(this));
@@ -43,6 +43,10 @@ class AccBroadcast extends EventEmitter {
 
     switch (messageType) {
       case 1: // REGISTRATION_RESULT
+        /*
+        REGISTRATION_RESULT is sent only on connection establishment
+        ACC UDP Server is not sending messages when racing session is over
+      */
         this.registration = parseRegistrationResult(br);
         this.emit("registration_result", this.registration);
 
@@ -77,25 +81,29 @@ class AccBroadcast extends EventEmitter {
   }
 
   private requestTrackData(): void {
+    if (!this.registration) return;
     this.send(RequestTrackData(this.registration.ConnectionId));
   }
 
   private requestEntryList(): void {
+    if (!this.registration) return;
     this.send(RequestEntryList(this.registration.ConnectionId));
   }
 
-  private connect(
-    name: string,
-    password: string,
-    cmdPassword: string,
-    updateMS: number = 250
-  ): void {
-    this.send(RegisterConnection(name, password, cmdPassword, updateMS));
+  public connect(): void {
+    this.send(
+      RegisterConnection(
+        this.name,
+        this.password,
+        this.cmdPassword,
+        this.updateMS
+      )
+    );
   }
 
   public disconnect(): void {
     this.send(DeregisterConnection());
-    process.exit(0);
+    this.registration = null;
   }
 
   private send(buffer: Buffer): void {

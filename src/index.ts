@@ -5,6 +5,7 @@ import { GameStatus, GraphicsData } from "./types/graphics";
 import { StaticData } from "./types/static";
 import { parseGraphicsArray } from "./utils/parseGraphicsArray";
 import { parseStaticArray } from "./utils/parseStaticArray";
+import AccBroadcast from "./models/UdpBroadcast/AccBroadcast";
 
 export const AC_SDK: {
   getPhysics: () => any[];
@@ -23,6 +24,7 @@ interface ACSDKBroadcastInterface {
   password: string;
   cmdPassword?: string;
   port?: number;
+  updateMs?: number;
 }
 
 interface ACSDKSharedMemoryInterface {
@@ -35,6 +37,7 @@ interface ACSDKConstructorInterface {
 }
 
 export default class AssettoCorsaSDK extends EventEmitter {
+  private udpConnection: AccBroadcast | null = null;
   private sharedMemoryInterval?: NodeJS.Timeout;
   private sharedMemory?: {
     updateIntervalMs: number;
@@ -44,7 +47,9 @@ export default class AssettoCorsaSDK extends EventEmitter {
     name: string;
     cmdPassword: string;
     port: number;
+    updateMs: number;
   };
+  private status: GameStatus = GameStatus.OFF;
 
   constructor({ broadcast, sharedMemory }: ACSDKConstructorInterface) {
     super();
@@ -54,7 +59,18 @@ export default class AssettoCorsaSDK extends EventEmitter {
       cmdPassword: broadcast.cmdPassword || "",
       password: broadcast.password,
       port: broadcast.port || 9000,
+      updateMs: broadcast.updateMs || 250,
     };
+
+    if (this.broadcast) {
+      this.udpConnection = new AccBroadcast(
+        this.broadcast.name,
+        this.broadcast.password,
+        this.broadcast.cmdPassword,
+        this.broadcast.updateMs,
+        this.broadcast.port
+      );
+    }
 
     this.sharedMemory = sharedMemory && {
       updateIntervalMs:
@@ -65,10 +81,17 @@ export default class AssettoCorsaSDK extends EventEmitter {
       this.sharedMemoryInterval = setInterval(() => {
         const graphicsRawArray = AC_SDK.getGraphics();
         const graphics: GraphicsData = parseGraphicsArray(graphicsRawArray);
-        const status: GameStatus = graphics.status;
+        const prevStatus = this.status;
+        this.status = graphics.status;
         this.emit("graphics", graphics);
 
-        if (status === GameStatus.OFF) return;
+        if (this.status !== prevStatus) {
+          const isGameClosed = this.status === GameStatus.OFF;
+          const isGameOpened = prevStatus === GameStatus.OFF;
+          if (isGameOpened) this.onGameOpen();
+          if (isGameClosed) return this.onGameClose();
+        }
+
         const physicsRawArray = AC_SDK.getPhysics();
         const physics: PhysicsData = parsePhysicsArray(physicsRawArray);
         this.emit("physics", physics);
@@ -101,6 +124,14 @@ export default class AssettoCorsaSDK extends EventEmitter {
     listener: (data: AssettoCorsaEvents[Event]) => void
   ): this {
     return super.on(event, listener);
+  }
+
+  private onGameOpen() {
+    this.udpConnection?.connect();
+  }
+
+  private onGameClose() {
+    this.udpConnection?.disconnect();
   }
 
   disconnect() {

@@ -1,14 +1,26 @@
-// import AssettoCorsaSDK from ".";
+import AssettoCorsaSDK from ".";
 
-// const acsdk = new AssettoCorsaSDK({
-//   sharedMemory: {
-//     updateIntervalMs: 1000 / 60,
-//   },
-// });
+const acsdk = new AssettoCorsaSDK({
+  sharedMemory: {
+    updateIntervalMs: 1000 / 60,
+  },
+  broadcast: {
+    name: "asd",
+    password: "asd",
+  },
+});
 
 // acsdk.addListener("physics", (physics) => {
 //   console.log({
-//     speed: physics.speedKmh, rpm: physics.rpm, gear: physics.gear
+//     speed: physics.speedKmh,
+//     rpm: physics.rpm,
+//     gear: physics.gear,
+//   });
+// });
+
+// acsdk.addListener("graphics", (graphics) => {
+//   console.log({
+//     status: graphics.status,
 //   });
 // });
 
@@ -16,18 +28,17 @@
 //   console.log(graphics);
 // });
 
-import AccBroadcast from "./models/UdpBroadcast/AccBroadcast";
-const accBroadcast = new AccBroadcast(
-  "My Application",
-  "asd",
-  undefined,
-  1000 / 60
-);
+// import AccBroadcast from "./models/UdpBroadcast/AccBroadcast";
+// const accBroadcast = new AccBroadcast(
+//   "My Application",
+//   "asd",
+//   undefined,
+//   1000 / 60
+// );
 
-accBroadcast.on("entry_list_car", (update) => {
-  console.clear();
-  console.log(update);
-});
+// accBroadcast.on("registration_result", (update) => {
+//   console.clear();
+// });
 
 // accBroadcast.on("realtime_car_update", (update) => {
 //   console.clear();
