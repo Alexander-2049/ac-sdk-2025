@@ -1,7 +1,7 @@
 import { EventEmitter } from "stream";
 import { parsePhysicsArray } from "./utils/parsePhysicsArray";
 import { PhysicsData } from "./types/physics";
-import { GraphicsData } from "./types/graphics";
+import { GameStatus, GraphicsData } from "./types/graphics";
 import { StaticData } from "./types/static";
 import { parseGraphicsArray } from "./utils/parseGraphicsArray";
 import { parseStaticArray } from "./utils/parseStaticArray";
@@ -63,13 +63,15 @@ export default class AssettoCorsaSDK extends EventEmitter {
 
     if (this.sharedMemory) {
       this.sharedMemoryInterval = setInterval(() => {
+        const graphicsRawArray = AC_SDK.getGraphics();
+        const graphics: GraphicsData = parseGraphicsArray(graphicsRawArray);
+        const status: GameStatus = graphics.status;
+        this.emit("graphics", graphics);
+
+        if (status === GameStatus.OFF) return;
         const physicsRawArray = AC_SDK.getPhysics();
         const physics: PhysicsData = parsePhysicsArray(physicsRawArray);
         this.emit("physics", physics);
-
-        const graphicsRawArray = AC_SDK.getGraphics();
-        const graphics: GraphicsData = parseGraphicsArray(graphicsRawArray);
-        this.emit("graphics", graphics);
 
         const staticRawArray = AC_SDK.getStatic();
         const staticData: StaticData = parseStaticArray(staticRawArray);
