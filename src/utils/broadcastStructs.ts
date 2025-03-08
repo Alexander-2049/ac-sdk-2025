@@ -10,7 +10,7 @@ import {
 import { RealtimeUpdate } from "../types/broadcast/interfaces/realtimeUpdate";
 import { RegistrationResults } from "../types/broadcast/interfaces/registrationResults";
 import { CameraSets, TrackData } from "../types/broadcast/interfaces/trackData";
-import { utf8Bytes } from "./utf8-bytes";
+import { utf8Bytes } from "./utf8Bytes";
 
 const RegisterConnection = (
   displayName: string,
