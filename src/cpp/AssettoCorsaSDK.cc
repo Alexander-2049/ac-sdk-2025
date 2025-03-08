@@ -79,7 +79,7 @@ void GetPhysics(const Nan::FunctionCallbackInfo<v8::Value> &info)
     SPageFilePhysics *pf = (SPageFilePhysics *)m_physics.mapFileBuffer;
 
     // Create an array to hold all the values
-    const size_t arraySize = 72; // Adjust based on the number of elements in your struct
+    const size_t arraySize = 85; // Adjust based on the number of elements in your struct
 
     v8::Local<v8::Array> resultArray = Nan::New<v8::Array>(arraySize);
 
@@ -360,36 +360,36 @@ void GetPhysics(const Nan::FunctionCallbackInfo<v8::Value> &info)
     // Create arrays for suspensionDamage, tyreTemp, brakePressure, padLife, discLife
     v8::Local<v8::Array> suspensionDamage = Nan::New<v8::Array>(4);
     v8::Local<v8::Array> tyreTemp = Nan::New<v8::Array>(4);
-    // v8::Local<v8::Array> brakePressure = Nan::New<v8::Array>(4);
-    // v8::Local<v8::Array> padLife = Nan::New<v8::Array>(4);
-    // v8::Local<v8::Array> discLife = Nan::New<v8::Array>(4);
+    v8::Local<v8::Array> brakePressure = Nan::New<v8::Array>(4);
+    v8::Local<v8::Array> padLife = Nan::New<v8::Array>(4);
+    v8::Local<v8::Array> discLife = Nan::New<v8::Array>(4);
 
     for (int i = 0; i < 4; i++)
     {
         Nan::Set(suspensionDamage, i, Nan::New(pf->suspensionDamage[i]));
         Nan::Set(tyreTemp, i, Nan::New(pf->tyreTemp[i]));
-        // Nan::Set(brakePressure, i, Nan::New(pf->brakePressure[i]));
-        // Nan::Set(padLife, i, Nan::New(pf->padLife[i]));
-        // Nan::Set(discLife, i, Nan::New(pf->discLife[i]));
+        Nan::Set(brakePressure, i, Nan::New(pf->brakePressure[i]));
+        Nan::Set(padLife, i, Nan::New(pf->padLife[i]));
+        Nan::Set(discLife, i, Nan::New(pf->discLife[i]));
     }
 
     Nan::Set(resultArray, 68, Nan::New<v8::Number>(pf->tcinAction));
     Nan::Set(resultArray, 69, Nan::New<v8::Number>(pf->absInAction));
     Nan::Set(resultArray, 70, suspensionDamage);
     Nan::Set(resultArray, 71, tyreTemp);
-    // Nan::Set(resultArray, 72, Nan::New<v8::Number>(pf->waterTemp));
-    // Nan::Set(resultArray, 73, brakePressure);
-    // Nan::Set(resultArray, 74, Nan::New<v8::Number>(pf->frontBrakeCompound));
-    // Nan::Set(resultArray, 75, Nan::New<v8::Number>(pf->rearBrakeCompound));
-    // Nan::Set(resultArray, 76, padLife);
-    // Nan::Set(resultArray, 77, discLife);
-    // Nan::Set(resultArray, 78, Nan::New<v8::Number>(pf->ignitionOn));
-    // Nan::Set(resultArray, 79, Nan::New<v8::Number>(pf->starterEngineOn));
-    // Nan::Set(resultArray, 80, Nan::New<v8::Number>(pf->isEngineRunning));
-    // Nan::Set(resultArray, 81, Nan::New<v8::Number>(pf->kerbVibration));
-    // Nan::Set(resultArray, 82, Nan::New<v8::Number>(pf->slipVibrations));
-    // Nan::Set(resultArray, 83, Nan::New<v8::Number>(pf->gVibrations));
-    // Nan::Set(resultArray, 84, Nan::New<v8::Number>(pf->absVibrations));
+    Nan::Set(resultArray, 72, Nan::New<v8::Number>(pf->waterTemp));
+    Nan::Set(resultArray, 73, brakePressure);
+    Nan::Set(resultArray, 74, Nan::New<v8::Number>(pf->frontBrakeCompound));
+    Nan::Set(resultArray, 75, Nan::New<v8::Number>(pf->rearBrakeCompound));
+    Nan::Set(resultArray, 76, padLife);
+    Nan::Set(resultArray, 77, discLife);
+    Nan::Set(resultArray, 78, Nan::New<v8::Number>(pf->isIgnitionOn));
+    Nan::Set(resultArray, 79, Nan::New<v8::Number>(pf->isStarterEngineOn));
+    Nan::Set(resultArray, 80, Nan::New<v8::Number>(pf->isEngineRunning));
+    Nan::Set(resultArray, 81, Nan::New<v8::Number>(pf->kerbVibration));
+    Nan::Set(resultArray, 82, Nan::New<v8::Number>(pf->slipVibrations));
+    Nan::Set(resultArray, 83, Nan::New<v8::Number>(pf->gVibrations));
+    Nan::Set(resultArray, 84, Nan::New<v8::Number>(pf->absVibrations));
 
     info.GetReturnValue().Set(resultArray);
 

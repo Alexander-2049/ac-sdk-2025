@@ -1,6 +1,7 @@
 #pragma once
 
-enum class PenaltyShortcut : int {
+enum class PenaltyShortcut : int
+{
     None,
     DriveThrough_Cutting,
     StopAndGo_10_Cutting,
@@ -59,7 +60,6 @@ typedef int AC_FLAG_TYPE;
 #define AC_WHITE_FLAG 4
 #define AC_CHECKERED_FLAG 5
 #define AC_PENALTY_FLAG 6
-
 
 #pragma pack(push)
 #pragma pack(4)
@@ -147,14 +147,25 @@ struct SPageFilePhysics
     float slipRatio[4];
     float slipAngle[4];
 
-
     int tcinAction = 0;
     int absInAction = 0;
     float suspensionDamage[4];
     float tyreTemp[4];
 
+    float waterTemp = 0;
+    float brakePressure[4];
+    int frontBrakeCompound = 0;
+    int rearBrakeCompound = 0;
+    float padLife[4];
+    float discLife[4];
+    int isIgnitionOn = 0;
+    int isStarterEngineOn = 0;
+    int isEngineRunning = 0;
+    float kerbVibration = 0;
+    float slipVibrations = 0;
+    float gVibrations = 0;
+    float absVibrations = 0;
 };
-
 
 struct SPageFileGraphics
 {
@@ -196,7 +207,6 @@ struct SPageFileGraphics
     float windSpeed = 0;
     float windDirection = 0;
 
-
     int isSetupMenuVisible = 0;
 
     int mainDisplayIndex = 0;
@@ -216,7 +226,6 @@ struct SPageFileGraphics
     int rainTyres = 0;
 };
 
-
 struct SPageFileStatic
 {
     wchar_t smVersion[15];
@@ -235,7 +244,7 @@ struct SPageFileStatic
     // car static info
     float maxTorque = 0;
     float maxPower = 0;
-    int	maxRpm = 0;
+    int maxRpm = 0;
     float maxFuel = 0;
     float suspensionMaxTravel[4];
     float tyreRadius[4];
@@ -273,6 +282,5 @@ struct SPageFileStatic
     int PitWindowEnd = 0;
     int isOnline = 0;
 };
-
 
 #pragma pack(pop)
