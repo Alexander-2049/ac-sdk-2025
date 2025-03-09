@@ -1,26 +1,26 @@
-import { SelectedGame } from "./selectedGame";
+// import { SelectedGame } from "./selectedGame";
 
 export interface PhysicsData {
-  selectedGame: SelectedGame;
-  packetId: number;
-  throttle: number; // Amount of throttle applied
-  brake: number; // Amount of brake applied
-  fuel: number;
-  gear: number;
-  rpm: number;
-  steeringAngle: number;
-  speedKmh: number;
-  velocity: [number, number, number];
-  accG: [number, number, number];
-  wheelSlip: [number, number, number, number];
-  wheelLoad: [number, number, number, number];
-  wheelPressure: [number, number, number, number];
-  wheelAngularSpeed: [number, number, number, number];
-  tyreWear: [number, number, number, number];
-  tyreDirtyLevel: [number, number, number, number];
-  tyreCoreTemperature: [number, number, number, number];
-  camberRAD: [number, number, number, number];
-  suspensionTravel: [number, number, number, number];
+  // selectedGame: SelectedGame;     // [Assetto Corsa Competizione : Assetto Corsa]
+  stepIndex: number;                                         // [✔ : ?] Current step index
+  throttle: number;                                          // [✔ : ?] Amount of throttle applied [0:1]
+  brake: number;                                             // [✔ : ?] Amount of brake applied [0:1]
+  fuel: number;                                              // [✔ : ?] Amount of fuel left in liters
+  gear: number;                                              // [✔ : ?] Selected gear (-1 = reverse, 0 = neutral, 1 = first gear, etc...)
+  rpm: number;                                               // [✔ : ?] RPM (int)
+  steeringAngle: number;                                     // [✔ : ?] Steering angle where -1 is fully steer to the left and 1 is fully steer to the right
+  speedKmh: number;                                          // [✔ : ?] Speed in kilometers per hour
+  velocity: [number, number, number];                        // [✔ : ?] Vector speeds in meters per second
+  accelerationG: [number, number, number];                   // [✔ : ?] Acceleration or G-Forces
+  wheelSlipRatio: [number, number, number, number];          // [✔ : ?] Wheel slip refers to the difference between the actual wheel speed and the vehicle's movement speed [FL, FR, RL, RR]
+  wheelLoad: [number, number, number, number];               // [✖ : ?] [FL, FR, RL, RR]
+  wheelPressure: [number, number, number, number];           // [✔ : ?] Wheel pressure in psi [FL, FR, RL, RR]
+  wheelAngularSpeed: [number, number, number, number];       // [✔ : ?] Wheel angular speed in rad/s [FL, FR, RL, RR]
+  tireWear: [number, number, number, number];                // [✖ : ?] Tyre wear [FL, FR, RL, RR]
+  tireDirtyLevel: [number, number, number, number];          // [✖ : ?] Dirt accumulated on tyre surface [FL, FR, RL, RR]
+  tireCoreTemperature: [number, number, number, number];     // [✔ : ?] Tyre rubber core temperature [FL, FR, RL, RR]
+  wheelCamberRad: [number, number, number, number];          // [✖ : ?] Wheels camber in radians [FL, FR, RL, RR]
+  suspensionTravel: [number, number, number, number];        // [✔ : ?] Suspension travel [FL, FR, RL, RR]
   drs: number;
   tc: boolean;
   heading: number;

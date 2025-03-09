@@ -5,25 +5,25 @@ export const parsePhysicsArray = (physicsArray: any[]): PhysicsData => {
   let i = 0;
 
   const result: PhysicsData = {
-    selectedGame: SelectedGame.NONE,
-    packetId: physicsArray[i++],
-    throttle: physicsArray[i++],
-    brake: physicsArray[i++],
-    fuel: physicsArray[i++],
-    gear: physicsArray[i++],
-    rpm: physicsArray[i++],
+    // selectedGame: SelectedGame.NONE,
+    stepIndex: physicsArray[i++], // ✔
+    throttle: physicsArray[i++], // ✔
+    brake: physicsArray[i++], // ✔
+    fuel: physicsArray[i++], // ✔
+    gear: physicsArray[i++] - 1, // ✔
+    rpm: physicsArray[i++], // ✔
     steeringAngle: physicsArray[i++],
     speedKmh: physicsArray[i++],
     velocity: physicsArray[i++],
-    accG: physicsArray[i++],
-    wheelSlip: physicsArray[i++],
+    accelerationG: physicsArray[i++],
+    wheelSlipRatio: physicsArray[i++],
     wheelLoad: physicsArray[i++],
     wheelPressure: physicsArray[i++],
     wheelAngularSpeed: physicsArray[i++],
-    tyreWear: physicsArray[i++],
-    tyreDirtyLevel: physicsArray[i++],
-    tyreCoreTemperature: physicsArray[i++],
-    camberRAD: physicsArray[i++],
+    tireWear: physicsArray[i++],
+    tireDirtyLevel: physicsArray[i++],
+    tireCoreTemperature: physicsArray[i++],
+    wheelCamberRad: physicsArray[i++],
     suspensionTravel: physicsArray[i++],
     drs: physicsArray[i++],
     tc: physicsArray[i++] === 1,
@@ -94,7 +94,17 @@ export const parsePhysicsArray = (physicsArray: any[]): PhysicsData => {
   };
 
   // console.log({ isIgnitionOn: result.isIgnitionOn, isStarterEngineOn: result.isStarterEngineOn });
-  console.log({ tc: result.tc });
+  console.log("--------------------------")
+  console.log({
+    // selectedGame: result.selectedGame,
+    wheelPressure: result.wheelPressure,
+    wheelAngularSpeed: result.wheelAngularSpeed,
+    tyreWear: result.tireWear,
+    tyreDirtyLevel: result.tireDirtyLevel,
+    tyreCoreTemperature: result.tireCoreTemperature,
+    wheelCamberRad: result.wheelCamberRad,
+    suspensionTravel: result.suspensionTravel,
+  });
 
   const valuesInBothGames = [
     result.throttle,
@@ -107,22 +117,22 @@ export const parsePhysicsArray = (physicsArray: any[]): PhysicsData => {
     result.velocity[0],
     result.velocity[1],
     result.velocity[2],
-    result.accG[0],
-    result.accG[1],
-    result.accG[2],
-    result.wheelSlip[0],
-    result.wheelSlip[1],
-    result.wheelSlip[2],
-    result.wheelSlip[3],
+    result.accelerationG[0],
+    result.accelerationG[1],
+    result.accelerationG[2],
+    result.wheelSlipRatio[0],
+    result.wheelSlipRatio[1],
+    result.wheelSlipRatio[2],
+    result.wheelSlipRatio[3],
   ];
 
-  for (let i = 0; i < valuesInBothGames.length; i++) {
-    const value = valuesInBothGames[i];
-    if (typeof value === "number" && value !== 0) {
-      result.selectedGame = SelectedGame.ASSETTO_CORSA;
-      break;
-    }
-  }
+  // for (let i = 0; i < valuesInBothGames.length; i++) {
+  //   const value = valuesInBothGames[i];
+  //   if (typeof value === "number" && value !== 0) {
+  //     result.selectedGame = SelectedGame.ASSETTO_CORSA;
+  //     break;
+  //   }
+  // }
 
   return result;
 };
