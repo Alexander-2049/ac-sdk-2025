@@ -81,7 +81,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
       this.status = graphics.status;
       this.emit("graphics", graphics);
 
-      console.log(graphics.carsOnTrack);
+      // console.log(graphics.carsOnTrack);
 
       if (this.status !== prevStatus) {
         const isGameClosed = this.status === GameStatus.OFF;
