@@ -1,5 +1,3 @@
-// import { SelectedGame } from "./selectedGame";
-
 export interface PhysicsData {
   // selectedGame: SelectedGame;     // [Assetto Corsa Competizione : Assetto Corsa]
   stepIndex: number;                                         // [✔ : ?] Current step index

@@ -81,6 +81,8 @@ export default class AssettoCorsaSDK extends EventEmitter {
       this.status = graphics.status;
       this.emit("graphics", graphics);
 
+      console.log(graphics.carsOnTrack);
+
       if (this.status !== prevStatus) {
         const isGameClosed = this.status === GameStatus.OFF;
         const isGameOpened = prevStatus === GameStatus.OFF;
@@ -91,7 +93,6 @@ export default class AssettoCorsaSDK extends EventEmitter {
       const physicsRawArray = AC_SDK.getPhysics();
       const physics: PhysicsData = parsePhysicsArray(physicsRawArray);
       this.emit("physics", physics);
-
 
       /*
   CarIndex: number; XXX

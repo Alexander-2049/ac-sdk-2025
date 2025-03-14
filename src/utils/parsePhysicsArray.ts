@@ -1,11 +1,9 @@
 import { PhysicsData } from "../types/physics";
-import { SelectedGame } from "../types/selectedGame";
 
 export const parsePhysicsArray = (physicsArray: any[]): PhysicsData => {
   let i = 0;
 
   const result: PhysicsData = {
-    // selectedGame: SelectedGame.NONE,
     stepIndex: physicsArray[i++], // ✔
     throttle: physicsArray[i++], // ✔
     brake: physicsArray[i++], // ✔
@@ -92,47 +90,6 @@ export const parsePhysicsArray = (physicsArray: any[]): PhysicsData => {
     gVibrations: physicsArray[i++],
     absVibrations: physicsArray[i++],
   };
-
-  // console.log({ isIgnitionOn: result.isIgnitionOn, isStarterEngineOn: result.isStarterEngineOn });
-  // console.log("--------------------------")
-  // console.log({
-  //   // selectedGame: result.selectedGame,
-  //   wheelPressure: result.wheelPressure,
-  //   wheelAngularSpeed: result.wheelAngularSpeed,
-  //   tyreWear: result.tireWear,
-  //   tyreDirtyLevel: result.tireDirtyLevel,
-  //   tyreCoreTemperature: result.tireCoreTemperature,
-  //   wheelCamberRad: result.wheelCamberRad,
-  //   suspensionTravel: result.suspensionTravel,
-  // });
-
-  const valuesInBothGames = [
-    result.throttle,
-    result.brake,
-    result.fuel,
-    result.gear,
-    result.rpm,
-    result.steeringAngle,
-    result.speedKmh,
-    result.velocity[0],
-    result.velocity[1],
-    result.velocity[2],
-    result.accelerationG[0],
-    result.accelerationG[1],
-    result.accelerationG[2],
-    result.wheelSlipRatio[0],
-    result.wheelSlipRatio[1],
-    result.wheelSlipRatio[2],
-    result.wheelSlipRatio[3],
-  ];
-
-  // for (let i = 0; i < valuesInBothGames.length; i++) {
-  //   const value = valuesInBothGames[i];
-  //   if (typeof value === "number" && value !== 0) {
-  //     result.selectedGame = SelectedGame.ASSETTO_CORSA;
-  //     break;
-  //   }
-  // }
 
   return result;
 };
