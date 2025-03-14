@@ -6,6 +6,7 @@ import { StaticData } from "./types/static";
 import { parseGraphicsArray } from "./utils/parseGraphicsArray";
 import { parseStaticArray } from "./utils/parseStaticArray";
 import AccBroadcast from "./models/UdpBroadcast/AccBroadcast";
+import { RealtimeCarUpdate } from "./types/broadcast/interfaces/realtimeCarUpdate";
 
 export const AC_SDK: {
   getPhysics: () => any[];
@@ -44,6 +45,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
     updateMs: number;
   };
   private status: GameStatus = GameStatus.OFF;
+  private cars: Map<number, RealtimeCarUpdate> = new Map();
 
   constructor({
     broadcast,
@@ -90,6 +92,40 @@ export default class AssettoCorsaSDK extends EventEmitter {
       const physics: PhysicsData = parsePhysicsArray(physicsRawArray);
       this.emit("physics", physics);
 
+
+      /*
+  CarIndex: number; XXX
+  DriverIndex: number; XXX
+  DriverCount: number; XXX
+  Gear: number; ---
+  WorldPosX: number; XXX
+  WorldPosY: number; XXX
+  Yaw: number; XXX
+  CarLocation: CarLocationEnum; XXX
+  Kmh: number; ---
+  Position: number; XXX
+  CupPosition: number; XXX
+  TrackPosition: number; XXX
+  SplinePosition: number; XXX
+  Laps: number; XXX
+  Delta: number; XXX
+  BestSessionLap: BestSessionLap; XXX
+  (
+  export interface BestSessionLap {
+  Splits: any[];
+  LaptimeMS: any;
+  CarIndex: number;
+  DriverIndex: number;
+  IsInvalid: boolean;
+  IsValidForBest: boolean;
+  isOutlap: boolean;
+  isInlap: boolean;
+}
+  )
+  LastLap: Lap; XXX
+  CurrentLap: Lap; XXX
+      */
+
       const staticRawArray = AC_SDK.getStatic();
       const staticData: StaticData = parseStaticArray(staticRawArray);
       this.emit("static", staticData);
@@ -121,10 +157,17 @@ export default class AssettoCorsaSDK extends EventEmitter {
 
   private onGameOpen() {
     this.udpConnection?.connect();
+    this.udpConnection?.addListener(
+      "realtime_car_update",
+      (data: RealtimeCarUpdate) => {
+        this.cars.set(data.CarIndex, data);
+      }
+    );
   }
 
   private onGameClose() {
     this.udpConnection?.disconnect();
+    this.cars.clear();
   }
 
   disconnect() {

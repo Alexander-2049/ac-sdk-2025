@@ -94,17 +94,17 @@ export const parsePhysicsArray = (physicsArray: any[]): PhysicsData => {
   };
 
   // console.log({ isIgnitionOn: result.isIgnitionOn, isStarterEngineOn: result.isStarterEngineOn });
-  console.log("--------------------------")
-  console.log({
-    // selectedGame: result.selectedGame,
-    wheelPressure: result.wheelPressure,
-    wheelAngularSpeed: result.wheelAngularSpeed,
-    tyreWear: result.tireWear,
-    tyreDirtyLevel: result.tireDirtyLevel,
-    tyreCoreTemperature: result.tireCoreTemperature,
-    wheelCamberRad: result.wheelCamberRad,
-    suspensionTravel: result.suspensionTravel,
-  });
+  // console.log("--------------------------")
+  // console.log({
+  //   // selectedGame: result.selectedGame,
+  //   wheelPressure: result.wheelPressure,
+  //   wheelAngularSpeed: result.wheelAngularSpeed,
+  //   tyreWear: result.tireWear,
+  //   tyreDirtyLevel: result.tireDirtyLevel,
+  //   tyreCoreTemperature: result.tireCoreTemperature,
+  //   wheelCamberRad: result.wheelCamberRad,
+  //   suspensionTravel: result.suspensionTravel,
+  // });
 
   const valuesInBothGames = [
     result.throttle,
