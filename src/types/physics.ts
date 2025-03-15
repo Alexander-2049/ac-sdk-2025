@@ -1,5 +1,3 @@
-// import { SelectedGame } from "./selectedGame";
-
 export interface PhysicsData {
   // selectedGame: SelectedGame;     // [Assetto Corsa Competizione : Assetto Corsa]
   stepIndex: number;                                         // [✔ : ?] Current step index
@@ -48,7 +46,7 @@ export interface PhysicsData {
   ersRecoveryLevel: number;
   ersPowerLevel: number;
   ersHeatCharging: number;
-  ersIsCharging: number;
+  ersIsCharging: boolean;
   kersCurrentKJ: number;
 
   drsAvailable: number;
@@ -61,7 +59,7 @@ export interface PhysicsData {
   tyreTempM: [number, number, number, number];
   tyreTempO: [number, number, number, number];
 
-  isAIControlled: number;
+  isAIControlled: boolean;
 
   tyreContactPoint: [
     [number, number, number],
@@ -108,9 +106,9 @@ export interface PhysicsData {
   rearBrakeCompound: number;
   padLife: [number, number, number, number];
   discLife: [number, number, number, number];
-  isIgnitionOn: number;
-  isStarterEngineOn: number;
-  isEngineRunning: number;
+  isIgnitionOn: boolean;
+  isStarterEngineOn: boolean;
+  isEngineRunning: boolean;
   kerbVibration: number;
   slipVibrations: number;
   gVibrations: number;

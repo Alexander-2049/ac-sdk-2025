@@ -1,11 +1,12 @@
 import { EventEmitter } from "stream";
 import { parsePhysicsArray } from "./utils/parsePhysicsArray";
 import { PhysicsData } from "./types/physics";
-import { GameStatus, GraphicsData } from "./types/graphics";
+import { GAME_STATUS, GraphicsData } from "./types/graphics";
 import { StaticData } from "./types/static";
 import { parseGraphicsArray } from "./utils/parseGraphicsArray";
 import { parseStaticArray } from "./utils/parseStaticArray";
 import AccBroadcast from "./models/UdpBroadcast/AccBroadcast";
+import { RealtimeCarUpdate } from "./types/broadcast/interfaces/realtimeCarUpdate";
 
 export const AC_SDK: {
   getPhysics: () => any[];
@@ -43,7 +44,8 @@ export default class AssettoCorsaSDK extends EventEmitter {
     port: number;
     updateMs: number;
   };
-  private status: GameStatus = GameStatus.OFF;
+  private status: GAME_STATUS = GAME_STATUS.OFF;
+  private cars: Map<number, RealtimeCarUpdate> = new Map();
 
   constructor({
     broadcast,
@@ -80,8 +82,8 @@ export default class AssettoCorsaSDK extends EventEmitter {
       this.emit("graphics", graphics);
 
       if (this.status !== prevStatus) {
-        const isGameClosed = this.status === GameStatus.OFF;
-        const isGameOpened = prevStatus === GameStatus.OFF;
+        const isGameClosed = this.status === GAME_STATUS.OFF;
+        const isGameOpened = prevStatus === GAME_STATUS.OFF;
         if (isGameOpened) this.onGameOpen();
         if (isGameClosed) return this.onGameClose();
       }
@@ -93,6 +95,8 @@ export default class AssettoCorsaSDK extends EventEmitter {
       const staticRawArray = AC_SDK.getStatic();
       const staticData: StaticData = parseStaticArray(staticRawArray);
       this.emit("static", staticData);
+      
+      // console.log(JSON.stringify(physics, null, 2));
     }, this.sharedMemoryUpdateIntervalMs);
   }
 
@@ -121,10 +125,17 @@ export default class AssettoCorsaSDK extends EventEmitter {
 
   private onGameOpen() {
     this.udpConnection?.connect();
+    this.udpConnection?.addListener(
+      "realtime_car_update",
+      (data: RealtimeCarUpdate) => {
+        this.cars.set(data.CarIndex, data);
+      }
+    );
   }
 
   private onGameClose() {
     this.udpConnection?.disconnect();
+    this.cars.clear();
   }
 
   disconnect() {

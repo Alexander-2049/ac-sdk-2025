@@ -223,7 +223,44 @@ struct SPageFileGraphics
     int wiperLV = 0;
     int DriverStintTotalTimeLeft = 0;
     int DriverStintTimeLeft = 0;
-    int rainTyres = 0;
+    int rainTires = 0;
+    int sessionIndex = 0;
+    float usedFuel = 0;
+    wchar_t deltaLapTime[15];
+    int iDeltaLapTime = 0;
+    wchar_t estimatedLapTime[15];
+    int iEstimatedLapTime = 0;
+    int isDeltaPositive = 0;
+    int iSplit = 0;
+    int isValidLap = 0;
+    float fuelEstimatedLaps = 0;
+    wchar_t trackStatus[33];
+    int missingMandatoryPits = 0;
+    float clock = 0;
+    int directionLightsLeft = 0;
+    int directionLightsRight = 0;
+    int globalYellow = 0;
+    int globalYellow1 = 0;
+    int globalYellow2 = 0;
+    int globalYellow3 = 0;
+    int globalWhite = 0;
+    int globalGreen = 0;
+    int globalChequered = 0;
+    int globalRed = 0;
+    int mfdTyreSet = 0;
+    float mfdFuelToAdd = 0;
+    float mfdTyrePressureLF = 0;
+    float mfdTyrePressureRF = 0;
+    float mfdTyrePressureLR = 0;
+    float mfdTyrePressureRR = 0;
+    int trackGripStatus = 0;
+    int rainIntensity = 0;
+    int rainIntensityIn10min = 0;
+    int rainIntensityIn30min = 0;
+    int currentTyreSet = 0;
+    int strategyTyreSet = 0;
+    int gapAhead = 0;
+    int gapBehind = 0;
 };
 
 struct SPageFileStatic
@@ -281,6 +318,8 @@ struct SPageFileStatic
     int PitWindowStart = 0;
     int PitWindowEnd = 0;
     int isOnline = 0;
+    wchar_t dryTiresName[33];
+    wchar_t wetTiresName[33];
 };
 
 #pragma pack(pop)

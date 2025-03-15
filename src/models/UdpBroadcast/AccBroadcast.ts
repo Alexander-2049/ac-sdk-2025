@@ -34,7 +34,10 @@ class AccBroadcast extends EventEmitter {
 
     this.cars = new Map();
 
-    process.on("SIGINT", this.disconnect.bind(this));
+    process.on("SIGINT", () => {
+      this.disconnect.bind(this)();
+      process.exit(0);
+    });
   }
 
   private onMessage(message: Buffer): void {
