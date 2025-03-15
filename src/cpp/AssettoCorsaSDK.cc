@@ -403,7 +403,7 @@ void GetGraphics(const Nan::FunctionCallbackInfo<v8::Value> &info)
     SPageFileGraphics *pf = (SPageFileGraphics *)m_graphics.mapFileBuffer;
 
     // Define the array size based on the number of elements in SPageFileGraphics
-    const size_t arraySize = 47; // Adjusted based on included fields
+    const size_t arraySize = 289; // Adjusted based on included fields
 
     v8::Local<v8::Array> resultArray = Nan::New<v8::Array>(arraySize);
 
@@ -422,7 +422,7 @@ void GetGraphics(const Nan::FunctionCallbackInfo<v8::Value> &info)
     Nan::Set(resultArray, 11, Nan::New<v8::Number>(pf->iBestTime));
     Nan::Set(resultArray, 12, Nan::New<v8::Number>(pf->sessionTimeLeft));
     Nan::Set(resultArray, 13, Nan::New<v8::Number>(pf->distanceTraveled));
-    Nan::Set(resultArray, 14, Nan::New<v8::Number>(pf->isInPit));
+    Nan::Set(resultArray, 14, Nan::New<v8::Boolean>(pf->isInPit));
     Nan::Set(resultArray, 15, Nan::New<v8::Number>(pf->currentSectorIndex));
     Nan::Set(resultArray, 16, Nan::New<v8::Number>(pf->lastSectorTime));
     Nan::Set(resultArray, 17, Nan::New<v8::Number>(pf->numberOfLaps));
@@ -432,52 +432,46 @@ void GetGraphics(const Nan::FunctionCallbackInfo<v8::Value> &info)
     Nan::Set(resultArray, 21, Nan::New<v8::Number>(pf->activeCars));
 
     // carCoordinates (60x3)
-    v8::Local<v8::Array> carCoordinatesArray = Nan::New<v8::Array>(60);
     for (int i = 0; i < 60; i++)
     {
-        v8::Local<v8::Array> coord = Nan::New<v8::Array>(3);
         for (int j = 0; j < 3; j++)
         {
-            Nan::Set(coord, j, Nan::New<v8::Number>(pf->carCoordinates[i][j]));
+            Nan::Set(resultArray, 22 + i * 3 + j, Nan::New<v8::Number>(pf->carCoordinates[i][j]));
         }
-        Nan::Set(carCoordinatesArray, i, coord);
     }
-    Nan::Set(resultArray, 22, carCoordinatesArray);
 
     // carID (60)
-    v8::Local<v8::Array> carIDArray = Nan::New<v8::Array>(60);
     for (int i = 0; i < 60; i++)
     {
-        Nan::Set(carIDArray, i, Nan::New<v8::Number>(pf->carID[i]));
+        Nan::Set(resultArray, 202 + i, Nan::New<v8::Number>(pf->carID[i]));
     }
-    Nan::Set(resultArray, 23, carIDArray);
 
-    Nan::Set(resultArray, 24, Nan::New<v8::Number>(pf->playerCarID));
-    Nan::Set(resultArray, 25, Nan::New<v8::Number>(pf->penaltyTime));
-    Nan::Set(resultArray, 26, Nan::New<v8::Number>(pf->flag));
-    Nan::Set(resultArray, 27, Nan::New<v8::Number>(static_cast<int>(pf->penalty)));
-    Nan::Set(resultArray, 28, Nan::New<v8::Number>(pf->idealLineOn));
-    Nan::Set(resultArray, 29, Nan::New<v8::Number>(pf->isInPitLane));
-    Nan::Set(resultArray, 30, Nan::New<v8::Number>(pf->surfaceGrip));
-    Nan::Set(resultArray, 31, Nan::New<v8::Number>(pf->mandatoryPitDone));
-    Nan::Set(resultArray, 32, Nan::New<v8::Number>(pf->windSpeed));
-    Nan::Set(resultArray, 33, Nan::New<v8::Number>(pf->windDirection));
-    Nan::Set(resultArray, 34, Nan::New<v8::Number>(pf->isSetupMenuVisible));
-    Nan::Set(resultArray, 35, Nan::New<v8::Number>(pf->mainDisplayIndex));
-    Nan::Set(resultArray, 36, Nan::New<v8::Number>(pf->secondaryDisplayIndex));
-    Nan::Set(resultArray, 37, Nan::New<v8::Number>(pf->TC));
-    Nan::Set(resultArray, 38, Nan::New<v8::Number>(pf->TCCut));
-    Nan::Set(resultArray, 39, Nan::New<v8::Number>(pf->EngineMap));
-    Nan::Set(resultArray, 40, Nan::New<v8::Number>(pf->ABS));
-    Nan::Set(resultArray, 41, Nan::New<v8::Number>(pf->fuelXLap));
-    Nan::Set(resultArray, 42, Nan::New<v8::Number>(pf->rainLights));
-    Nan::Set(resultArray, 43, Nan::New<v8::Number>(pf->flashingLights));
-    Nan::Set(resultArray, 44, Nan::New<v8::Number>(pf->lightsStage));
-    Nan::Set(resultArray, 45, Nan::New<v8::Number>(pf->exhaustTemperature));
-    Nan::Set(resultArray, 46, Nan::New<v8::Number>(pf->wiperLV));
-    Nan::Set(resultArray, 47, Nan::New<v8::Number>(pf->DriverStintTotalTimeLeft));
-    Nan::Set(resultArray, 48, Nan::New<v8::Number>(pf->DriverStintTimeLeft));
-    Nan::Set(resultArray, 49, Nan::New<v8::Number>(pf->rainTyres));
+    Nan::Set(resultArray, 262, Nan::New<v8::Number>(pf->playerCarID));
+    Nan::Set(resultArray, 263, Nan::New<v8::Number>(pf->penaltyTime));
+    Nan::Set(resultArray, 264, Nan::New<v8::Number>(pf->flag));
+    Nan::Set(resultArray, 265, Nan::New<v8::Number>(static_cast<int>(pf->penalty)));
+    Nan::Set(resultArray, 266, Nan::New<v8::Boolean>(pf->idealLineOn));
+    Nan::Set(resultArray, 267, Nan::New<v8::Boolean>(pf->isInPitLane));
+    Nan::Set(resultArray, 268, Nan::New<v8::Number>(pf->surfaceGrip));
+    Nan::Set(resultArray, 269, Nan::New<v8::Boolean>(pf->mandatoryPitDone));
+    Nan::Set(resultArray, 270, Nan::New<v8::Number>(pf->windSpeed));
+    Nan::Set(resultArray, 271, Nan::New<v8::Number>(pf->windDirection));
+    Nan::Set(resultArray, 272, Nan::New<v8::Boolean>(pf->isSetupMenuVisible));
+    Nan::Set(resultArray, 273, Nan::New<v8::Number>(pf->mainDisplayIndex));
+    Nan::Set(resultArray, 274, Nan::New<v8::Number>(pf->secondaryDisplayIndex));
+    Nan::Set(resultArray, 275, Nan::New<v8::Number>(pf->TC));
+    Nan::Set(resultArray, 276, Nan::New<v8::Number>(pf->TCCut));
+    Nan::Set(resultArray, 277, Nan::New<v8::Number>(pf->EngineMap));
+    Nan::Set(resultArray, 278, Nan::New<v8::Number>(pf->ABS));
+    Nan::Set(resultArray, 279, Nan::New<v8::Number>(pf->fuelXLap));
+    Nan::Set(resultArray, 280, Nan::New<v8::Number>(pf->rainLights));
+    Nan::Set(resultArray, 281, Nan::New<v8::Number>(pf->flashingLights));
+    Nan::Set(resultArray, 282, Nan::New<v8::Number>(pf->lightsStage));
+    Nan::Set(resultArray, 283, Nan::New<v8::Number>(pf->exhaustTemperature));
+    Nan::Set(resultArray, 284, Nan::New<v8::Number>(pf->wiperLV));
+    Nan::Set(resultArray, 285, Nan::New<v8::Number>(pf->DriverStintTotalTimeLeft));
+    Nan::Set(resultArray, 286, Nan::New<v8::Number>(pf->DriverStintTimeLeft));
+    Nan::Set(resultArray, 287, Nan::New<v8::Number>(pf->rainTyres));
 
     info.GetReturnValue().Set(resultArray);
 
@@ -491,7 +485,7 @@ void GetStatic(const Nan::FunctionCallbackInfo<v8::Value> &info)
     SPageFileStatic *pf = (SPageFileStatic *)m_static.mapFileBuffer;
 
     // Create an array to hold all the values
-    const size_t arraySize = 42; // Adjust based on the number of elements in your struct
+    const size_t arraySize = 49; // Adjust based on the number of elements in your struct
 
     v8::Local<v8::Array> resultArray = Nan::New<v8::Array>(arraySize);
 
