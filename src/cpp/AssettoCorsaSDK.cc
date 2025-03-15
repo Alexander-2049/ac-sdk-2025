@@ -491,13 +491,65 @@ void GetStatic(const Nan::FunctionCallbackInfo<v8::Value> &info)
     SPageFileStatic *pf = (SPageFileStatic *)m_static.mapFileBuffer;
 
     // Create an array to hold all the values
-    const size_t arraySize = 2; // Adjust based on the number of elements in your struct
+    const size_t arraySize = 42; // Adjust based on the number of elements in your struct
 
     v8::Local<v8::Array> resultArray = Nan::New<v8::Array>(arraySize);
 
     // Set simple scalar values (int and float) directly
-    Nan::Set(resultArray, 0, Nan::New<v8::Number>(pf->numberOfSessions)); // REWORK
-    Nan::Set(resultArray, 1, Nan::New<v8::Number>(pf->numCars));
+    Nan::Set(resultArray, 0, Nan::New<v8::String>((uint16_t *)pf->smVersion).ToLocalChecked());
+    Nan::Set(resultArray, 1, Nan::New<v8::String>((uint16_t *)pf->acVersion).ToLocalChecked());
+    Nan::Set(resultArray, 2, Nan::New<v8::Number>(pf->numberOfSessions));
+    Nan::Set(resultArray, 3, Nan::New<v8::Number>(pf->numCars));
+    Nan::Set(resultArray, 4, Nan::New<v8::String>((uint16_t *)pf->carModel).ToLocalChecked());
+    Nan::Set(resultArray, 5, Nan::New<v8::String>((uint16_t *)pf->track).ToLocalChecked());
+    Nan::Set(resultArray, 6, Nan::New<v8::String>((uint16_t *)pf->playerName).ToLocalChecked());
+    Nan::Set(resultArray, 7, Nan::New<v8::String>((uint16_t *)pf->playerSurname).ToLocalChecked());
+    Nan::Set(resultArray, 8, Nan::New<v8::String>((uint16_t *)pf->playerNick).ToLocalChecked());
+    Nan::Set(resultArray, 9, Nan::New<v8::Number>(pf->sectorCount));
+    Nan::Set(resultArray, 10, Nan::New<v8::Number>(pf->maxTorque));
+    Nan::Set(resultArray, 11, Nan::New<v8::Number>(pf->maxPower));
+    Nan::Set(resultArray, 12, Nan::New<v8::Number>(pf->maxRpm));
+    Nan::Set(resultArray, 13, Nan::New<v8::Number>(pf->maxFuel));
+
+    // Suspension max travel [FL, FR, RL, RR]
+    Nan::Set(resultArray, 14, Nan::New<v8::Number>(pf->suspensionMaxTravel[0]));
+    Nan::Set(resultArray, 15, Nan::New<v8::Number>(pf->suspensionMaxTravel[1]));
+    Nan::Set(resultArray, 16, Nan::New<v8::Number>(pf->suspensionMaxTravel[2]));
+    Nan::Set(resultArray, 17, Nan::New<v8::Number>(pf->suspensionMaxTravel[3]));
+
+    // Tyre radius [FL, FR, RL, RR]
+    Nan::Set(resultArray, 18, Nan::New<v8::Number>(pf->tyreRadius[0]));
+    Nan::Set(resultArray, 19, Nan::New<v8::Number>(pf->tyreRadius[1]));
+    Nan::Set(resultArray, 20, Nan::New<v8::Number>(pf->tyreRadius[2]));
+    Nan::Set(resultArray, 21, Nan::New<v8::Number>(pf->tyreRadius[3]));
+
+    Nan::Set(resultArray, 22, Nan::New<v8::Number>(pf->maxTurboBoost));
+    Nan::Set(resultArray, 23, Nan::New<v8::Number>(pf->deprecated_1));
+    Nan::Set(resultArray, 24, Nan::New<v8::Number>(pf->deprecated_2));
+    Nan::Set(resultArray, 25, Nan::New<v8::Number>(pf->penaltiesEnabled));
+    Nan::Set(resultArray, 26, Nan::New<v8::Number>(pf->aidFuelRate));
+    Nan::Set(resultArray, 27, Nan::New<v8::Number>(pf->aidTireRate));
+    Nan::Set(resultArray, 28, Nan::New<v8::Number>(pf->aidMechanicalDamage));
+    Nan::Set(resultArray, 29, Nan::New<v8::Boolean>(pf->aidAllowTyreBlankets));
+    Nan::Set(resultArray, 30, Nan::New<v8::Number>(pf->aidStability));
+    Nan::Set(resultArray, 31, Nan::New<v8::Boolean>(pf->aidAutoClutch));
+    Nan::Set(resultArray, 32, Nan::New<v8::Boolean>(pf->aidAutoBlip));
+    Nan::Set(resultArray, 33, Nan::New<v8::Boolean>(pf->hasDRS));
+    Nan::Set(resultArray, 34, Nan::New<v8::Boolean>(pf->hasERS));
+    Nan::Set(resultArray, 35, Nan::New<v8::Boolean>(pf->hasKERS));
+    Nan::Set(resultArray, 36, Nan::New<v8::Number>(pf->kersMaxJ));
+    Nan::Set(resultArray, 37, Nan::New<v8::Number>(pf->engineBrakeSettingsCount));
+    Nan::Set(resultArray, 38, Nan::New<v8::Number>(pf->ersPowerControllerCount));
+    Nan::Set(resultArray, 39, Nan::New<v8::Number>(pf->trackSPlineLength));
+    Nan::Set(resultArray, 40, Nan::New<v8::String>((uint16_t *)pf->trackConfiguration).ToLocalChecked());
+    Nan::Set(resultArray, 41, Nan::New<v8::Number>(pf->ersMaxJ));
+    Nan::Set(resultArray, 42, Nan::New<v8::Boolean>(pf->isTimedRace));
+    Nan::Set(resultArray, 43, Nan::New<v8::Boolean>(pf->hasExtraLap));
+    Nan::Set(resultArray, 44, Nan::New<v8::String>((uint16_t *)pf->carSkin).ToLocalChecked());
+    Nan::Set(resultArray, 45, Nan::New<v8::Number>(pf->reversedGridPositions));
+    Nan::Set(resultArray, 46, Nan::New<v8::Number>(pf->PitWindowStart));
+    Nan::Set(resultArray, 47, Nan::New<v8::Number>(pf->PitWindowEnd));
+    Nan::Set(resultArray, 48, Nan::New<v8::Boolean>(pf->isOnline));
 
     info.GetReturnValue().Set(resultArray);
 
