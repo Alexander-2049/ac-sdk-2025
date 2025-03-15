@@ -1,4 +1,4 @@
-enum PenaltyShortcut {
+enum PENALTY_TYPE {
   None,
   DriveThrough_Cutting,
   StopAndGo_10_Cutting,
@@ -23,7 +23,7 @@ enum PenaltyShortcut {
   Disqualified_ExceededDriverStintLimit,
 }
 
-enum SessionType {
+enum SESSION_TYPE {
   UNKNOWN = -1,
   PRACTICE = 0,
   QUALIFY = 1,
@@ -36,7 +36,7 @@ enum SessionType {
   HOTLAPSUPERPOLE = 8,
 }
 
-enum AC_FLAG_TYPE {
+enum FLAG_TYPE {
   AC_NO_FLAG = 0,
   AC_BLUE_FLAG = 1,
   AC_YELLOW_FLAG = 2,
@@ -46,7 +46,26 @@ enum AC_FLAG_TYPE {
   AC_PENALTY_FLAG = 6,
 }
 
-export enum GameStatus {
+enum TRACK_GRIP_STATUS {
+  ACC_GREEN = 0,
+  ACC_FAST = 1,
+  ACC_OPTIMUM = 2,
+  ACC_GREASY = 3,
+  ACC_DAMP = 4,
+  ACC_WET = 5,
+  ACC_FLOODED = 6,
+}
+
+enum RAIN_INTENSITY {
+  ACC_NO_RAIN = 0,
+  ACC_DRIZZLE = 1,
+  ACC_LIGHT_RAIN = 2,
+  ACC_MEDIUM_RAIN = 3,
+  ACC_HEAVY_RAIN = 4,
+  ACC_THUNDERSTORM = 5,
+}
+
+export enum GAME_STATUS {
   OFF = 0,
   REPLAY = 1,
   LIVE = 2,
@@ -55,8 +74,8 @@ export enum GameStatus {
 
 export interface GraphicsData {
   stepIndex: number;
-  status: GameStatus;
-  session: SessionType;
+  status: GAME_STATUS;
+  session: SESSION_TYPE;
   currentLapTime: string;
   lastLapTime: string;
   bestLapTime: string;
@@ -80,8 +99,8 @@ export interface GraphicsData {
   carID: number[];
   playerCarID: number;
   penaltyTime: number;
-  flag: AC_FLAG_TYPE;
-  penalty: PenaltyShortcut;
+  flag: FLAG_TYPE;
+  penalty: PENALTY_TYPE;
   isIdealLineOn: boolean;
   isInPitLane: boolean;
   surfaceGrip: number;
@@ -133,8 +152,8 @@ export interface GraphicsData {
   mfdTyrePressureRF: number;
   mfdTyrePressureLR: number;
   mfdTyrePressureRR: number;
-  trackGripStatus: number;
-  rainIntensity: number;
+  trackGripStatus: TRACK_GRIP_STATUS;
+  rainIntensity: RAIN_INTENSITY;
   rainIntensityIn10min: number;
   rainIntensityIn30min: number;
   currentTyreSet: number;

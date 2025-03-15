@@ -1,7 +1,7 @@
 import { EventEmitter } from "stream";
 import { parsePhysicsArray } from "./utils/parsePhysicsArray";
 import { PhysicsData } from "./types/physics";
-import { GameStatus, GraphicsData } from "./types/graphics";
+import { GAME_STATUS, GraphicsData } from "./types/graphics";
 import { StaticData } from "./types/static";
 import { parseGraphicsArray } from "./utils/parseGraphicsArray";
 import { parseStaticArray } from "./utils/parseStaticArray";
@@ -44,7 +44,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
     port: number;
     updateMs: number;
   };
-  private status: GameStatus = GameStatus.OFF;
+  private status: GAME_STATUS = GAME_STATUS.OFF;
   private cars: Map<number, RealtimeCarUpdate> = new Map();
 
   constructor({
@@ -81,11 +81,9 @@ export default class AssettoCorsaSDK extends EventEmitter {
       this.status = graphics.status;
       this.emit("graphics", graphics);
 
-      // console.log(JSON.stringify(graphics, null, 2));
-
       if (this.status !== prevStatus) {
-        const isGameClosed = this.status === GameStatus.OFF;
-        const isGameOpened = prevStatus === GameStatus.OFF;
+        const isGameClosed = this.status === GAME_STATUS.OFF;
+        const isGameOpened = prevStatus === GAME_STATUS.OFF;
         if (isGameOpened) this.onGameOpen();
         if (isGameClosed) return this.onGameClose();
       }
@@ -94,42 +92,11 @@ export default class AssettoCorsaSDK extends EventEmitter {
       const physics: PhysicsData = parsePhysicsArray(physicsRawArray);
       this.emit("physics", physics);
 
-      /*
-  CarIndex: number; XXX
-  DriverIndex: number; XXX
-  DriverCount: number; XXX
-  Gear: number; ---
-  WorldPosX: number; XXX
-  WorldPosY: number; XXX
-  Yaw: number; XXX
-  CarLocation: CarLocationEnum; XXX
-  Kmh: number; ---
-  Position: number; XXX
-  CupPosition: number; XXX
-  TrackPosition: number; XXX
-  SplinePosition: number; XXX
-  Laps: number; XXX
-  Delta: number; XXX
-  BestSessionLap: BestSessionLap; XXX
-  (
-  export interface BestSessionLap {
-  Splits: any[];
-  LaptimeMS: any;
-  CarIndex: number;
-  DriverIndex: number;
-  IsInvalid: boolean;
-  IsValidForBest: boolean;
-  isOutlap: boolean;
-  isInlap: boolean;
-}
-  )
-  LastLap: Lap; XXX
-  CurrentLap: Lap; XXX
-      */
-
       const staticRawArray = AC_SDK.getStatic();
       const staticData: StaticData = parseStaticArray(staticRawArray);
       this.emit("static", staticData);
+      
+      // console.log(JSON.stringify(physics, null, 2));
     }, this.sharedMemoryUpdateIntervalMs);
   }
 

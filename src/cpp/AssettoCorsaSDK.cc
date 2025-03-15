@@ -522,7 +522,7 @@ void GetStatic(const Nan::FunctionCallbackInfo<v8::Value> &info)
     SPageFileStatic *pf = (SPageFileStatic *)m_static.mapFileBuffer;
 
     // Create an array to hold all the values
-    const size_t arraySize = 49; // Adjust based on the number of elements in your struct
+    const size_t arraySize = 51; // Adjust based on the number of elements in your struct
 
     v8::Local<v8::Array> resultArray = Nan::New<v8::Array>(arraySize);
 
@@ -581,6 +581,8 @@ void GetStatic(const Nan::FunctionCallbackInfo<v8::Value> &info)
     Nan::Set(resultArray, 46, Nan::New<v8::Number>(pf->PitWindowStart));
     Nan::Set(resultArray, 47, Nan::New<v8::Number>(pf->PitWindowEnd));
     Nan::Set(resultArray, 48, Nan::New<v8::Boolean>(pf->isOnline));
+    Nan::Set(resultArray, 49, Nan::New<v8::String>((uint16_t *)pf->dryTiresName).ToLocalChecked());
+    Nan::Set(resultArray, 50, Nan::New<v8::String>((uint16_t *)pf->wetTiresName).ToLocalChecked());
 
     info.GetReturnValue().Set(resultArray);
 

@@ -48,4 +48,6 @@ export interface StaticData {
   pitWindowStart: number;
   pitWindowEnd: number;
   isOnline: boolean;
+  dryTiresName: string;
+  wetTiresName: string;
 }

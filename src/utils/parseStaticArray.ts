@@ -53,5 +53,7 @@ export const parseStaticArray = (data: any[]): StaticData => {
     pitWindowStart: data[i++],
     pitWindowEnd: data[i++],
     isOnline: !!data[i++],
+    dryTiresName: data[i++],
+    wetTiresName: data[i++],
   };
 };

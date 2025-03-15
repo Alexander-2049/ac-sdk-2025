@@ -318,6 +318,8 @@ struct SPageFileStatic
     int PitWindowStart = 0;
     int PitWindowEnd = 0;
     int isOnline = 0;
+    wchar_t dryTiresName[33];
+    wchar_t wetTiresName[33];
 };
 
 #pragma pack(pop)
