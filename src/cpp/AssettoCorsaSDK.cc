@@ -403,7 +403,7 @@ void GetGraphics(const Nan::FunctionCallbackInfo<v8::Value> &info)
     SPageFileGraphics *pf = (SPageFileGraphics *)m_graphics.mapFileBuffer;
 
     // Define the array size based on the number of elements in SPageFileGraphics
-    const size_t arraySize = 289; // Adjusted based on included fields
+    const size_t arraySize = 325; // Adjusted based on included fields
 
     v8::Local<v8::Array> resultArray = Nan::New<v8::Array>(arraySize);
 
@@ -471,7 +471,44 @@ void GetGraphics(const Nan::FunctionCallbackInfo<v8::Value> &info)
     Nan::Set(resultArray, 284, Nan::New<v8::Number>(pf->wiperLV));
     Nan::Set(resultArray, 285, Nan::New<v8::Number>(pf->DriverStintTotalTimeLeft));
     Nan::Set(resultArray, 286, Nan::New<v8::Number>(pf->DriverStintTimeLeft));
-    Nan::Set(resultArray, 287, Nan::New<v8::Number>(pf->rainTyres));
+    Nan::Set(resultArray, 287, Nan::New<v8::Number>(pf->rainTires));
+    Nan::Set(resultArray, 288, Nan::New<v8::Number>(pf->sessionIndex));
+    Nan::Set(resultArray, 289, Nan::New<v8::Number>(pf->usedFuel));
+    Nan::Set(resultArray, 290, Nan::New<v8::String>((uint16_t *)pf->deltaLapTime).ToLocalChecked());
+    Nan::Set(resultArray, 291, Nan::New<v8::Number>(pf->iDeltaLapTime));
+    Nan::Set(resultArray, 292, Nan::New<v8::String>((uint16_t *)pf->estimatedLapTime).ToLocalChecked());
+    Nan::Set(resultArray, 293, Nan::New<v8::Number>(pf->iEstimatedLapTime));
+    Nan::Set(resultArray, 294, Nan::New<v8::Boolean>(pf->isDeltaPositive));
+    Nan::Set(resultArray, 295, Nan::New<v8::Number>(pf->iSplit));
+    Nan::Set(resultArray, 296, Nan::New<v8::Boolean>(pf->isValidLap));
+    Nan::Set(resultArray, 297, Nan::New<v8::Number>(pf->fuelEstimatedLaps));
+    Nan::Set(resultArray, 298, Nan::New<v8::String>((uint16_t *)pf->trackStatus).ToLocalChecked());
+    Nan::Set(resultArray, 299, Nan::New<v8::Number>(pf->missingMandatoryPits));
+    Nan::Set(resultArray, 300, Nan::New<v8::Number>(pf->clock));
+    Nan::Set(resultArray, 301, Nan::New<v8::Boolean>(pf->directionLightsLeft));
+    Nan::Set(resultArray, 302, Nan::New<v8::Boolean>(pf->directionLightsRight));
+    Nan::Set(resultArray, 303, Nan::New<v8::Boolean>(pf->globalYellow));
+    Nan::Set(resultArray, 304, Nan::New<v8::Boolean>(pf->globalYellow1));
+    Nan::Set(resultArray, 305, Nan::New<v8::Boolean>(pf->globalYellow2));
+    Nan::Set(resultArray, 306, Nan::New<v8::Boolean>(pf->globalYellow3));
+    Nan::Set(resultArray, 307, Nan::New<v8::Boolean>(pf->globalWhite));
+    Nan::Set(resultArray, 308, Nan::New<v8::Boolean>(pf->globalGreen));
+    Nan::Set(resultArray, 309, Nan::New<v8::Boolean>(pf->globalChequered));
+    Nan::Set(resultArray, 310, Nan::New<v8::Boolean>(pf->globalRed));
+    Nan::Set(resultArray, 311, Nan::New<v8::Number>(pf->mfdTyreSet));
+    Nan::Set(resultArray, 312, Nan::New<v8::Number>(pf->mfdFuelToAdd));
+    Nan::Set(resultArray, 313, Nan::New<v8::Number>(pf->mfdTyrePressureLF));
+    Nan::Set(resultArray, 314, Nan::New<v8::Number>(pf->mfdTyrePressureRF));
+    Nan::Set(resultArray, 315, Nan::New<v8::Number>(pf->mfdTyrePressureLR));
+    Nan::Set(resultArray, 316, Nan::New<v8::Number>(pf->mfdTyrePressureRR));
+    Nan::Set(resultArray, 317, Nan::New<v8::Number>(pf->trackGripStatus));
+    Nan::Set(resultArray, 318, Nan::New<v8::Number>(pf->rainIntensity));
+    Nan::Set(resultArray, 319, Nan::New<v8::Number>(pf->rainIntensityIn10min));
+    Nan::Set(resultArray, 320, Nan::New<v8::Number>(pf->rainIntensityIn30min));
+    Nan::Set(resultArray, 321, Nan::New<v8::Number>(pf->currentTyreSet));
+    Nan::Set(resultArray, 322, Nan::New<v8::Number>(pf->strategyTyreSet));
+    Nan::Set(resultArray, 323, Nan::New<v8::Number>(pf->gapAhead));
+    Nan::Set(resultArray, 324, Nan::New<v8::Number>(pf->gapBehind));
 
     info.GetReturnValue().Set(resultArray);
 
