@@ -1,15 +1,15 @@
-import { BinaryReader } from "../models/UdpBroadcast/BinaryReader";
-import { BinaryWriter } from "../models/UdpBroadcast/BinaryWriter";
-import { BroadcastingEvent } from "../types/broadcast/interfaces/broadcastingEvent";
-import { Car } from "../types/broadcast/interfaces/car";
-import { Driver } from "../types/broadcast/interfaces/driver";
+import { BinaryReader } from "./BinaryReader";
+import { BinaryWriter } from "./BinaryWriter";
+import { BroadcastingEvent } from "../../types/broadcast/interfaces/broadcastingEvent";
+import { Car } from "../../types/broadcast/interfaces/car";
+import { Driver } from "../../types/broadcast/interfaces/driver";
 import {
   Lap,
   RealtimeCarUpdate,
-} from "../types/broadcast/interfaces/realtimeCarUpdate";
-import { RealtimeUpdate } from "../types/broadcast/interfaces/realtimeUpdate";
-import { RegistrationResults } from "../types/broadcast/interfaces/registrationResults";
-import { CameraSets, TrackData } from "../types/broadcast/interfaces/trackData";
+} from "../../types/broadcast/interfaces/realtimeCarUpdate";
+import { RealtimeUpdate } from "../../types/broadcast/interfaces/realtimeUpdate";
+import { RegistrationResults } from "../../types/broadcast/interfaces/registrationResults";
+import { CameraSets, TrackData } from "../../types/broadcast/interfaces/trackData";
 import { utf8Bytes } from "./utf8Bytes";
 
 const RegisterConnection = (

@@ -1,11 +1,12 @@
 import { EventEmitter } from "stream";
-import { parsePhysicsArray } from "./utils/parsePhysicsArray";
-import { PhysicsData } from "./types/physics";
-import { GAME_STATUS, GraphicsData } from "./types/graphics";
-import { StaticData } from "./types/static";
-import { parseGraphicsArray } from "./utils/parseGraphicsArray";
-import { parseStaticArray } from "./utils/parseStaticArray";
-import AccBroadcast from "./models/UdpBroadcast/AccBroadcast";
+import { IPhysics, parsePhysicsArray } from "./features/sharedMemory/parsePhysicsArray";
+import {
+  GAME_STATUS,
+  IGraphics,
+  parseGraphicsArray,
+} from "./features/sharedMemory/parseGraphicsArray";
+import { IStatic, parseStaticArray } from "./features/sharedMemory/parseStaticArray";
+import AccBroadcast from "./features/udpBroadcast/AccBroadcast";
 import { RealtimeCarUpdate } from "./types/broadcast/interfaces/realtimeCarUpdate";
 
 export const AC_SDK: {
@@ -15,9 +16,9 @@ export const AC_SDK: {
 } = require("../build/Release/AssettoCorsaSDK.node");
 
 interface AssettoCorsaEvents {
-  physics: PhysicsData;
-  graphics: GraphicsData;
-  static: StaticData;
+  physics: IPhysics;
+  graphics: IGraphics;
+  static: IStatic;
 }
 
 interface ACSDKBroadcastInterface {
@@ -76,7 +77,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
 
     this.sharedMemoryInterval = setInterval(() => {
       const graphicsRawArray = AC_SDK.getGraphics();
-      const graphics: GraphicsData = parseGraphicsArray(graphicsRawArray);
+      const graphics: IGraphics = parseGraphicsArray(graphicsRawArray);
       const prevStatus = this.status;
       this.status = graphics.status;
       this.emit("graphics", graphics);
@@ -89,13 +90,13 @@ export default class AssettoCorsaSDK extends EventEmitter {
       }
 
       const physicsRawArray = AC_SDK.getPhysics();
-      const physics: PhysicsData = parsePhysicsArray(physicsRawArray);
+      const physics: IPhysics = parsePhysicsArray(physicsRawArray);
       this.emit("physics", physics);
 
       const staticRawArray = AC_SDK.getStatic();
-      const staticData: StaticData = parseStaticArray(staticRawArray);
+      const staticData: IStatic = parseStaticArray(staticRawArray);
       this.emit("static", staticData);
-      
+
       // console.log(JSON.stringify(physics, null, 2));
     }, this.sharedMemoryUpdateIntervalMs);
   }

@@ -7,3 +7,15 @@ const acsdk = new AssettoCorsaSDK({
     password: "asd",
   },
 });
+
+// acsdk.addListener("graphics", (data) => {
+//   console.log(data);
+// });
+
+// acsdk.addListener("static", (data) => {
+//   console.log(data);
+// });
+
+// acsdk.addListener("physics", (data) => {
+//   console.log(data);
+// });

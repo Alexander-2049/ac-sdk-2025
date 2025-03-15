@@ -13,7 +13,7 @@ import {
   RegisterConnection,
   RequestEntryList,
   RequestTrackData,
-} from "../../utils/broadcastStructs";
+} from "./broadcastStructs";
 import { RegistrationResults } from "../../types/broadcast/interfaces/registrationResults";
 
 class AccBroadcast extends EventEmitter {
