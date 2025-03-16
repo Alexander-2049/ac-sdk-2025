@@ -1,13 +1,20 @@
 import { EventEmitter } from "stream";
-import { IPhysics, parsePhysicsArray } from "./features/sharedMemory/parsePhysicsArray";
+import {
+  IPhysics,
+  parsePhysicsArray,
+} from "./features/sharedMemory/parsePhysicsArray";
 import {
   GAME_STATUS,
   IGraphics,
   parseGraphicsArray,
 } from "./features/sharedMemory/parseGraphicsArray";
-import { IStatic, parseStaticArray } from "./features/sharedMemory/parseStaticArray";
+import {
+  IStatic,
+  parseStaticArray,
+} from "./features/sharedMemory/parseStaticArray";
 import AccBroadcast from "./features/udpBroadcast/AccBroadcast";
 import { RealtimeCarUpdate } from "./types/broadcast/interfaces/realtimeCarUpdate";
+import { detectGame, Game } from "./features/sharedMemory/detectGame";
 
 export const AC_SDK: {
   getPhysics: () => any[];
@@ -45,8 +52,8 @@ export default class AssettoCorsaSDK extends EventEmitter {
     port: number;
     updateMs: number;
   };
-  private status: GAME_STATUS = GAME_STATUS.OFF;
   private cars: Map<number, RealtimeCarUpdate> = new Map();
+  private game: Game = Game.None;
 
   constructor({
     broadcast,
@@ -76,28 +83,28 @@ export default class AssettoCorsaSDK extends EventEmitter {
     }
 
     this.sharedMemoryInterval = setInterval(() => {
+      const staticRawArray = AC_SDK.getStatic();
+      const staticData: IStatic = parseStaticArray(staticRawArray);
+      this.emit("static", staticData);
+
+      const game = detectGame(staticData);
+
       const graphicsRawArray = AC_SDK.getGraphics();
       const graphics: IGraphics = parseGraphicsArray(graphicsRawArray);
-      const prevStatus = this.status;
-      this.status = graphics.status;
       this.emit("graphics", graphics);
-
-      if (this.status !== prevStatus) {
-        const isGameClosed = this.status === GAME_STATUS.OFF;
-        const isGameOpened = prevStatus === GAME_STATUS.OFF;
-        if (isGameOpened) this.onGameOpen();
-        if (isGameClosed) return this.onGameClose();
-      }
 
       const physicsRawArray = AC_SDK.getPhysics();
       const physics: IPhysics = parsePhysicsArray(physicsRawArray);
       this.emit("physics", physics);
 
-      const staticRawArray = AC_SDK.getStatic();
-      const staticData: IStatic = parseStaticArray(staticRawArray);
-      this.emit("static", staticData);
+      if (this.game !== game) {
+        const isGameClosed = game === Game.None;
+        const isGameOpened = !isGameClosed;
+        this.game = game;
 
-      // console.log(JSON.stringify(physics, null, 2));
+        if (isGameOpened) this.onGameOpen(this.game);
+        if (isGameClosed) return this.onGameClose();
+      }
     }, this.sharedMemoryUpdateIntervalMs);
   }
 
@@ -124,14 +131,16 @@ export default class AssettoCorsaSDK extends EventEmitter {
     return super.on(event, listener);
   }
 
-  private onGameOpen() {
-    this.udpConnection?.connect();
-    this.udpConnection?.addListener(
-      "realtime_car_update",
-      (data: RealtimeCarUpdate) => {
-        this.cars.set(data.CarIndex, data);
-      }
-    );
+  private onGameOpen(game: Game) {
+    if (game === Game.AssettoCorsaCompetizione) {
+      this.udpConnection?.connect();
+      this.udpConnection?.addListener(
+        "realtime_car_update",
+        (data: RealtimeCarUpdate) => {
+          this.cars.set(data.CarIndex, data);
+        }
+      );
+    }
   }
 
   private onGameClose() {
