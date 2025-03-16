@@ -13,9 +13,9 @@ export interface IPhysics {
   readonly wheelLoad: [number, number, number, number]; // [✖ : ?] [FL, FR, RL, RR]
   readonly wheelPressure: [number, number, number, number]; // [✔ : ?] Wheel pressure in psi [FL, FR, RL, RR]
   readonly wheelAngularSpeed: [number, number, number, number]; // [✔ : ?] Wheel angular speed in rad/s [FL, FR, RL, RR]
-  readonly tireWear: [number, number, number, number]; // [✖ : ?] Tyre wear [FL, FR, RL, RR]
-  readonly tireDirtyLevel: [number, number, number, number]; // [✖ : ?] Dirt accumulated on tyre surface [FL, FR, RL, RR]
-  readonly tireCoreTemperature: [number, number, number, number]; // [✔ : ?] Tyre rubber core temperature [FL, FR, RL, RR]
+  readonly tireWear: [number, number, number, number]; // [✖ : ?] Tire wear [FL, FR, RL, RR]
+  readonly tireDirtyLevel: [number, number, number, number]; // [✖ : ?] Dirt accumulated on tire surface [FL, FR, RL, RR]
+  readonly tireCoreTemperature: [number, number, number, number]; // [✔ : ?] Tire rubber core temperature [FL, FR, RL, RR]
   readonly wheelCamberRad: [number, number, number, number]; // [✖ : ?] Wheels camber in radians [FL, FR, RL, RR]
   readonly suspensionTravel: [number, number, number, number]; // [✔ : ?] Suspension travel [FL, FR, RL, RR]
   readonly drs: number;
@@ -25,7 +25,7 @@ export interface IPhysics {
   readonly roll: number;
   readonly cgHeight: number;
   readonly carDamage: [number, number, number, number, number];
-  readonly numberOfTyresOut: number;
+  readonly numberOfTiresOut: number;
   readonly pitLimiterOn: number;
   readonly abs: number;
   readonly kersCharge: number;
@@ -50,23 +50,23 @@ export interface IPhysics {
   readonly drsEnabled: number;
   readonly brakeTemp: [number, number, number, number];
   readonly clutch: number;
-  readonly tyreTempI: [number, number, number, number];
-  readonly tyreTempM: [number, number, number, number];
-  readonly tyreTempO: [number, number, number, number];
+  readonly tireTempI: [number, number, number, number];
+  readonly tireTempM: [number, number, number, number];
+  readonly tireTempO: [number, number, number, number];
   readonly isAIControlled: boolean;
-  readonly tyreContactPoint: [
+  readonly tireContactPoint: [
     [number, number, number],
     [number, number, number],
     [number, number, number],
     [number, number, number]
   ];
-  readonly tyreContactNormal: [
+  readonly tireContactNormal: [
     [number, number, number],
     [number, number, number],
     [number, number, number],
     [number, number, number]
   ];
-  readonly tyreContactHeading: [
+  readonly tireContactHeading: [
     [number, number, number],
     [number, number, number],
     [number, number, number],
@@ -85,7 +85,7 @@ export interface IPhysics {
   readonly tcinAction: number;
   readonly absInAction: number;
   readonly suspensionDamage: [number, number, number, number];
-  readonly tyreTemp: [number, number, number, number];
+  readonly tireTemp: [number, number, number, number];
   readonly waterTemp: number;
   readonly brakePressure: [number, number, number, number];
   readonly frontBrakeCompound: number;
@@ -131,7 +131,7 @@ export const parsePhysicsArray = (physicsArray: any[]): IPhysics => {
     roll: physicsArray[i++],
     cgHeight: physicsArray[i++],
     carDamage: physicsArray[i++],
-    numberOfTyresOut: physicsArray[i++],
+    numberOfTiresOut: physicsArray[i++],
     pitLimiterOn: physicsArray[i++],
     abs: physicsArray[i++],
     kersCharge: physicsArray[i++],
@@ -156,13 +156,13 @@ export const parsePhysicsArray = (physicsArray: any[]): IPhysics => {
     drsEnabled: physicsArray[i++],
     brakeTemp: physicsArray[i++],
     clutch: physicsArray[i++],
-    tyreTempI: physicsArray[i++],
-    tyreTempM: physicsArray[i++],
-    tyreTempO: physicsArray[i++],
+    tireTempI: physicsArray[i++],
+    tireTempM: physicsArray[i++],
+    tireTempO: physicsArray[i++],
     isAIControlled: !!physicsArray[i++],
-    tyreContactPoint: physicsArray[i++],
-    tyreContactNormal: physicsArray[i++],
-    tyreContactHeading: physicsArray[i++],
+    tireContactPoint: physicsArray[i++],
+    tireContactNormal: physicsArray[i++],
+    tireContactHeading: physicsArray[i++],
     brakeBias: physicsArray[i++],
     localVelocity: physicsArray[i++],
     P2PActivations: physicsArray[i++],
@@ -176,7 +176,7 @@ export const parsePhysicsArray = (physicsArray: any[]): IPhysics => {
     tcinAction: physicsArray[i++],
     absInAction: physicsArray[i++],
     suspensionDamage: physicsArray[i++],
-    tyreTemp: physicsArray[i++],
+    tireTemp: physicsArray[i++],
     waterTemp: physicsArray[i++],
     brakePressure: physicsArray[i++],
     frontBrakeCompound: physicsArray[i++],
