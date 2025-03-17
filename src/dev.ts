@@ -8,14 +8,10 @@ const acsdk = new AssettoCorsaSDK({
   },
 });
 
-acsdk.addListener("graphics", (data) => {
-  console.log(JSON.stringify(data, null, 2));
-});
+// acsdk.addListener("assettoCorsaData", (data) => {
+//   console.log(data);
+// });
 
-acsdk.addListener("static", (data) => {
-  console.log(JSON.stringify(data, null, 2));
-});
-
-acsdk.addListener("physics", (data) => {
-  console.log(JSON.stringify(data, null, 2));
+acsdk.addListener("assettoCorsaCompetizioneData", (data) => {
+  console.log(data);
 });
