@@ -26,6 +26,8 @@ interface AssettoCorsaEvents {
   physics: IPhysics;
   graphics: IGraphics;
   static: IStatic;
+  open: Game;
+  close: Game;
 }
 
 interface ACSDKBroadcastInterface {
@@ -85,17 +87,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
     this.sharedMemoryInterval = setInterval(() => {
       const staticRawArray = AC_SDK.getStatic();
       const staticData: IStatic = parseStaticArray(staticRawArray);
-      this.emit("static", staticData);
-
       const game = detectGame(staticData);
-
-      const graphicsRawArray = AC_SDK.getGraphics();
-      const graphics: IGraphics = parseGraphicsArray(graphicsRawArray);
-      this.emit("graphics", graphics);
-
-      const physicsRawArray = AC_SDK.getPhysics();
-      const physics: IPhysics = parsePhysicsArray(physicsRawArray);
-      this.emit("physics", physics);
 
       if (this.game !== game) {
         const isGameClosed = game === Game.None;
@@ -105,6 +97,18 @@ export default class AssettoCorsaSDK extends EventEmitter {
         if (isGameOpened) this.onGameOpen(this.game);
         if (isGameClosed) return this.onGameClose();
       }
+
+      if (this.game === Game.None) return;
+
+      this.emit("static", staticData);
+
+      const graphicsRawArray = AC_SDK.getGraphics();
+      const graphics: IGraphics = parseGraphicsArray(graphicsRawArray);
+      this.emit("graphics", graphics);
+
+      const physicsRawArray = AC_SDK.getPhysics();
+      const physics: IPhysics = parsePhysicsArray(physicsRawArray);
+      this.emit("physics", physics);
     }, this.sharedMemoryUpdateIntervalMs);
   }
 
@@ -132,6 +136,8 @@ export default class AssettoCorsaSDK extends EventEmitter {
   }
 
   private onGameOpen(game: Game) {
+    this.emit("open", this.game);
+
     if (game === Game.AssettoCorsaCompetizione) {
       this.udpConnection?.connect();
       this.udpConnection?.addListener(
@@ -144,6 +150,8 @@ export default class AssettoCorsaSDK extends EventEmitter {
   }
 
   private onGameClose() {
+    this.emit("close", this.game);
+
     this.udpConnection?.disconnect();
     this.cars.clear();
   }
