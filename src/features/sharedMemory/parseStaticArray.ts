@@ -17,10 +17,10 @@ export interface IStatic {
   readonly suspensionMaxTravelFR: number;
   readonly suspensionMaxTravelRL: number;
   readonly suspensionMaxTravelRR: number;
-  readonly tyreRadiusFL: number;
-  readonly tyreRadiusFR: number;
-  readonly tyreRadiusRL: number;
-  readonly tyreRadiusRR: number;
+  readonly tireRadiusFL: number;
+  readonly tireRadiusFR: number;
+  readonly tireRadiusRL: number;
+  readonly tireRadiusRR: number;
   readonly maxTurboBoost: number;
   readonly deprecated_1: number;
   readonly deprecated_2: number;
@@ -28,7 +28,7 @@ export interface IStatic {
   readonly aidFuelRate: number;
   readonly aidTireRate: number;
   readonly aidMechanicalDamage: number;
-  readonly aidAllowTyreBlankets: boolean;
+  readonly aidAllowTireBlankets: boolean;
   readonly aidStability: number;
   readonly aidAutoClutch: boolean;
   readonly aidAutoBlip: boolean;
@@ -74,10 +74,10 @@ export const parseStaticArray = (data: any[]): IStatic => {
     suspensionMaxTravelFR: data[i++],
     suspensionMaxTravelRL: data[i++],
     suspensionMaxTravelRR: data[i++],
-    tyreRadiusFL: data[i++],
-    tyreRadiusFR: data[i++],
-    tyreRadiusRL: data[i++],
-    tyreRadiusRR: data[i++],
+    tireRadiusFL: data[i++],
+    tireRadiusFR: data[i++],
+    tireRadiusRL: data[i++],
+    tireRadiusRR: data[i++],
     maxTurboBoost: data[i++],
     deprecated_1: data[i++],
     deprecated_2: data[i++],
@@ -85,7 +85,7 @@ export const parseStaticArray = (data: any[]): IStatic => {
     aidFuelRate: data[i++],
     aidTireRate: data[i++],
     aidMechanicalDamage: data[i++],
-    aidAllowTyreBlankets: !!data[i++],
+    aidAllowTireBlankets: !!data[i++],
     aidStability: data[i++],
     aidAutoClutch: !!data[i++],
     aidAutoBlip: !!data[i++],

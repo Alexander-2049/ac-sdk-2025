@@ -27,7 +27,7 @@ export interface IPhysics {
   readonly carDamage: [number, number, number, number, number];
   readonly numberOfTiresOut: number;
   readonly pitLimiterOn: number;
-  readonly abs: number;
+  readonly abs1: number;
   readonly kersCharge: number;
   readonly kersInput: number;
   readonly autoShifterOn: number;
@@ -133,7 +133,7 @@ export const parsePhysicsArray = (physicsArray: any[]): IPhysics => {
     carDamage: physicsArray[i++],
     numberOfTiresOut: physicsArray[i++],
     pitLimiterOn: physicsArray[i++],
-    abs: physicsArray[i++],
+    abs1: physicsArray[i++],
     kersCharge: physicsArray[i++],
     kersInput: physicsArray[i++],
     autoShifterOn: physicsArray[i++],

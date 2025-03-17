@@ -1,4 +1,4 @@
-enum PENALTY_TYPE {
+export enum PENALTY_TYPE {
   None,
   DriveThrough_Cutting,
   StopAndGo_10_Cutting,
@@ -23,7 +23,7 @@ enum PENALTY_TYPE {
   Disqualified_ExceededDriverStintLimit,
 }
 
-enum SESSION_TYPE {
+export enum SESSION_TYPE {
   UNKNOWN = -1,
   PRACTICE = 0,
   QUALIFY = 1,
@@ -36,33 +36,33 @@ enum SESSION_TYPE {
   HOTLAPSUPERPOLE = 8,
 }
 
-enum FLAG_TYPE {
-  AC_NO_FLAG = 0,
-  AC_BLUE_FLAG = 1,
-  AC_YELLOW_FLAG = 2,
-  AC_BLACK_FLAG = 3,
-  AC_WHITE_FLAG = 4,
-  AC_CHECKERED_FLAG = 5,
-  AC_PENALTY_FLAG = 6,
+export enum FLAG_TYPE {
+  NO_FLAG = 0,
+  BLUE_FLAG = 1,
+  YELLOW_FLAG = 2,
+  BLACK_FLAG = 3,
+  WHITE_FLAG = 4,
+  CHECKERED_FLAG = 5,
+  PENALTY_FLAG = 6,
 }
 
-enum TRACK_GRIP_STATUS {
-  ACC_GREEN = 0,
-  ACC_FAST = 1,
-  ACC_OPTIMUM = 2,
-  ACC_GREASY = 3,
-  ACC_DAMP = 4,
-  ACC_WET = 5,
-  ACC_FLOODED = 6,
+export enum TRACK_GRIP_STATUS {
+  GREEN = 0,
+  FAST = 1,
+  OPTIMUM = 2,
+  GREASY = 3,
+  DAMP = 4,
+  WET = 5,
+  FLOODED = 6,
 }
 
-enum RAIN_INTENSITY {
-  ACC_NO_RAIN = 0,
-  ACC_DRIZZLE = 1,
-  ACC_LIGHT_RAIN = 2,
-  ACC_MEDIUM_RAIN = 3,
-  ACC_HEAVY_RAIN = 4,
-  ACC_THUNDERSTORM = 5,
+export enum RAIN_INTENSITY {
+  NO_RAIN = 0,
+  DRIZZLE = 1,
+  LIGHT_RAIN = 2,
+  MEDIUM_RAIN = 3,
+  HEAVY_RAIN = 4,
+  THUNDERSTORM = 5,
 }
 
 export enum GAME_STATUS {
@@ -91,7 +91,7 @@ export interface IGraphics {
   readonly currentSectorIndex: number;
   readonly lastSectorTimeMs: number;
   readonly numberOfLaps: number;
-  readonly tyreCompoundName: string;
+  readonly tireCompoundName: string;
   readonly replayTimeMultiplier: number;
   readonly normalizedCarPosition: number;
   readonly carsOnTrack: number;
@@ -113,7 +113,7 @@ export interface IGraphics {
   readonly tractionControlLevel: number;
   readonly tractionControlCut: number;
   readonly engineMap: number;
-  readonly abs: number;
+  readonly abs2: number;
   readonly averageFuelConsumptionPerLap: number;
   readonly rainLights: number;
   readonly flashingLights: number;
@@ -122,7 +122,7 @@ export interface IGraphics {
   readonly wiperLV: number;
   readonly driverStintTotalTimeLeft: number;
   readonly driverStintTimeLeft: number;
-  readonly rainTyres: number;
+  readonly rainTires: number;
   readonly sessionIndex: number;
   readonly usedFuel: number;
   readonly deltaLapTime: string;
@@ -146,18 +146,18 @@ export interface IGraphics {
   readonly globalGreen: boolean;
   readonly globalChequered: boolean;
   readonly globalRed: boolean;
-  readonly mfdTyreSet: number;
+  readonly mfdTireSet: number;
   readonly mfdFuelToAdd: number;
-  readonly mfdTyrePressureLF: number;
-  readonly mfdTyrePressureRF: number;
-  readonly mfdTyrePressureLR: number;
-  readonly mfdTyrePressureRR: number;
+  readonly mfdTirePressureLF: number;
+  readonly mfdTirePressureRF: number;
+  readonly mfdTirePressureLR: number;
+  readonly mfdTirePressureRR: number;
   readonly trackGripStatus: TRACK_GRIP_STATUS;
   readonly rainIntensity: RAIN_INTENSITY;
   readonly rainIntensityIn10min: number;
   readonly rainIntensityIn30min: number;
-  readonly currentTyreSet: number;
-  readonly strategyTyreSet: number;
+  readonly currentTireSet: number;
+  readonly strategyTireSet: number;
   readonly gapAhead: number;
   readonly gapBehind: number;
 }
@@ -184,7 +184,7 @@ export const parseGraphicsArray = (data: any[]): IGraphics => {
     currentSectorIndex: data[i++],
     lastSectorTimeMs: data[i++],
     numberOfLaps: data[i++],
-    tyreCompoundName: data[i++],
+    tireCompoundName: data[i++],
     replayTimeMultiplier: data[i++],
     normalizedCarPosition: data[i++],
     carsOnTrack: data[i++],
@@ -213,7 +213,7 @@ export const parseGraphicsArray = (data: any[]): IGraphics => {
     tractionControlLevel: data[i++],
     tractionControlCut: data[i++],
     engineMap: data[i++],
-    abs: data[i++],
+    abs2: data[i++],
     averageFuelConsumptionPerLap: data[i++],
     rainLights: data[i++],
     flashingLights: data[i++],
@@ -222,7 +222,7 @@ export const parseGraphicsArray = (data: any[]): IGraphics => {
     wiperLV: data[i++],
     driverStintTotalTimeLeft: data[i++],
     driverStintTimeLeft: data[i++],
-    rainTyres: data[i++],
+    rainTires: data[i++],
     sessionIndex: data[i++],
     usedFuel: data[i++],
     deltaLapTime: data[i++],
@@ -246,18 +246,18 @@ export const parseGraphicsArray = (data: any[]): IGraphics => {
     globalGreen: !!data[i++],
     globalChequered: !!data[i++],
     globalRed: !!data[i++],
-    mfdTyreSet: data[i++],
+    mfdTireSet: data[i++],
     mfdFuelToAdd: data[i++],
-    mfdTyrePressureLF: data[i++],
-    mfdTyrePressureRF: data[i++],
-    mfdTyrePressureLR: data[i++],
-    mfdTyrePressureRR: data[i++],
+    mfdTirePressureLF: data[i++],
+    mfdTirePressureRF: data[i++],
+    mfdTirePressureLR: data[i++],
+    mfdTirePressureRR: data[i++],
     trackGripStatus: data[i++],
     rainIntensity: data[i++],
     rainIntensityIn10min: data[i++],
     rainIntensityIn30min: data[i++],
-    currentTyreSet: data[i++],
-    strategyTyreSet: data[i++],
+    currentTireSet: data[i++],
+    strategyTireSet: data[i++],
     gapAhead: data[i++],
     gapBehind: data[i++],
   };
