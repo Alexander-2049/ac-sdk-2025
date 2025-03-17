@@ -15,6 +15,9 @@ import {
 import AccBroadcast from "./features/udpBroadcast/AccBroadcast";
 import { RealtimeCarUpdate } from "./types/broadcast/interfaces/realtimeCarUpdate";
 import { detectGame, Game } from "./features/sharedMemory/detectGame";
+import { IAssettoCorsaData } from "./types/broadcast/interfaces/AssettoCorsaData";
+import { IAssettoCorsaCompetizioneData } from "./types/broadcast/interfaces/AssettoCorsaCompetizioneData";
+import { getGameDataFromSharedMemory } from "./features/sharedMemory/getGameDataFromSharedMemory";
 
 export const AC_SDK: {
   getPhysics: () => any[];
@@ -23,9 +26,8 @@ export const AC_SDK: {
 } = require("../build/Release/AssettoCorsaSDK.node");
 
 interface AssettoCorsaEvents {
-  physics: IPhysics;
-  graphics: IGraphics;
-  static: IStatic;
+  assettoCorsaData: IAssettoCorsaData;
+  assettoCorsaCompetizioneData: IAssettoCorsaCompetizioneData;
   open: Game;
   close: Game;
 }
@@ -100,15 +102,29 @@ export default class AssettoCorsaSDK extends EventEmitter {
 
       if (this.game === Game.None) return;
 
-      this.emit("static", staticData);
-
       const graphicsRawArray = AC_SDK.getGraphics();
       const graphics: IGraphics = parseGraphicsArray(graphicsRawArray);
-      this.emit("graphics", graphics);
 
       const physicsRawArray = AC_SDK.getPhysics();
       const physics: IPhysics = parsePhysicsArray(physicsRawArray);
-      this.emit("physics", physics);
+
+      if (game === Game.AssettoCorsa) {
+        const data = getGameDataFromSharedMemory(
+          game,
+          graphics,
+          physics,
+          staticData
+        );
+        this.emit("assettoCorsaData", data);
+      } else if (game === Game.AssettoCorsaCompetizione) {
+        const data = getGameDataFromSharedMemory(
+          game,
+          graphics,
+          physics,
+          staticData
+        );
+        this.emit("assettoCorsaCompetizioneData", data);
+      }
     }, this.sharedMemoryUpdateIntervalMs);
   }
 
