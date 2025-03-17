@@ -5,6 +5,82 @@ import {
 
 export interface IAssettoCorsaData {
   /*
+   * Physics data
+   */
+  readonly throttle: number;
+  readonly brake: number;
+  readonly fuel: number;
+  readonly gear: number;
+  readonly rpm: number;
+  readonly steeringAngle: number;
+  readonly speedKmh: number;
+  readonly velocity: [number, number, number];
+  readonly accelerationG: [number, number, number];
+  readonly wheelSlipRatio: [number, number, number, number];
+  readonly wheelLoad: [number, number, number, number];
+  readonly wheelPressure: [number, number, number, number];
+  readonly wheelAngularSpeed: [number, number, number, number];
+  readonly tireWear: [number, number, number, number];
+  readonly tireDirtyLevel: [number, number, number, number];
+  readonly tireCoreTemperature: [number, number, number, number];
+  readonly wheelCamberRad: [number, number, number, number];
+  readonly suspensionTravel: [number, number, number, number];
+  // readonly drs: number;
+  // readonly tc: boolean;
+  readonly heading: number;
+  readonly pitch: number;
+  readonly roll: number;
+  readonly cgHeight: number;
+  // readonly carDamage: [number, number, number, number, number];
+  readonly numberOfTiresOut: number;
+  // readonly pitLimiterOn: number;
+  readonly abs1: number;
+  // readonly kersCharge: number;
+  // readonly kersInput: number;
+  readonly autoShifterOn: number;
+  readonly rideHeight: [number, number];
+  // readonly turboBoost: number;
+  // readonly ballast: number;
+  readonly airDensity: number;
+  readonly airTemp: number;
+  readonly roadTemp: number;
+  readonly localAngularVel: [number, number, number];
+  readonly finalFF: number;
+  readonly performanceMeter: number;
+  // readonly engineBrake: number;
+  // readonly ersRecoveryLevel: number;
+  // readonly ersPowerLevel: number;
+  // readonly ersHeatCharging: number;
+  // readonly ersIsCharging: boolean;
+  // readonly kersCurrentKJ: number;
+  // readonly drsAvailable: number;
+  // readonly drsEnabled: number;
+  // readonly P2PActivations: number;
+  // readonly P2PStatus: number;
+  // readonly mz: [number, number, number, number];
+  // readonly fx: [number, number, number, number];
+  // readonly fy: [number, number, number, number];
+  // readonly slipRatio: [number, number, number, number];
+  // readonly slipAngle: [number, number, number, number];
+  // readonly tcinAction: number;
+  // readonly absInAction: number;
+  // readonly suspensionDamage: [number, number, number, number];
+  // readonly tireTemp: [number, number, number, number];
+  // readonly waterTemp: number;
+  // readonly brakePressure: [number, number, number, number];
+  // readonly frontBrakeCompound: number;
+  // readonly rearBrakeCompound: number;
+  // readonly padLife: [number, number, number, number];
+  // readonly discLife: [number, number, number, number];
+  // readonly isIgnitionOn: boolean;
+  // readonly isStarterEngineOn: boolean;
+  // readonly isEngineRunning: boolean;
+  // readonly kerbVibration: number;
+  // readonly slipVibrations: number;
+  // readonly gVibrations: number;
+  // readonly absVibrations: number;
+
+  /*
    * Graphics data
    */
   readonly stepIndex: number;
@@ -47,7 +123,7 @@ export interface IAssettoCorsaData {
   // readonly tractionControlLevel: number;
   // readonly tractionControlCut: number;
   // readonly engineMap: number;
-  readonly abs: number;
+  readonly abs2: number;
   // readonly averageFuelConsumptionPerLap: number;
   // readonly rainLights: number;
   // readonly flashingLights: number;
@@ -94,82 +170,6 @@ export interface IAssettoCorsaData {
   // readonly strategyTireSet: number;
   // readonly gapAhead: number;
   // readonly gapBehind: number;
-
-  /*
-   * Physics data
-   */
-  readonly throttle: number;
-  readonly brake: number;
-  readonly fuel: number;
-  readonly gear: number;
-  readonly rpm: number;
-  readonly steeringAngle: number;
-  readonly speedKmh: number;
-  readonly velocity: [number, number, number];
-  readonly accelerationG: [number, number, number];
-  readonly wheelSlipRatio: [number, number, number, number];
-  readonly wheelLoad: [number, number, number, number];
-  readonly wheelPressure: [number, number, number, number];
-  readonly wheelAngularSpeed: [number, number, number, number];
-  readonly tireWear: [number, number, number, number];
-  readonly tireDirtyLevel: [number, number, number, number];
-  readonly tireCoreTemperature: [number, number, number, number];
-  readonly wheelCamberRad: [number, number, number, number];
-  readonly suspensionTravel: [number, number, number, number];
-  // readonly drs: number;
-  // readonly tc: boolean;
-  readonly heading: number;
-  readonly pitch: number;
-  readonly roll: number;
-  readonly cgHeight: number;
-  // readonly carDamage: [number, number, number, number, number];
-  readonly numberOfTiresOut: number;
-  // readonly pitLimiterOn: number;
-  readonly absDublicate: number;
-  // readonly kersCharge: number;
-  // readonly kersInput: number;
-  readonly autoShifterOn: number;
-  readonly rideHeight: [number, number];
-  // readonly turboBoost: number;
-  // readonly ballast: number;
-  readonly airDensity: number;
-  readonly airTemp: number;
-  readonly roadTemp: number;
-  readonly localAngularVel: [number, number, number];
-  readonly finalFF: number;
-  readonly performanceMeter: number;
-  // readonly engineBrake: number;
-  // readonly ersRecoveryLevel: number;
-  // readonly ersPowerLevel: number;
-  // readonly ersHeatCharging: number;
-  // readonly ersIsCharging: boolean;
-  // readonly kersCurrentKJ: number;
-  // readonly drsAvailable: number;
-  // readonly drsEnabled: number;
-  // readonly P2PActivations: number;
-  // readonly P2PStatus: number;
-  // readonly mz: [number, number, number, number];
-  // readonly fx: [number, number, number, number];
-  // readonly fy: [number, number, number, number];
-  // readonly slipRatio: [number, number, number, number];
-  // readonly slipAngle: [number, number, number, number];
-  // readonly tcinAction: number;
-  // readonly absInAction: number;
-  // readonly suspensionDamage: [number, number, number, number];
-  // readonly tireTemp: [number, number, number, number];
-  // readonly waterTemp: number;
-  // readonly brakePressure: [number, number, number, number];
-  // readonly frontBrakeCompound: number;
-  // readonly rearBrakeCompound: number;
-  // readonly padLife: [number, number, number, number];
-  // readonly discLife: [number, number, number, number];
-  // readonly isIgnitionOn: boolean;
-  // readonly isStarterEngineOn: boolean;
-  // readonly isEngineRunning: boolean;
-  // readonly kerbVibration: number;
-  // readonly slipVibrations: number;
-  // readonly gVibrations: number;
-  // readonly absVibrations: number;
 
   /*
    * Static data
