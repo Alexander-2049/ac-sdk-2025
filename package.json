@@ -1,7 +1,7 @@
 {
   "name": "ac-sdk-2025",
   "version": "1.0.0",
-  "description": "",
+  "description": "Assetto Corsa [Competizione] SDK for Node.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

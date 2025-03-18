@@ -18,6 +18,9 @@ import { detectGame, Game } from "./features/sharedMemory/detectGame";
 import { IAssettoCorsaData } from "./types/broadcast/interfaces/AssettoCorsaData";
 import { IAssettoCorsaCompetizioneData } from "./types/broadcast/interfaces/AssettoCorsaCompetizioneData";
 import { getGameDataFromSharedMemory } from "./features/sharedMemory/getGameDataFromSharedMemory";
+import { RealtimeUpdate } from "./types/broadcast/interfaces/realtimeUpdate";
+import { TrackData } from "./types/broadcast/interfaces/trackData";
+import { Car } from "./types/broadcast/interfaces/car";
 
 export const AC_SDK: {
   getPhysics: () => any[];
@@ -29,6 +32,10 @@ interface AssettoCorsaEvents {
   ac_data: IAssettoCorsaData;
   acc_data: IAssettoCorsaCompetizioneData;
   acc_cars_update: RealtimeCarUpdate[];
+  acc_realtime_update: RealtimeUpdate;
+  acc_entry_list: number[];
+  acc_track_data: TrackData;
+  acc_entry_list_car: Car;
   open: Game;
   close: Game;
 }
@@ -175,6 +182,25 @@ export default class AssettoCorsaSDK extends EventEmitter {
         this.emit("acc_cars_update", Array.from(this.cars.values()));
       }, 1000 / 60);
     }
+
+    this.udpConnection?.addListener(
+      "realtime_update",
+      (data: RealtimeUpdate) => {
+        this.emit("acc_realtime_update", data);
+      }
+    );
+
+    this.udpConnection?.addListener("entry_list", (data: number[]) => {
+      this.emit("acc_entry_list", data);
+    });
+
+    this.udpConnection?.addListener("track_data", (data: TrackData) => {
+      this.emit("acc_track_data", data);
+    });
+
+    this.udpConnection?.addListener("entry_list_car", (data: Car) => {
+      this.emit("acc_entry_list_car", data);
+    });
   }
 
   private onGameClose() {
