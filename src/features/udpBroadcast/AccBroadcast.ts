@@ -59,23 +59,45 @@ class AccBroadcast extends EventEmitter {
         }
         break;
       case 2: // REALTIME_UPDATE
+        /*
+         * realtime_update event is emitted every ${updateMs} milliseconds
+         */
         this.emit("realtime_update", parseRealTimeUpdate(br));
         break;
       case 3: // REALTIME_CAR_UPDATE
+        /*
+         * realtime_car_update event is emitted every ${updateMs} milliseconds
+         * for each car on the track separately
+         */
         this.emit("realtime_car_update", parseRealTimeCarUpdate(br));
         break;
       case 4: // ENTRY_LIST
+        /*
+         * entry_list event is emitted every time the entry list changes
+         * (e.g. when a new player joins the server)
+         */
         this.cars.clear();
         parseEntryList(br).forEach((carId) => this.cars.set(carId, {}));
         this.emit("entry_list", this.cars);
         break;
       case 5: // TRACK_DATA
+        /*
+         * track_data event is emitted every time the track data changes
+         * (e.g. when the server switches to a different track)
+         */
         this.emit("track_data", parseTrackData(br));
         break;
       case 6: // ENTRY_LIST_CAR
+        /*
+         * entry_list_car event is emitted every time the entry list changes
+         * (e.g. when a new player joins the server)
+         */
         this.emit("entry_list_car", parseEntryListCar(br, this.cars));
         break;
       case 7: // BROADCASTING_EVENT
+        /*
+         * broadcasting_event: no description
+         */
         this.emit("broadcasting_event", parseBroadcastEvent(br, this.cars));
         break;
       default:
