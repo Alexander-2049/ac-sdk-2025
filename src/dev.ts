@@ -12,6 +12,6 @@ const acsdk = new AssettoCorsaSDK({
 //   console.log(data);
 // });
 
-acsdk.addListener("assettoCorsaCompetizioneData", (data) => {
+acsdk.addListener("acc_data", (data) => {
   console.log(data);
 });

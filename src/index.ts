@@ -26,8 +26,9 @@ export const AC_SDK: {
 } = require("../build/Release/AssettoCorsaSDK.node");
 
 interface AssettoCorsaEvents {
-  assettoCorsaData: IAssettoCorsaData;
-  assettoCorsaCompetizioneData: IAssettoCorsaCompetizioneData;
+  ac_data: IAssettoCorsaData;
+  acc_data: IAssettoCorsaCompetizioneData;
+  acc_cars_update: RealtimeCarUpdate[];
   open: Game;
   close: Game;
 }
@@ -57,6 +58,8 @@ export default class AssettoCorsaSDK extends EventEmitter {
     updateMs: number;
   };
   private cars: Map<number, RealtimeCarUpdate> = new Map();
+  private lastCarsUpdate: number = Date.now();
+  private carsEmitTimeout: NodeJS.Timeout | null = null;
   private game: Game = Game.None;
 
   constructor({
@@ -73,7 +76,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
       cmdPassword: broadcast.cmdPassword || "",
       password: broadcast.password,
       port: broadcast.port || 9000,
-      updateMs: broadcast.updateMs || 250,
+      updateMs: broadcast.updateMs || this.sharedMemoryUpdateIntervalMs,
     };
 
     if (this.broadcast) {
@@ -115,7 +118,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
           physics,
           staticData
         );
-        this.emit("assettoCorsaData", data);
+        this.emit("ac_data", data);
       } else if (game === Game.AssettoCorsaCompetizione) {
         const data = getGameDataFromSharedMemory(
           game,
@@ -123,7 +126,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
           physics,
           staticData
         );
-        this.emit("assettoCorsaCompetizioneData", data);
+        this.emit("acc_data", data);
       }
     }, this.sharedMemoryUpdateIntervalMs);
   }
@@ -162,6 +165,15 @@ export default class AssettoCorsaSDK extends EventEmitter {
           this.cars.set(data.CarIndex, data);
         }
       );
+
+      this.carsEmitTimeout = setInterval(() => {
+        /*
+         * realtime_car_update is emitted separately for every car, so we need to
+         * throttle the event to avoid emitting the same data multiple times.
+         */
+        if (Date.now() - this.lastCarsUpdate < 2) return;
+        this.emit("acc_cars_update", Array.from(this.cars.values()));
+      }, 1000 / 60);
     }
   }
 
@@ -170,6 +182,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
 
     this.udpConnection?.disconnect();
     this.cars.clear();
+    clearInterval(this.carsEmitTimeout!);
   }
 
   disconnect() {
