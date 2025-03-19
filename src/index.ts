@@ -58,9 +58,9 @@ export interface RealtimeCarAndEntryDataUpdate {
 interface AssettoCorsaEvents {
   ac_data: IAssettoCorsaData;
   acc_data: IAssettoCorsaCompetizioneData;
-  acc_cars_update: RealtimeCarAndEntryDataUpdate[];
-  acc_realtime_update: RealtimeUpdate;
-  acc_track_data: TrackData;
+  acc_udp_cars_update: RealtimeCarAndEntryDataUpdate[];
+  acc_udp_realtime_update: RealtimeUpdate;
+  acc_udp_track_data: TrackData;
   open: Game;
   close: Game;
 }
@@ -237,7 +237,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
           return car;
         });
         this.lastCarsUpdate = Date.now();
-        this.emit("acc_cars_update", data);
+        this.emit("acc_udp_cars_update", data);
       }, 1000 / 60);
     }
 
@@ -255,12 +255,12 @@ export default class AssettoCorsaSDK extends EventEmitter {
     this.udpConnection?.addListener(
       "realtime_update",
       (data: RealtimeUpdate) => {
-        this.emit("acc_realtime_update", data);
+        this.emit("acc_udp_realtime_update", data);
       }
     );
 
     this.udpConnection?.addListener("track_data", (data: TrackData) => {
-      this.emit("acc_track_data", data);
+      this.emit("acc_udp_track_data", data);
     });
   }
 
