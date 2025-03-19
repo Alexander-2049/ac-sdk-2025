@@ -78,6 +78,25 @@ interface ACSDKConstructorInterface {
   broadcast?: ACSDKBroadcastInterface;
 }
 
+/**
+ * AssettoCorsaSDK is a comprehensive SDK for interacting with Assetto Corsa and Assetto Corsa Competizione.
+ *
+ * This class provides:
+ * - Shared memory integration for real-time game data retrieval.
+ * - UDP broadcast support for Assetto Corsa Competizione.
+ * - Type-safe event handling for game state changes, car updates, and track data.
+ *
+ * Key Features:
+ * - Automatically detects the active game (Assetto Corsa or Assetto Corsa Competizione).
+ * - Emits events for game data, including physics, graphics, and static information.
+ * - Supports real-time updates for cars and tracks in Assetto Corsa Competizione.
+ * - Provides a configurable update interval for shared memory polling.
+ *
+ * Usage:
+ * - Instantiate the class with optional configuration for shared memory and UDP broadcast.
+ * - Listen to events such as `ac_data`, `acc_data`, `acc_cars_update`, and more.
+ * - Call `disconnect()` to clean up resources when done.
+ */
 export default class AssettoCorsaSDK extends EventEmitter {
   private udpConnection: AccBroadcast | null = null;
   private sharedMemoryInterval?: NodeJS.Timeout;
@@ -246,7 +265,9 @@ export default class AssettoCorsaSDK extends EventEmitter {
   }
 
   private onGameClose() {
-    this.emit("close", this.game);
+    if (this.carsEmitTimeout) {
+      clearInterval(this.carsEmitTimeout);
+    }
 
     this.udpConnection?.disconnect();
     this.cars.clear();
