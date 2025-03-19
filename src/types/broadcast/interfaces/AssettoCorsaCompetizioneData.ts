@@ -119,7 +119,7 @@ export interface IAssettoCorsaCompetizioneData {
   readonly normalizedCarPosition: number;
   readonly carsOnTrack: number;
   readonly carCoordinates: [number, number, number][];
-  readonly carID: number[];
+  readonly carIDs: number[];
   readonly playerCarID: number;
   readonly flag: FLAG_TYPE;
   readonly penalty: PENALTY_TYPE;
