@@ -1,7 +1,7 @@
 import { BinaryReader } from "./BinaryReader";
 import { BinaryWriter } from "./BinaryWriter";
 import { BroadcastingEvent } from "../../types/broadcast/interfaces/broadcastingEvent";
-import { Team } from "../../types/broadcast/interfaces/car";
+import { CarAndTeam } from "../../types/broadcast/interfaces/car";
 import { Driver } from "../../types/broadcast/interfaces/driver";
 import {
   Lap,
@@ -9,8 +9,12 @@ import {
 } from "../../types/broadcast/interfaces/realtimeCarUpdate";
 import { RealtimeUpdate } from "../../types/broadcast/interfaces/realtimeUpdate";
 import { RegistrationResults } from "../../types/broadcast/interfaces/registrationResults";
-import { CameraSets, TrackData } from "../../types/broadcast/interfaces/trackData";
+import {
+  CameraSets,
+  TrackData,
+} from "../../types/broadcast/interfaces/trackData";
 import { utf8Bytes } from "./utf8Bytes";
+import { getCarName } from "../getCarName";
 
 const RegisterConnection = (
   displayName: string,
@@ -134,10 +138,13 @@ const parseRealTimeCarUpdate = (br: BinaryReader): RealtimeCarUpdate => {
   };
 };
 
-const parseEntryListCar = (br: BinaryReader, cars: Map<number, Team>): Team => {
+const parseEntryListCar = (
+  br: BinaryReader,
+  cars: Map<number, CarAndTeam>
+): CarAndTeam => {
   const carId = br.ReadUInt16();
 
-  const carInfo: Team = {
+  const carInfo: CarAndTeam = {
     CarModelType: br.ReadUInt8(),
     TeamName: parseString(br),
     TeamId: br.ReadInt32(),
@@ -146,7 +153,10 @@ const parseEntryListCar = (br: BinaryReader, cars: Map<number, Team>): Team => {
     Nationality: br.ReadUInt16(),
     Drivers: [],
     CurrentDriver: {} as Driver,
+    CarName: "Unknown",
   };
+
+  carInfo.CarName = getCarName(carInfo.CarModelType);
 
   const driversOnCarCount = br.ReadUInt8();
   for (let i = 0; i < driversOnCarCount; i++) {
@@ -167,13 +177,13 @@ const parseEntryListCar = (br: BinaryReader, cars: Map<number, Team>): Team => {
 
 const parseBroadcastEvent = (
   br: BinaryReader,
-  cars: Map<number, Team>
+  cars: Map<number, CarAndTeam>
 ): BroadcastingEvent => {
   const Type = br.ReadUInt8();
   const Msg = parseString(br);
   const TimeMS = br.ReadInt32();
   const CarId = br.ReadInt32();
-  const Car = cars.get(CarId) as Team;
+  const Car = cars.get(CarId) as CarAndTeam;
 
   const event: BroadcastingEvent = {
     Type,

@@ -24,7 +24,7 @@ import { IAssettoCorsaCompetizioneData } from "./types/broadcast/interfaces/Asse
 import { getGameDataFromSharedMemory } from "./features/sharedMemory/getGameDataFromSharedMemory";
 import { RealtimeUpdate } from "./types/broadcast/interfaces/realtimeUpdate";
 import { TrackData } from "./types/broadcast/interfaces/trackData";
-import { Team } from "./types/broadcast/interfaces/car";
+import { CarAndTeam } from "./types/broadcast/interfaces/car";
 import { CarLocationEnum } from "./types/broadcast/enums/carLocation";
 
 export const AC_SDK: {
@@ -52,7 +52,7 @@ export interface RealtimeCarAndEntryDataUpdate {
   BestSessionLap: BestSessionLap;
   LastLap: Lap;
   CurrentLap: Lap;
-  Team: Team;
+  CarAndTeam: CarAndTeam;
 }
 
 interface AssettoCorsaEvents {
@@ -112,7 +112,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
   private lastCarsUpdate: number = Date.now();
   private carsEmitTimeout: NodeJS.Timeout | null = null;
   private game: Game = Game.None;
-  private entryList: Team[] = [];
+  private entryList: CarAndTeam[] = [];
 
   constructor({
     broadcast,
@@ -232,7 +232,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
             (team) => team.CurrentDriverIndex === car.DriverIndex
           );
           if (team) {
-            car.Team = team;
+            car.CarAndTeam = team;
           }
           return car;
         });
@@ -241,7 +241,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
       }, 1000 / 60);
     }
 
-    this.udpConnection?.addListener("entry_list_car", (data: Team) => {
+    this.udpConnection?.addListener("entry_list_car", (data: CarAndTeam) => {
       const teamFound = this.entryList.find(
         (team) => team.TeamId === data.TeamId
       );

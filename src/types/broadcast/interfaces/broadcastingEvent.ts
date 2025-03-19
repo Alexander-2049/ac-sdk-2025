@@ -1,11 +1,11 @@
 import { BroadcastingCarEventType } from "../enums/broadcastingCarEventType";
-import { Team } from "./car";
+import { CarAndTeam } from "./car";
 
 export interface BroadcastingEvent {
   Type: BroadcastingCarEventType;
   Msg: string;
   TimeMS: number;
   CarId: number;
-  Car: Team;
+  Car: CarAndTeam;
 }
 

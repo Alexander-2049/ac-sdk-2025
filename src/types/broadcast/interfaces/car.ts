@@ -1,7 +1,7 @@
 import { Nationality } from "../enums/nationality";
 import { Driver } from "./driver";
 
-export interface Team {
+export interface CarAndTeam {
   CarModelType: number;
   TeamName: string;
   TeamId: number;
@@ -10,4 +10,5 @@ export interface Team {
   Nationality: Nationality;
   Drivers: Driver[];
   CurrentDriver: Driver;
+  CarName: string;
 }
