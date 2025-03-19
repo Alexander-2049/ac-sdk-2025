@@ -33,7 +33,7 @@ interface AssettoCorsaEvents {
   acc_data: IAssettoCorsaCompetizioneData;
   acc_cars_update: RealtimeCarUpdate[];
   acc_realtime_update: RealtimeUpdate;
-  acc_entry_list: number[];
+  acc_entry_list: Map<number, any>;
   acc_track_data: TrackData;
   acc_entry_list_car: Car;
   open: Game;
@@ -190,7 +190,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
       }
     );
 
-    this.udpConnection?.addListener("entry_list", (data: number[]) => {
+    this.udpConnection?.addListener("entry_list", (data: Map<number, any>) => {
       this.emit("acc_entry_list", data);
     });
 
