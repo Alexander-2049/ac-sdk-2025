@@ -1,7 +1,7 @@
 import { BinaryReader } from "./BinaryReader";
 import { BinaryWriter } from "./BinaryWriter";
 import { BroadcastingEvent } from "../../types/broadcast/interfaces/broadcastingEvent";
-import { CarAndTeam } from "../../types/broadcast/interfaces/car";
+import { TeamCarDetails } from "../../types/broadcast/interfaces/car";
 import { Driver } from "../../types/broadcast/interfaces/driver";
 import {
   Lap,
@@ -15,6 +15,7 @@ import {
 } from "../../types/broadcast/interfaces/trackData";
 import { utf8Bytes } from "./utf8Bytes";
 import { getCarName } from "../getCarName";
+import { getCarYear } from "../getCarYear";
 
 const RegisterConnection = (
   displayName: string,
@@ -140,11 +141,11 @@ const parseRealTimeCarUpdate = (br: BinaryReader): RealtimeCarUpdate => {
 
 const parseEntryListCar = (
   br: BinaryReader,
-  cars: Map<number, CarAndTeam>
-): CarAndTeam => {
+  cars: Map<number, TeamCarDetails>
+): TeamCarDetails => {
   const carId = br.ReadUInt16();
 
-  const carInfo: CarAndTeam = {
+  const carInfo: TeamCarDetails = {
     CarModelType: br.ReadUInt8(),
     TeamName: parseString(br),
     TeamId: br.ReadInt32(),
@@ -153,10 +154,12 @@ const parseEntryListCar = (
     Nationality: br.ReadUInt16(),
     Drivers: [],
     CurrentDriver: {} as Driver,
-    CarName: "Unknown",
+    CarModelName: "Unknown",
+    CarModelYear: 0,
   };
 
-  carInfo.CarName = getCarName(carInfo.CarModelType);
+  carInfo.CarModelName = getCarName(carInfo.CarModelType);
+  carInfo.CarModelYear = getCarYear(carInfo.CarModelType);
 
   const driversOnCarCount = br.ReadUInt8();
   for (let i = 0; i < driversOnCarCount; i++) {
@@ -177,13 +180,13 @@ const parseEntryListCar = (
 
 const parseBroadcastEvent = (
   br: BinaryReader,
-  cars: Map<number, CarAndTeam>
+  cars: Map<number, TeamCarDetails>
 ): BroadcastingEvent => {
   const Type = br.ReadUInt8();
   const Msg = parseString(br);
   const TimeMS = br.ReadInt32();
   const CarId = br.ReadInt32();
-  const Car = cars.get(CarId) as CarAndTeam;
+  const Car = cars.get(CarId) as TeamCarDetails;
 
   const event: BroadcastingEvent = {
     Type,

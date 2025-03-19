@@ -1,8 +1,10 @@
 import { Nationality } from "../enums/nationality";
 import { Driver } from "./driver";
 
-export interface CarAndTeam {
+export interface TeamCarDetails {
   CarModelType: number;
+  CarModelName: string;
+  CarModelYear: number;
   TeamName: string;
   TeamId: number;
   CupCategory: number;
@@ -10,5 +12,4 @@ export interface CarAndTeam {
   Nationality: Nationality;
   Drivers: Driver[];
   CurrentDriver: Driver;
-  CarName: string;
 }
