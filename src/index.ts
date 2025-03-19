@@ -24,7 +24,7 @@ import { IAssettoCorsaCompetizioneData } from "./types/broadcast/interfaces/Asse
 import { getGameDataFromSharedMemory } from "./features/sharedMemory/getGameDataFromSharedMemory";
 import { RealtimeUpdate } from "./types/broadcast/interfaces/realtimeUpdate";
 import { TrackData } from "./types/broadcast/interfaces/trackData";
-import { CarAndTeam } from "./types/broadcast/interfaces/car";
+import { TeamCarDetails } from "./types/broadcast/interfaces/car";
 import { CarLocationEnum } from "./types/broadcast/enums/carLocation";
 
 export const AC_SDK: {
@@ -52,7 +52,7 @@ export interface RealtimeCarAndEntryDataUpdate {
   BestSessionLap: BestSessionLap;
   LastLap: Lap;
   CurrentLap: Lap;
-  CarAndTeam: CarAndTeam;
+  TeamCarDetails: TeamCarDetails;
 }
 
 interface AssettoCorsaEvents {
@@ -112,7 +112,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
   private lastCarsUpdate: number = Date.now();
   private carsEmitTimeout: NodeJS.Timeout | null = null;
   private game: Game = Game.None;
-  private entryList: CarAndTeam[] = [];
+  private entryList: TeamCarDetails[] = [];
 
   constructor({
     broadcast,
@@ -224,33 +224,63 @@ export default class AssettoCorsaSDK extends EventEmitter {
          * throttle the event to avoid emitting the same data multiple times.
          */
         if (Date.now() - this.lastCarsUpdate < 2) return;
-        const data = Array.from(this.cars.values()).sort(
+        const carsArr = Array.from(this.cars.values()).sort(
           (a, b) => a.CarIndex - b.CarIndex
         ) as RealtimeCarAndEntryDataUpdate[];
-        data.map((car) => {
-          const team = this.entryList.find(
-            (team) => team.CurrentDriverIndex === car.DriverIndex
-          );
-          if (team) {
-            car.CarAndTeam = team;
-          }
-          return car;
+        carsArr.map((car) => {
+          // TODO!!!
+          // const team = this.entryList.find(
+          //   (team) => team.CurrentDriverIndex === car.DriverIndex
+          // );
+          // if (team) {
+          //   car.TeamCarDetails = team;
+          // } else {
+          //   this.cars.delete(car.CarIndex);
+          // }
+          // return car;
         });
+
         this.lastCarsUpdate = Date.now();
-        this.emit("acc_udp_cars_update", data);
+        this.emit("acc_udp_cars_update", carsArr);
+
+        // if(this.entryList.length === 0) return;
+        // for (let i = 0; i < carsArr.length; i++) {
+        //   const car = carsArr[i];
+          // console.log(car);
+          // process.exit(0);
+          // console.log(car.TeamCarDetails);
+          // if (
+          //   car.TeamCarDetails.CarModelName === "Unknown" &&
+          //   !unknownCarModels.find(
+          //     (model) => model.CarId === car.TeamCarDetails.CarModelType
+          //   )
+          // ) {
+          //   unknownCarModels.push({
+          //     CarId: car.TeamCarDetails.CarModelType,
+          //     DriverName: car.TeamCarDetails.CurrentDriver.FirstName,
+          //     DriverSurname: car.TeamCarDetails.CurrentDriver.LastName,
+          //   });
+          //   console.log(
+          //     `Unknown car model: ${car.TeamCarDetails.CarModelType} - ${car.TeamCarDetails.Drivers[0].FirstName} ${car.TeamCarDetails.Drivers[0].LastName}`
+          //   );
+          // }
+        // }
       }, 1000 / 60);
     }
 
-    this.udpConnection?.addListener("entry_list_car", (data: CarAndTeam) => {
-      const teamFound = this.entryList.find(
-        (team) => team.TeamId === data.TeamId
-      );
-      if (teamFound) {
-        Object.assign(teamFound, data);
-      } else {
-        this.entryList.push(data);
-      }
-    });
+    // this.udpConnection?.addListener(
+    //   "entry_list_car",
+    //   (data: TeamCarDetails) => {
+    //     const teamFound = this.entryList.find(
+    //       (team) => team.TeamId === data.TeamId
+    //     );
+    //     if (teamFound) {
+    //       Object.assign(teamFound, data);
+    //     } else {
+    //       this.entryList.push(data);
+    //     }
+    //   }
+    // );
 
     this.udpConnection?.addListener(
       "realtime_update",
