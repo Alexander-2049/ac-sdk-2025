@@ -8,15 +8,6 @@ const acsdk = new AssettoCorsaSDK({
   },
 });
 
-// acsdk.addListener("assettoCorsaData", (data) => {
-//   console.log(data);
-// });
-
-acsdk.addListener("acc_cars_update", (data) => {
-  console.log(data[0]);
+acsdk.addListener("acc_udp_cars_update", (data) => {
+  console.log(data[0].Gear);
 });
-
-
-// acsdk.addListener("acc_cars_update", (data) => {
-//   console.log(data[0].SplinePosition);
-// });
