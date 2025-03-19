@@ -155,7 +155,7 @@ export function getGameDataFromSharedMemory(
       normalizedCarPosition: graphicsData.normalizedCarPosition,
       carsOnTrack: graphicsData.carsOnTrack,
       carCoordinates: graphicsData.carCoordinates,
-      carID: graphicsData.carID,
+      carIDs: graphicsData.carID,
       playerCarID: graphicsData.playerCarID,
       flag: graphicsData.flag,
       penalty: graphicsData.penalty,
