@@ -12,6 +12,11 @@ const acsdk = new AssettoCorsaSDK({
 //   console.log(data);
 // });
 
-// acsdk.addListener("acc_data", (data) => {
-//   console.log(data);
+acsdk.addListener("acc_cars_update", (data) => {
+  console.log(data[0]);
+});
+
+
+// acsdk.addListener("acc_cars_update", (data) => {
+//   console.log(data[0].SplinePosition);
 // });

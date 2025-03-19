@@ -13,14 +13,19 @@ import {
   parseStaticArray,
 } from "./features/sharedMemory/parseStaticArray";
 import AccBroadcast from "./features/udpBroadcast/AccBroadcast";
-import { RealtimeCarUpdate } from "./types/broadcast/interfaces/realtimeCarUpdate";
+import {
+  BestSessionLap,
+  Lap,
+  RealtimeCarUpdate,
+} from "./types/broadcast/interfaces/realtimeCarUpdate";
 import { detectGame, Game } from "./features/sharedMemory/detectGame";
 import { IAssettoCorsaData } from "./types/broadcast/interfaces/AssettoCorsaData";
 import { IAssettoCorsaCompetizioneData } from "./types/broadcast/interfaces/AssettoCorsaCompetizioneData";
 import { getGameDataFromSharedMemory } from "./features/sharedMemory/getGameDataFromSharedMemory";
 import { RealtimeUpdate } from "./types/broadcast/interfaces/realtimeUpdate";
 import { TrackData } from "./types/broadcast/interfaces/trackData";
-import { Car } from "./types/broadcast/interfaces/car";
+import { Team } from "./types/broadcast/interfaces/car";
+import { CarLocationEnum } from "./types/broadcast/enums/carLocation";
 
 export const AC_SDK: {
   getPhysics: () => any[];
@@ -28,14 +33,34 @@ export const AC_SDK: {
   getStatic: () => any[];
 } = require("../build/Release/AssettoCorsaSDK.node");
 
+export interface RealtimeCarAndEntryDataUpdate {
+  CarIndex: number;
+  DriverIndex: number;
+  DriverCount: number;
+  Gear: number;
+  WorldPosX: number;
+  WorldPosY: number;
+  Yaw: number;
+  CarLocation: CarLocationEnum;
+  Kmh: number;
+  Position: number;
+  CupPosition: number;
+  TrackPosition: number;
+  SplinePosition: number;
+  Laps: number;
+  Delta: number;
+  BestSessionLap: BestSessionLap;
+  LastLap: Lap;
+  CurrentLap: Lap;
+  Team: Team;
+}
+
 interface AssettoCorsaEvents {
   ac_data: IAssettoCorsaData;
   acc_data: IAssettoCorsaCompetizioneData;
-  acc_cars_update: RealtimeCarUpdate[];
+  acc_cars_update: RealtimeCarAndEntryDataUpdate[];
   acc_realtime_update: RealtimeUpdate;
-  acc_entry_list: Map<number, any>;
   acc_track_data: TrackData;
-  acc_entry_list_car: Car;
   open: Game;
   close: Game;
 }
@@ -68,6 +93,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
   private lastCarsUpdate: number = Date.now();
   private carsEmitTimeout: NodeJS.Timeout | null = null;
   private game: Game = Game.None;
+  private entryList: Team[] = [];
 
   constructor({
     broadcast,
@@ -179,9 +205,33 @@ export default class AssettoCorsaSDK extends EventEmitter {
          * throttle the event to avoid emitting the same data multiple times.
          */
         if (Date.now() - this.lastCarsUpdate < 2) return;
-        this.emit("acc_cars_update", Array.from(this.cars.values()));
+        const data = Array.from(this.cars.values()).sort(
+          (a, b) => a.CarIndex - b.CarIndex
+        ) as RealtimeCarAndEntryDataUpdate[];
+        data.map((car) => {
+          const team = this.entryList.find(
+            (team) => team.CurrentDriverIndex === car.DriverIndex
+          );
+          if (team) {
+            car.Team = team;
+          }
+          return car;
+        });
+        this.lastCarsUpdate = Date.now();
+        this.emit("acc_cars_update", data);
       }, 1000 / 60);
     }
+
+    this.udpConnection?.addListener("entry_list_car", (data: Team) => {
+      const teamFound = this.entryList.find(
+        (team) => team.TeamId === data.TeamId
+      );
+      if (teamFound) {
+        Object.assign(teamFound, data);
+      } else {
+        this.entryList.push(data);
+      }
+    });
 
     this.udpConnection?.addListener(
       "realtime_update",
@@ -190,16 +240,8 @@ export default class AssettoCorsaSDK extends EventEmitter {
       }
     );
 
-    this.udpConnection?.addListener("entry_list", (data: Map<number, any>) => {
-      this.emit("acc_entry_list", data);
-    });
-
     this.udpConnection?.addListener("track_data", (data: TrackData) => {
       this.emit("acc_track_data", data);
-    });
-
-    this.udpConnection?.addListener("entry_list_car", (data: Car) => {
-      this.emit("acc_entry_list_car", data);
     });
   }
 

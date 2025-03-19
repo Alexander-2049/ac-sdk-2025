@@ -1,7 +1,7 @@
 import { BinaryReader } from "./BinaryReader";
 import { BinaryWriter } from "./BinaryWriter";
 import { BroadcastingEvent } from "../../types/broadcast/interfaces/broadcastingEvent";
-import { Car } from "../../types/broadcast/interfaces/car";
+import { Team } from "../../types/broadcast/interfaces/car";
 import { Driver } from "../../types/broadcast/interfaces/driver";
 import {
   Lap,
@@ -134,13 +134,13 @@ const parseRealTimeCarUpdate = (br: BinaryReader): RealtimeCarUpdate => {
   };
 };
 
-const parseEntryListCar = (br: BinaryReader, cars: Map<number, Car>): Car => {
+const parseEntryListCar = (br: BinaryReader, cars: Map<number, Team>): Team => {
   const carId = br.ReadUInt16();
 
-  const carInfo: Car = {
+  const carInfo: Team = {
     CarModelType: br.ReadUInt8(),
     TeamName: parseString(br),
-    RaceNumber: br.ReadInt32(),
+    TeamId: br.ReadInt32(),
     CupCategory: br.ReadUInt8(),
     CurrentDriverIndex: br.ReadUInt8(),
     Nationality: br.ReadUInt16(),
@@ -167,13 +167,13 @@ const parseEntryListCar = (br: BinaryReader, cars: Map<number, Car>): Car => {
 
 const parseBroadcastEvent = (
   br: BinaryReader,
-  cars: Map<number, Car>
+  cars: Map<number, Team>
 ): BroadcastingEvent => {
   const Type = br.ReadUInt8();
   const Msg = parseString(br);
   const TimeMS = br.ReadInt32();
   const CarId = br.ReadInt32();
-  const Car = cars.get(CarId) as Car;
+  const Car = cars.get(CarId) as Team;
 
   const event: BroadcastingEvent = {
     Type,
