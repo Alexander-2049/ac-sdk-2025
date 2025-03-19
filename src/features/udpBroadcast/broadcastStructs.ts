@@ -150,7 +150,7 @@ const parseEntryListCar = (
     TeamName: parseString(br),
     TeamId: br.ReadInt32(),
     CupCategory: br.ReadUInt8(),
-    CurrentDriverIndex: br.ReadUInt8(),
+    CurrentDriverIndex: br.ReadUInt8(), // Cup: Overall/Pro = 0, ProAm = 1, Am = 2, Silver = 3, National = 4
     Nationality: br.ReadUInt16(),
     Drivers: [],
     CurrentDriver: {} as Driver,
