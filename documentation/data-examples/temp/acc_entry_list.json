@@ -1,0 +1,272 @@
+entry_list Map(10) {
+  1133 => {},
+  1176 => {},
+  1194 => {},
+  1205 => {},
+  1206 => {},
+  1208 => {},
+  1209 => {},
+  1210 => {},
+  1211 => {},
+  1212 => {}
+}
+entry_list_car {
+  CarModelType: 35,
+  TeamName: '',
+  TeamId: 20,
+  CupCategory: 0,
+  CurrentDriverIndex: 0,
+  Nationality: 0,
+  Drivers: [
+    {
+      FirstName: 'Max',
+      LastName: "O'Connoor",
+      ShortName: 'PLY',
+      Category: 2,
+      Nationality: 0
+    }
+  ],
+  CurrentDriver: {
+    FirstName: 'Max',
+    LastName: "O'Connoor",
+    ShortName: 'PLY',
+    Category: 2,
+    Nationality: 0
+  },
+  CarModelName: 'McLaren 720S GT3 Evo',
+  CarModelYear: 2023
+}
+entry_list_car {
+  CarModelType: 32,
+  TeamName: '',
+  TeamId: 609,
+  CupCategory: 0,
+  CurrentDriverIndex: 0,
+  Nationality: 0,
+  Drivers: [
+    {
+      FirstName: 'Raa',
+      LastName: 'Stas',
+      ShortName: 'DSQ',
+      Category: 2,
+      Nationality: 0
+    }
+  ],
+  CurrentDriver: {
+    FirstName: 'Raa',
+    LastName: 'Stas',
+    ShortName: 'DSQ',
+    Category: 2,
+    Nationality: 0
+  },
+  CarModelName: 'Ferrari 296 GT3',
+  CarModelYear: 2023
+}
+entry_list_car {
+  CarModelType: 30,
+  TeamName: '',
+  TeamId: 77,
+  CupCategory: 3,
+  CurrentDriverIndex: 0,
+  Nationality: 0,
+  Drivers: [
+    {
+      FirstName: 'Sergei',
+      LastName: 'Gauss',
+      ShortName: 'SGU',
+      Category: 1,
+      Nationality: 10
+    }
+  ],
+  CurrentDriver: {
+    FirstName: 'Sergei',
+    LastName: 'Gauss',
+    ShortName: 'SGU',
+    Category: 1,
+    Nationality: 10
+  },
+  CarModelName: 'BMW M4 GT3',
+  CarModelYear: 2021
+}
+entry_list_car {
+  CarModelType: 30,
+  TeamName: '',
+  TeamId: 8,
+  CupCategory: 0,
+  CurrentDriverIndex: 0,
+  Nationality: 0,
+  Drivers: [
+    {
+      FirstName: 'Csanki',
+      LastName: 'Gabor',
+      ShortName: 'CSG',
+      Category: 2,
+      Nationality: 6
+    }
+  ],
+  CurrentDriver: {
+    FirstName: 'Csanki',
+    LastName: 'Gabor',
+    ShortName: 'CSG',
+    Category: 2,
+    Nationality: 6
+  },
+  CarModelName: 'BMW M4 GT3',
+  CarModelYear: 2021
+}
+entry_list_car {
+  CarModelType: 32,
+  TeamName: '',
+  TeamId: 67,
+  CupCategory: 0,
+  CurrentDriverIndex: 0,
+  Nationality: 0,
+  Drivers: [
+    {
+      FirstName: 'Valérian',
+      LastName: 'Couderc',
+      ShortName: 'VAL',
+      Category: 2,
+      Nationality: 3
+    }
+  ],
+  CurrentDriver: {
+    FirstName: 'Valérian',
+    LastName: 'Couderc',
+    ShortName: 'VAL',
+    Category: 2,
+    Nationality: 3
+  },
+  CarModelName: 'Ferrari 296 GT3',
+  CarModelYear: 2023
+}
+entry_list_car {
+  CarModelType: 35,
+  TeamName: '',
+  TeamId: 721,
+  CupCategory: 3,
+  CurrentDriverIndex: 0,
+  Nationality: 0,
+  Drivers: [
+    {
+      FirstName: 'MiDoU',
+      LastName: 'CHALLOUF',
+      ShortName: 'MXC',
+      Category: 1,
+      Nationality: 3
+    }
+  ],
+  CurrentDriver: {
+    FirstName: 'MiDoU',
+    LastName: 'CHALLOUF',
+    ShortName: 'MXC',
+    Category: 1,
+    Nationality: 3
+  },
+  CarModelName: 'McLaren 720S GT3 Evo',
+  CarModelYear: 2023
+}
+entry_list_car {
+  CarModelType: 35,
+  TeamName: '',
+  TeamId: 10,
+  CupCategory: 3,
+  CurrentDriverIndex: 0,
+  Nationality: 0,
+  Drivers: [
+    {
+      FirstName: 'David',
+      LastName: 'Baima',
+      ShortName: 'PLY',
+      Category: 1,
+      Nationality: 0
+    }
+  ],
+  CurrentDriver: {
+    FirstName: 'David',
+    LastName: 'Baima',
+    ShortName: 'PLY',
+    Category: 1,
+    Nationality: 0
+  },
+  CarModelName: 'McLaren 720S GT3 Evo',
+  CarModelYear: 2023
+}
+entry_list_car {
+  CarModelType: 34,
+  TeamName: '',
+  TeamId: 55,
+  CupCategory: 3,
+  CurrentDriverIndex: 0,
+  Nationality: 0,
+  Drivers: [
+    {
+      FirstName: 'slf',
+      LastName: 's',
+      ShortName: 'PLY',
+      Category: 1,
+      Nationality: 46
+    }
+  ],
+  CurrentDriver: {
+    FirstName: 'slf',
+    LastName: 's',
+    ShortName: 'PLY',
+    Category: 1,
+    Nationality: 46
+  },
+  CarModelName: 'Porsche 992 GT3 R',
+  CarModelYear: 2023
+}
+entry_list_car {
+  CarModelType: 16,
+  TeamName: '',
+  TeamId: 563,
+  CupCategory: 0,
+  CurrentDriverIndex: 0,
+  Nationality: 0,
+  Drivers: [
+    {
+      FirstName: 'Alexander',
+      LastName: 'Akhilchenok',
+      ShortName: 'PLY',
+      Category: 2,
+      Nationality: 0
+    }
+  ],
+  CurrentDriver: {
+    FirstName: 'Alexander',
+    LastName: 'Akhilchenok',
+    ShortName: 'PLY',
+    Category: 2,
+    Nationality: 0
+  },
+  CarModelName: 'Lamborghini Huracan GT3 EVO',
+  CarModelYear: 2019
+}
+entry_list_car {
+  CarModelType: 30,
+  TeamName: '',
+  TeamId: 16,
+  CupCategory: 0,
+  CurrentDriverIndex: 0,
+  Nationality: 0,
+  Drivers: [
+    {
+      FirstName: 'David',
+      LastName: 'Petri',
+      ShortName: 'PET',
+      Category: 2,
+      Nationality: 2
+    }
+  ],
+  CurrentDriver: {
+    FirstName: 'David',
+    LastName: 'Petri',
+    ShortName: 'PET',
+    Category: 2,
+    Nationality: 2
+  },
+  CarModelName: 'BMW M4 GT3',
+  CarModelYear: 2021
+}

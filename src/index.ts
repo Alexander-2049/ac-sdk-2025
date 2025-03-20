@@ -249,19 +249,22 @@ export default class AssettoCorsaSDK extends EventEmitter {
       }, 1000 / 60);
     }
 
-    // this.udpConnection?.addListener(
-    //   "entry_list_car",
-    //   (data: TeamCarDetails) => {
-    //     const teamFound = this.entryList.find(
-    //       (team) => team.TeamId === data.TeamId
-    //     );
-    //     if (teamFound) {
-    //       Object.assign(teamFound, data);
-    //     } else {
-    //       this.entryList.push(data);
-    //     }
-    //   }
-    // );
+    this.udpConnection?.addListener(
+      "entry_list_car",
+      // (data: TeamCarDetails) => {
+      //   const teamFound = this.entryList.find(
+      //     (team) => team.TeamId === data.TeamId
+      //   );
+      //   if (teamFound) {
+      //     Object.assign(teamFound, data);
+      //   } else {
+      //     this.entryList.push(data);
+      //   }
+      // }
+      (data: TeamCarDetails) => {
+        console.log("entry_list_car", data);
+      }
+    );
 
     this.udpConnection?.addListener(
       "realtime_update",

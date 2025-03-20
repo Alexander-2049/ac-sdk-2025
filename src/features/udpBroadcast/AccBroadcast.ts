@@ -79,6 +79,8 @@ class AccBroadcast extends EventEmitter {
         this.cars.clear();
         parseEntryList(br).forEach((carId) => this.cars.set(carId, {}));
 
+        console.log("entry_list", this.cars);
+
         // Removed this line because it provides useless information
         // for the user and it's not used anywhere in the code
         // this.emit("entry_list", this.cars);

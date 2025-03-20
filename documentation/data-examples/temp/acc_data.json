@@ -1,0 +1,282 @@
+{
+  "stepIndex": 239,
+  "status": 2,
+  "session": 1,
+  "currentLapTime": "0:15:601",
+  "lastLapTime": "35791:23:647",
+  "bestLapTime": "35791:23:647",
+  "split": "0:15:601",
+  "position": 9,
+  "currentLapTimeMs": 15601,
+  "lastLapTimeMs": 2147483647,
+  "bestLapTimeMs": 2147483647,
+  "sessionTimeLeft": 504742,
+  "distanceTraveled": 0.23758459091186523,
+  "currentSectorIndex": 0,
+  "lastSectorTimeMs": 0,
+  "normalizedCarPosition": 0.034955549985170364,
+  "carsOnTrack": 10,
+  "carCoordinates": [
+    [
+      -354.71356201171875,
+      -10.461458206176758,
+      476.333984375
+    ],
+    [
+      -341.2108459472656,
+      -9.904951095581055,
+      341.59942626953125
+    ],
+    [
+      -345.1955261230469,
+      -10.00529670715332,
+      380.73565673828125
+    ],
+    [
+      -345.98089599609375,
+      -10.12110424041748,
+      388.6931457519531
+    ],
+    [
+      -346.69281005859375,
+      -10.15001106262207,
+      395.85687255859375
+    ],
+    [
+      -284.3395080566406,
+      -3.929910182952881,
+      -665.9575805664062
+    ],
+    [
+      -343.6292419433594,
+      -10.00516128540039,
+      364.86492919921875
+    ],
+    [
+      -342.8270263671875,
+      -9.981959342956543,
+      356.9451599121094
+    ],
+    [
+      49.575191497802734,
+      -6.601345539093018,
+      -203.00567626953125
+    ],
+    [
+      -342.04290771484375,
+      -9.948344230651855,
+      348.9832458496094
+    ]
+  ],
+  "carIDs": [
+    1194,
+    1205,
+    1212,
+    1176,
+    1206,
+    1210,
+    1211,
+    1133,
+    1208,
+    1209
+  ],
+  "playerCarID": 1211,
+  "flag": 0,
+  "penalty": 0,
+  "isIdealLineOn": true,
+  "isInPitLane": true,
+  "isMandatoryPitDone": false,
+  "mainDisplayIndex": 4,
+  "secondaryDisplayIndex": 0,
+  "tractionControlLevel": 6,
+  "engineMap": 1,
+  "abs2": 6,
+  "averageFuelConsumptionPerLap": 1079152476,
+  "exhaustTemperature": 119.53018188476562,
+  "driverStintTotalTimeLeft": 65535000,
+  "driverStintTimeLeft": -1000,
+  "sessionIndex": 0,
+  "usedFuel": 0,
+  "deltaLapTime": "-:--:---",
+  "estimatedLapTime": "35791:23:647",
+  "iEstimatedLapTime": 2147483647,
+  "iSplit": 15601,
+  "isValidLap": true,
+  "fuelEstimatedLaps": 18.844985961914062,
+  "trackStatus": "OPTIMUM",
+  "missingMandatoryPits": 255,
+  "clock": 50493.28125,
+  "globalYellow": false,
+  "globalYellow1": false,
+  "globalYellow2": false,
+  "globalGreen": true,
+  "globalRed": false,
+  "mfdTireSet": 0,
+  "mfdTirePressureLF": 25.80000114440918,
+  "mfdTirePressureRF": 25.80000114440918,
+  "mfdTirePressureLR": 24.700000762939453,
+  "mfdTirePressureRR": 24.700000762939453,
+  "trackGripStatus": 2,
+  "currentTireSet": 2,
+  "strategyTireSet": 2,
+  "gapAhead": 0,
+  "gapBehind": 0,
+  "throttle": 0,
+  "brake": 0,
+  "fuel": 0,
+  "gear": -1,
+  "rpm": 0,
+  "steeringAngle": 0,
+  "speedKmh": 0,
+  "velocity": [
+    0,
+    0,
+    0
+  ],
+  "accelerationG": [
+    0,
+    0,
+    0
+  ],
+  "wheelSlipRatio": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "wheelPressure": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "wheelAngularSpeed": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "tireCoreTemperature": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "suspensionTravel": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "tc": false,
+  "heading": 0,
+  "pitch": 0,
+  "roll": 0,
+  "pitLimiterOn": 0,
+  "abs1": 0,
+  "autoShifterOn": 0,
+  "turboBoost": 0,
+  "airTemp": 0,
+  "roadTemp": 0,
+  "localAngularVel": [
+    0,
+    0,
+    0
+  ],
+  "finalFF": 0,
+  "tireContactPoint": [
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0
+    ]
+  ],
+  "tireContactNormal": [
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0
+    ]
+  ],
+  "tireContactHeading": [
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0
+    ]
+  ],
+  "brakeBias": 0,
+  "localVelocity": [
+    0,
+    0,
+    0
+  ],
+  "currentMaxRpm": 0,
+  "smVersion": "1.9",
+  "acVersion": "1.7",
+  "numCars": 9,
+  "carModel": "lamborghini_huracan_gt3_evo",
+  "track": "monza",
+  "playerName": "Alexander",
+  "playerSurname": "Akhilchenok",
+  "sectorCount": 3,
+  "penaltiesEnabled": 1,
+  "aidFuelRate": 2,
+  "aidTireRate": 2,
+  "aidMechanicalDamage": -1,
+  "aidStability": 1,
+  "aidAutoClutch": true,
+  "aidAutoBlip": true,
+  "trackConfiguration": "track config",
+  "carSkin": "skin",
+  "pitWindowStart": 300500,
+  "pitWindowEnd": 299500,
+  "isOnline": true,
+  "dryTiresName": "DHE",
+  "wetTiresName": "WH"
+}
