@@ -25,7 +25,6 @@ import { getGameDataFromSharedMemory } from "./features/sharedMemory/getGameData
 import { RealtimeUpdate } from "./types/broadcast/interfaces/realtimeUpdate";
 import { TrackData } from "./types/broadcast/interfaces/trackData";
 import { TeamCarDetails } from "./types/broadcast/interfaces/car";
-import { CarLocationEnum } from "./types/broadcast/enums/carLocation";
 
 export const AC_SDK: {
   getPhysics: () => any[];
@@ -33,25 +32,7 @@ export const AC_SDK: {
   getStatic: () => any[];
 } = require("../build/Release/AssettoCorsaSDK.node");
 
-export interface RealtimeCarAndEntryDataUpdate {
-  CarIndex: number;
-  DriverIndex: number;
-  DriverCount: number;
-  Gear: number;
-  WorldPosX: number;
-  WorldPosY: number;
-  Yaw: number;
-  CarLocation: CarLocationEnum;
-  Kmh: number;
-  Position: number;
-  CupPosition: number;
-  TrackPosition: number;
-  SplinePosition: number;
-  Laps: number;
-  Delta: number;
-  BestSessionLap: BestSessionLap;
-  LastLap: Lap;
-  CurrentLap: Lap;
+export interface RealtimeCarAndEntryDataUpdate extends RealtimeCarUpdate {
   TeamCarDetails: TeamCarDetails;
 }
 
@@ -246,24 +227,24 @@ export default class AssettoCorsaSDK extends EventEmitter {
         // if(this.entryList.length === 0) return;
         // for (let i = 0; i < carsArr.length; i++) {
         //   const car = carsArr[i];
-          // console.log(car);
-          // process.exit(0);
-          // console.log(car.TeamCarDetails);
-          // if (
-          //   car.TeamCarDetails.CarModelName === "Unknown" &&
-          //   !unknownCarModels.find(
-          //     (model) => model.CarId === car.TeamCarDetails.CarModelType
-          //   )
-          // ) {
-          //   unknownCarModels.push({
-          //     CarId: car.TeamCarDetails.CarModelType,
-          //     DriverName: car.TeamCarDetails.CurrentDriver.FirstName,
-          //     DriverSurname: car.TeamCarDetails.CurrentDriver.LastName,
-          //   });
-          //   console.log(
-          //     `Unknown car model: ${car.TeamCarDetails.CarModelType} - ${car.TeamCarDetails.Drivers[0].FirstName} ${car.TeamCarDetails.Drivers[0].LastName}`
-          //   );
-          // }
+        // console.log(car);
+        // process.exit(0);
+        // console.log(car.TeamCarDetails);
+        // if (
+        //   car.TeamCarDetails.CarModelName === "Unknown" &&
+        //   !unknownCarModels.find(
+        //     (model) => model.CarId === car.TeamCarDetails.CarModelType
+        //   )
+        // ) {
+        //   unknownCarModels.push({
+        //     CarId: car.TeamCarDetails.CarModelType,
+        //     DriverName: car.TeamCarDetails.CurrentDriver.FirstName,
+        //     DriverSurname: car.TeamCarDetails.CurrentDriver.LastName,
+        //   });
+        //   console.log(
+        //     `Unknown car model: ${car.TeamCarDetails.CarModelType} - ${car.TeamCarDetails.Drivers[0].FirstName} ${car.TeamCarDetails.Drivers[0].LastName}`
+        //   );
+        // }
         // }
       }, 1000 / 60);
     }
