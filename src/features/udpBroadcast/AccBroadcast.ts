@@ -15,11 +15,20 @@ import {
   RequestTrackData,
 } from "./broadcastStructs";
 import { RegistrationResults } from "../../types/broadcast/interfaces/registrationResults";
+import { TeamCarDetails } from "../../types/broadcast/interfaces/car";
+import { RealtimeCarUpdate } from "../../types/broadcast/interfaces/realtimeCarUpdate";
+
+export interface RealtimeCarAndEntryDataUpdate extends RealtimeCarUpdate {
+  TeamCarDetails: TeamCarDetails;
+}
 
 class AccBroadcast extends EventEmitter {
   private socket: dgram.Socket;
-  private cars: Map<number, any>;
+  private cars: Map<number, TeamCarDetails>;
+  private realtimeCarUpdates: Map<number, RealtimeCarUpdate> = new Map();
+  private carsAmount: number = 0;
   private registration: RegistrationResults | null = null;
+  private trackAndEntryListUpdateInterval: NodeJS.Timeout | null = null;
 
   constructor(
     private name: string,
@@ -46,66 +55,90 @@ class AccBroadcast extends EventEmitter {
 
     switch (messageType) {
       case 1: // REGISTRATION_RESULT
-        /*
-        REGISTRATION_RESULT is sent only on connection establishment
-        ACC UDP Server is not sending messages when racing session is over
-      */
         this.registration = parseRegistrationResult(br);
         this.emit("registration_result", this.registration);
 
         if (!this.registration.isReadOnly) {
           this.requestTrackData();
           this.requestEntryList();
+          this.trackAndEntryListUpdateInterval = setInterval(() => {
+            this.requestTrackData();
+            this.requestEntryList();
+          }, 3000);
         }
         break;
       case 2: // REALTIME_UPDATE
-        /*
-         * realtime_update event is emitted every ${updateMs} milliseconds
-         */
         this.emit("realtime_update", parseRealTimeUpdate(br));
         break;
       case 3: // REALTIME_CAR_UPDATE
-        /*
-         * realtime_car_update event is emitted every ${updateMs} milliseconds
-         * for each car on the track separately
-         */
-        this.emit("realtime_car_update", parseRealTimeCarUpdate(br));
+        const realtimeCarUpdate = parseRealTimeCarUpdate(br);
+        if (this.cars.has(realtimeCarUpdate.CarIndex)) {
+          this.realtimeCarUpdates.set(
+            realtimeCarUpdate.CarIndex,
+            realtimeCarUpdate
+          );
+        }
+
+        if (
+          this.carsAmount > 0 &&
+          this.realtimeCarUpdates.size === this.carsAmount
+        ) {
+          this.emit(
+            "realtime_cars_update",
+            Array.from(this.realtimeCarUpdates.values())
+          );
+          this.emit(
+            "realtime_cars_and_entry_data_update",
+            this.mergeCarData(
+              this.cars,
+              Array.from(this.realtimeCarUpdates.values())
+            )
+          );
+          this.realtimeCarUpdates.clear();
+        }
         break;
       case 4: // ENTRY_LIST
-        /*
-         * entry_list event is emitted every time the entry list changes
-         * (e.g. when a new player joins the server)
-         */
         this.cars.clear();
-        parseEntryList(br).forEach((carId) => this.cars.set(carId, {}));
-
-        // Removed this line because it provides useless information
-        // for the user and it's not used anywhere in the code
-        // this.emit("entry_list", this.cars);
+        const entryListCarIndexes = parseEntryList(br);
+        this.carsAmount = entryListCarIndexes.length;
         break;
       case 5: // TRACK_DATA
-        /*
-         * track_data event is emitted every time the track data changes
-         * (e.g. when the server switches to a different track)
-         */
         this.emit("track_data", parseTrackData(br));
         break;
       case 6: // ENTRY_LIST_CAR
-        /*
-         * entry_list_car event is emitted every time the entry list changes
-         * (e.g. when a new player joins the server)
-         */
-        this.emit("entry_list_car", parseEntryListCar(br, this.cars));
+        const entryListCar = parseEntryListCar(br);
+        this.emit("entry_list_car", entryListCar);
+        this.cars.set(entryListCar.CarIndex, entryListCar);
+
+        if (this.cars.size === this.carsAmount) {
+          this.emit("entry_list", Array.from(this.cars.values()));
+        }
         break;
       case 7: // BROADCASTING_EVENT
-        /*
-         * broadcasting_event: no description
-         */
         this.emit("broadcasting_event", parseBroadcastEvent(br, this.cars));
         break;
       default:
         console.error(`unknown messageType ${messageType}`);
     }
+  }
+
+  private mergeCarData(
+    cars: Map<number, TeamCarDetails>,
+    realtimeCarUpdates: RealtimeCarUpdate[]
+  ): RealtimeCarAndEntryDataUpdate[] {
+    const arr: RealtimeCarAndEntryDataUpdate[] = [];
+
+    for (const realtimeCarUpdate of realtimeCarUpdates) {
+      const team = cars.get(realtimeCarUpdate.CarIndex);
+      if (team) {
+        arr.push({
+          ...realtimeCarUpdate,
+          TeamCarDetails: team,
+        });
+      }
+    }
+
+    return arr;
   }
 
   private requestTrackData(): void {
@@ -119,6 +152,9 @@ class AccBroadcast extends EventEmitter {
   }
 
   public connect(): void {
+    if (this.trackAndEntryListUpdateInterval)
+      clearInterval(this.trackAndEntryListUpdateInterval);
+
     this.send(
       RegisterConnection(
         this.name,
@@ -130,6 +166,9 @@ class AccBroadcast extends EventEmitter {
   }
 
   public disconnect(): void {
+    if (this.trackAndEntryListUpdateInterval)
+      clearInterval(this.trackAndEntryListUpdateInterval);
+
     this.send(DeregisterConnection());
     this.registration = null;
   }

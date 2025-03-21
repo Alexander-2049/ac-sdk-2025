@@ -1,0 +1,73 @@
+{
+  "CameraSets": {
+    "Drivable": [
+      "Chase",
+      "FarChase",
+      "Bonnet",
+      "DashPro",
+      "Cockpit",
+      "Dash",
+      "Helmet"
+    ],
+    "Helicam": ["Helicam"],
+    "Onboard": ["Onboard0", "Onboard1", "Onboard2", "Onboard3"],
+    "pitlane": ["CameraPit1"],
+    "set1": [
+      "CameraTV4",
+      "CameraTV4b",
+      "CameraTV5",
+      "CameraTV6_0",
+      "CameraTV7_0",
+      "CameraTV8",
+      "CameraTV9",
+      "CameraTV10_16",
+      "CameraTV11",
+      "CameraTV12_5",
+      "CameraTV13",
+      "CameraTV14",
+      "CameraTV15",
+      "CameraTV16_1",
+      "CameraTV1",
+      "CameraTV1b_5",
+      "CameraTV2",
+      "CameraTV3"
+    ],
+    "set2": [
+      "CameraTV20",
+      "CameraTV21",
+      "CameraTV22",
+      "CameraTV23",
+      "CameraTV24",
+      "CameraTV25",
+      "CameraTV26",
+      "CameraTV27",
+      "CameraTV17",
+      "CameraTV18",
+      "CameraTV19"
+    ],
+    "setVR": [
+      "CameraVR3",
+      "CameraVR4",
+      "CameraVR5",
+      "CameraVR6",
+      "CameraVR7",
+      "CameraVR8",
+      "CameraVR9",
+      "CameraVR1",
+      "CameraVR2"
+    ]
+  },
+  "HUDPages": [
+    "Blank",
+    "Basic HUD",
+    "Help",
+    "TimeTable",
+    "Broadcasting",
+    "Multiplayer Session Overview",
+    "TrackMap"
+  ],
+  "ConnectionId": 1,
+  "TrackName": "Monza Circuit",
+  "TrackId": 3,
+  "TrackMeters": 5793
+}
