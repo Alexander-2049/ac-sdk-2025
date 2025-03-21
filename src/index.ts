@@ -89,17 +89,17 @@ export default class AssettoCorsaSDK extends EventEmitter {
   private carsEmitTimeout: NodeJS.Timeout | null = null;
   private game: Game = Game.None;
 
-  constructor({ broadcast, updateIntervalMs }: ACSDKConstructorInterface) {
+  constructor(props?: ACSDKConstructorInterface) {
     super();
 
-    this.updateIntervalMs = updateIntervalMs || 1000 / 60;
+    this.updateIntervalMs = props?.updateIntervalMs || 1000 / 60;
 
-    this.broadcast = broadcast && {
-      name: broadcast.name,
-      cmdPassword: broadcast.cmdPassword || "",
-      password: broadcast.password,
-      port: broadcast.port || 9000,
-      updateMs: broadcast.updateMs || this.updateIntervalMs,
+    this.broadcast = props?.broadcast && {
+      name: props.broadcast.name,
+      cmdPassword: props.broadcast.cmdPassword || "",
+      password: props.broadcast.password,
+      port: props.broadcast.port || 9000,
+      updateMs: props.broadcast.updateMs || this.updateIntervalMs,
     };
 
     if (this.broadcast) {
