@@ -20,7 +20,9 @@ import { TeamCarDetails } from "../../types/broadcast/interfaces/car";
 class AccBroadcast extends EventEmitter {
   private socket: dgram.Socket;
   private cars: Map<number, TeamCarDetails>;
+  private carsAmount: number = 0;
   private registration: RegistrationResults | null = null;
+  private trackAndEntryListUpdateInterval: NodeJS.Timeout | null = null;
 
   constructor(
     private name: string,
@@ -57,6 +59,10 @@ class AccBroadcast extends EventEmitter {
         if (!this.registration.isReadOnly) {
           this.requestTrackData();
           this.requestEntryList();
+          this.trackAndEntryListUpdateInterval = setInterval(() => {
+            this.requestTrackData();
+            this.requestEntryList();
+          }, 5000);
         }
         break;
       case 2: // REALTIME_UPDATE
@@ -78,9 +84,13 @@ class AccBroadcast extends EventEmitter {
          * (e.g. when a new player joins the server)
          */
         this.cars.clear();
-        parseEntryList(br).forEach((carId) =>
+        const entryListCarIndexes = parseEntryList(br);
+        this.carsAmount = entryListCarIndexes.length;
+        /*
+        .forEach((carId) =>
           this.cars.set(carId, {} as TeamCarDetails)
         );
+        */
 
         // Removed this line because it provides useless information
         // for the user and it's not used anywhere in the code
@@ -102,6 +112,9 @@ class AccBroadcast extends EventEmitter {
         this.emit("entry_list_car", entryListCar);
         this.cars.set(entryListCar.CarIndex, entryListCar);
 
+        if (this.cars.size === this.carsAmount) {
+          this.emit("entry_list", Array.from(this.cars.values()));
+        }
         break;
       case 7: // BROADCASTING_EVENT
         /*
@@ -125,6 +138,9 @@ class AccBroadcast extends EventEmitter {
   }
 
   public connect(): void {
+    if (this.trackAndEntryListUpdateInterval)
+      clearInterval(this.trackAndEntryListUpdateInterval);
+
     this.send(
       RegisterConnection(
         this.name,
@@ -136,6 +152,9 @@ class AccBroadcast extends EventEmitter {
   }
 
   public disconnect(): void {
+    if (this.trackAndEntryListUpdateInterval)
+      clearInterval(this.trackAndEntryListUpdateInterval);
+
     this.send(DeregisterConnection());
     this.registration = null;
   }
