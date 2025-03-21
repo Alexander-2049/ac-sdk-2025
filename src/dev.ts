@@ -1,37 +1,45 @@
 import AssettoCorsaSDK from ".";
-import * as fs from "fs";
-import * as path from "path";
 
 const acsdk = new AssettoCorsaSDK({
-  sharedMemoryUpdateIntervalMs: 2000,
+  sharedMemoryUpdateIntervalMs: 1000 / 25,
   broadcast: {
     name: "asd",
     password: "asd",
   },
 });
-const outputDir = path.resolve(__dirname, "../dist");
-if (!fs.existsSync(outputDir)) {
-  fs.mkdirSync(outputDir, { recursive: true });
-}
 
-const writeDataToFile = (eventName: string, data: any) => {
-  const fileName = `${eventName}.json`;
-  const filePath = path.join(outputDir, fileName);
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-};
+// acsdk.addListener("acc_shared_memory_update", (data) => {
+//   console.log(data.speedKmh);
+// });
 
-acsdk.addListener("acc_data", (data) => {
-  writeDataToFile("acc_data", data);
-});
-
-acsdk.addListener("acc_udp_cars_update", (data) => {
-  writeDataToFile("acc_udp_cars_update", data);
-});
+// let last = "";
+// acsdk.addListener("acc_udp_cars_update", (data) => {
+//   let str = "";
+//   for (let i = 0; i < data.length; i++) {
+//     str +=
+//       data[i].Position +
+//       ". " +
+//       data[i].TeamCarDetails.CurrentDriver.FirstName +
+//       " " +
+//       data[i].TeamCarDetails.CurrentDriver.LastName +
+//       "\n";
+//   }
+//   if (last !== str) {
+//     console.log(str);
+//     last = str;
+//   }
+// });
 
 acsdk.addListener("acc_udp_realtime_update", (data) => {
-  writeDataToFile("acc_udp_realtime_update", data);
+  console.log(data.sessionEndTime); // Time in miliseconds before the current session state ends
+  // Example: Qualifying session ends in 10 minutes
+  // data.sessionEndTime = 600000
 });
 
-acsdk.addListener("acc_udp_track_data", (data) => {
-  writeDataToFile("acc_udp_track_data", data);
-});
+// let lastTrack = "";
+// acsdk.addListener("acc_udp_track_data", (data) => {
+//   if (lastTrack !== data.TrackName) {
+//     console.log(data.TrackName);
+//     lastTrack = data.TrackName;
+//   }
+// });
