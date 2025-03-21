@@ -87,7 +87,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
   };
   private cars: Map<number, RealtimeCarUpdate> = new Map();
   private carsEmitTimeout: NodeJS.Timeout | null = null;
-  private game: Game = Game.None;
+  private game: Game = "None";
 
   constructor(props?: ACSDKConstructorInterface) {
     super();
@@ -118,7 +118,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
       const game = detectGame(staticData);
 
       if (this.game !== game) {
-        const isGameClosed = game === Game.None;
+        const isGameClosed = game === "None";
         const isGameOpened = !isGameClosed;
         this.game = game;
 
@@ -126,7 +126,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
         if (isGameClosed) return this.onGameClose();
       }
 
-      if (this.game === Game.None) return;
+      if (this.game === "None") return;
 
       const graphicsRawArray = AC_SDK.getGraphics();
       const graphics: IGraphics = parseGraphicsArray(graphicsRawArray);
@@ -134,7 +134,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
       const physicsRawArray = AC_SDK.getPhysics();
       const physics: IPhysics = parsePhysicsArray(physicsRawArray);
 
-      if (game === Game.AssettoCorsa) {
+      if (game === "Assetto Corsa") {
         const data = getGameDataFromSharedMemory(
           game,
           graphics,
@@ -142,7 +142,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
           staticData
         );
         this.emit("ac_shared_memory_update", data);
-      } else if (game === Game.AssettoCorsaCompetizione) {
+      } else if (game === "Assetto Corsa Competizione") {
         const data = getGameDataFromSharedMemory(
           game,
           graphics,
@@ -180,7 +180,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
   private onGameOpen(game: Game) {
     this.emit("open", this.game);
 
-    if (game === Game.AssettoCorsaCompetizione) {
+    if (game === "Assetto Corsa Competizione") {
       this.udpConnection?.connect();
       this.udpConnection?.addListener(
         "realtime_car_update",

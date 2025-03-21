@@ -14,10 +14,10 @@ acsdk.addListener("ac_shared_memory_update", (data) => {
 });
 
 acsdk.addListener("open", (game: Game) => {
-  if (game === Game.AssettoCorsaCompetizione) {
+  if (game === "Assetto Corsa Competizione") {
     console.log("ACC open");
   }
-  if (game === Game.AssettoCorsa) {
+  if (game === "Assetto Corsa") {
     console.log("AC open");
   }
 });
