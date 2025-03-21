@@ -140,12 +140,12 @@ const parseRealTimeCarUpdate = (br: BinaryReader): RealtimeCarUpdate => {
 };
 
 const parseEntryListCar = (
-  br: BinaryReader,
-  cars: Map<number, TeamCarDetails>
+  br: BinaryReader
 ): TeamCarDetails => {
   const carId = br.ReadUInt16();
 
   const carInfo: TeamCarDetails = {
+    CarIndex: carId,
     CarModelType: br.ReadUInt8(),
     TeamName: parseString(br),
     TeamId: br.ReadInt32(),
@@ -174,7 +174,6 @@ const parseEntryListCar = (
 
   carInfo.CurrentDriver = carInfo.Drivers[carInfo.CurrentDriverIndex];
 
-  cars.set(carId, carInfo);
   return carInfo;
 };
 

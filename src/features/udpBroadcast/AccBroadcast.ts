@@ -15,10 +15,11 @@ import {
   RequestTrackData,
 } from "./broadcastStructs";
 import { RegistrationResults } from "../../types/broadcast/interfaces/registrationResults";
+import { TeamCarDetails } from "../../types/broadcast/interfaces/car";
 
 class AccBroadcast extends EventEmitter {
   private socket: dgram.Socket;
-  private cars: Map<number, any>;
+  private cars: Map<number, TeamCarDetails>;
   private registration: RegistrationResults | null = null;
 
   constructor(
@@ -77,9 +78,9 @@ class AccBroadcast extends EventEmitter {
          * (e.g. when a new player joins the server)
          */
         this.cars.clear();
-        parseEntryList(br).forEach((carId) => this.cars.set(carId, {}));
-
-        console.log("entry_list", this.cars);
+        parseEntryList(br).forEach((carId) =>
+          this.cars.set(carId, {} as TeamCarDetails)
+        );
 
         // Removed this line because it provides useless information
         // for the user and it's not used anywhere in the code
@@ -97,7 +98,10 @@ class AccBroadcast extends EventEmitter {
          * entry_list_car event is emitted every time the entry list changes
          * (e.g. when a new player joins the server)
          */
-        this.emit("entry_list_car", parseEntryListCar(br, this.cars));
+        const entryListCar = parseEntryListCar(br);
+        this.emit("entry_list_car", entryListCar);
+        this.cars.set(entryListCar.CarIndex, entryListCar);
+
         break;
       case 7: // BROADCASTING_EVENT
         /*
