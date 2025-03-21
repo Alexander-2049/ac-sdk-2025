@@ -9,18 +9,9 @@
       "Dash",
       "Helmet"
     ],
-    "Helicam": [
-      "Helicam"
-    ],
-    "Onboard": [
-      "Onboard0",
-      "Onboard1",
-      "Onboard2",
-      "Onboard3"
-    ],
-    "pitlane": [
-      "CameraPit1"
-    ],
+    "Helicam": ["Helicam"],
+    "Onboard": ["Onboard0", "Onboard1", "Onboard2", "Onboard3"],
+    "pitlane": ["CameraPit1"],
     "set1": [
       "CameraTV4",
       "CameraTV4b",
