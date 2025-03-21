@@ -1,28 +1,39 @@
 # TypeScript Projects Templates
 
-## Empty
+## Description
+
+This library provides a simple connection between NodeJS programs and Assetto Corsa / Assetto Corsa Competizione games realtime data.
+It uses Shared Memory for Assetto Corsa and Shared Memory x UDP for Assetto Corsa Competizione.
+
+## Installation
 
 ```bash
-git clone https://github.com/Alexander-2049/typescript-template.git
+npm install ac-sdk-2025
 ```
 
-## ExpressJS
+### Assetto Corsa
 
-```bash
-git clone --branch express https://github.com/Alexander-2049/typescript-template.git
-```
+```ts
+import AssettoCorsaSDK, { Game } from "ac-sdk-2025";
 
-## Install packages
+const acsdk = new AssettoCorsaSDK({
+  updateIntervalMs: 1000 / 60, // 60fps
+});
 
-```bash
-npm install
-```
+acsdk.addListener("ac_shared_memory_update", (data) => {
+  console.log(data.speedKmh);
+});
 
-### Available npm scripts
+acsdk.addListener("open", (game: Game) => {
+  if (game === Game.AssettoCorsaCompetizione) {
+    console.log("ACC open");
+  }
+  if (game === Game.AssettoCorsa) {
+    console.log("AC open");
+  }
+});
 
-```bash
-npm run dev     # runs nodemon
-npm run build   # builds 'ts' scripts to 'js'
-npm run start   # runs built script
-npm run test    # runs jest
+acsdk.addListener("close", () => {
+  console.log("Game closed");
+});
 ```
