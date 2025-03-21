@@ -4,7 +4,6 @@ import {
   parsePhysicsArray,
 } from "./features/sharedMemory/parsePhysicsArray";
 import {
-  GAME_STATUS,
   IGraphics,
   parseGraphicsArray,
 } from "./features/sharedMemory/parseGraphicsArray";
@@ -13,11 +12,7 @@ import {
   parseStaticArray,
 } from "./features/sharedMemory/parseStaticArray";
 import AccBroadcast from "./features/udpBroadcast/AccBroadcast";
-import {
-  BestSessionLap,
-  Lap,
-  RealtimeCarUpdate,
-} from "./types/broadcast/interfaces/realtimeCarUpdate";
+import { RealtimeCarUpdate } from "./types/broadcast/interfaces/realtimeCarUpdate";
 import { detectGame, Game } from "./features/sharedMemory/detectGame";
 import { IAssettoCorsaData } from "./types/broadcast/interfaces/AssettoCorsaData";
 import { IAssettoCorsaCompetizioneData } from "./types/broadcast/interfaces/AssettoCorsaCompetizioneData";
@@ -55,7 +50,7 @@ interface ACSDKBroadcastInterface {
 }
 
 interface ACSDKConstructorInterface {
-  sharedMemoryUpdateIntervalMs?: number;
+  updateIntervalMs?: number;
   broadcast?: ACSDKBroadcastInterface;
 }
 
@@ -78,10 +73,11 @@ interface ACSDKConstructorInterface {
  * - Listen to events such as `ac_shared_memory_update`, `acc_shared_memory_update`, `acc_cars_update`, and more.
  * - Call `disconnect()` to clean up resources when done.
  */
+
 export default class AssettoCorsaSDK extends EventEmitter {
   private udpConnection: AccBroadcast | null = null;
   private sharedMemoryInterval?: NodeJS.Timeout;
-  private sharedMemoryUpdateIntervalMs: number;
+  private updateIntervalMs: number;
   private broadcast?: {
     password: string;
     name: string;
@@ -90,26 +86,20 @@ export default class AssettoCorsaSDK extends EventEmitter {
     updateMs: number;
   };
   private cars: Map<number, RealtimeCarUpdate> = new Map();
-  private lastCarsUpdate: number = Date.now();
   private carsEmitTimeout: NodeJS.Timeout | null = null;
   private game: Game = Game.None;
-  private entryList: TeamCarDetails[] = [];
 
-  constructor({
-    broadcast,
-    sharedMemoryUpdateIntervalMs,
-  }: ACSDKConstructorInterface) {
+  constructor({ broadcast, updateIntervalMs }: ACSDKConstructorInterface) {
     super();
 
-    this.sharedMemoryUpdateIntervalMs =
-      sharedMemoryUpdateIntervalMs || 1000 / 60;
+    this.updateIntervalMs = updateIntervalMs || 1000 / 60;
 
     this.broadcast = broadcast && {
       name: broadcast.name,
       cmdPassword: broadcast.cmdPassword || "",
       password: broadcast.password,
       port: broadcast.port || 9000,
-      updateMs: broadcast.updateMs || this.sharedMemoryUpdateIntervalMs,
+      updateMs: broadcast.updateMs || this.updateIntervalMs,
     };
 
     if (this.broadcast) {
@@ -161,7 +151,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
         );
         this.emit("acc_shared_memory_update", data);
       }
-    }, this.sharedMemoryUpdateIntervalMs);
+    }, this.updateIntervalMs);
   }
 
   // Type-safe emit method
@@ -206,10 +196,6 @@ export default class AssettoCorsaSDK extends EventEmitter {
         }
       );
     }
-
-    this.udpConnection?.addListener("entry_list", (data: TeamCarDetails[]) => {
-      this.entryList = data;
-    });
 
     this.udpConnection?.addListener(
       "realtime_update",
