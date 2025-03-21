@@ -37,8 +37,8 @@ export interface RealtimeCarAndEntryDataUpdate extends RealtimeCarUpdate {
 }
 
 interface AssettoCorsaEvents {
-  ac_data: IAssettoCorsaData;
-  acc_data: IAssettoCorsaCompetizioneData;
+  ac_shared_memory_update: IAssettoCorsaData;
+  acc_shared_memory_update: IAssettoCorsaCompetizioneData;
   acc_udp_cars_update: RealtimeCarAndEntryDataUpdate[];
   acc_udp_realtime_update: RealtimeUpdate;
   acc_udp_track_data: TrackData;
@@ -75,7 +75,7 @@ interface ACSDKConstructorInterface {
  *
  * Usage:
  * - Instantiate the class with optional configuration for shared memory and UDP broadcast.
- * - Listen to events such as `ac_data`, `acc_data`, `acc_cars_update`, and more.
+ * - Listen to events such as `ac_shared_memory_update`, `acc_shared_memory_update`, `acc_cars_update`, and more.
  * - Call `disconnect()` to clean up resources when done.
  */
 export default class AssettoCorsaSDK extends EventEmitter {
@@ -151,7 +151,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
           physics,
           staticData
         );
-        this.emit("ac_data", data);
+        this.emit("ac_shared_memory_update", data);
       } else if (game === Game.AssettoCorsaCompetizione) {
         const data = getGameDataFromSharedMemory(
           game,
@@ -159,7 +159,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
           physics,
           staticData
         );
-        this.emit("acc_data", data);
+        this.emit("acc_shared_memory_update", data);
       }
     }, this.sharedMemoryUpdateIntervalMs);
   }
@@ -199,72 +199,17 @@ export default class AssettoCorsaSDK extends EventEmitter {
         }
       );
 
-      this.carsEmitTimeout = setInterval(() => {
-        /*
-         * realtime_car_update is emitted separately for every car, so we need to
-         * throttle the event to avoid emitting the same data multiple times.
-         */
-        if (Date.now() - this.lastCarsUpdate < 2) return;
-        const carsArr = Array.from(this.cars.values()).sort(
-          (a, b) => a.CarIndex - b.CarIndex
-        ) as RealtimeCarAndEntryDataUpdate[];
-        carsArr.map((car) => {
-          // TODO!!!
-          // const team = this.entryList.find(
-          //   (team) => team.CurrentDriverIndex === car.DriverIndex
-          // );
-          // if (team) {
-          //   car.TeamCarDetails = team;
-          // } else {
-          //   this.cars.delete(car.CarIndex);
-          // }
-          // return car;
-        });
-
-        this.lastCarsUpdate = Date.now();
-        this.emit("acc_udp_cars_update", carsArr);
-
-        // if(this.entryList.length === 0) return;
-        // for (let i = 0; i < carsArr.length; i++) {
-        //   const car = carsArr[i];
-        // console.log(car);
-        // process.exit(0);
-        // console.log(car.TeamCarDetails);
-        // if (
-        //   car.TeamCarDetails.CarModelName === "Unknown" &&
-        //   !unknownCarModels.find(
-        //     (model) => model.CarId === car.TeamCarDetails.CarModelType
-        //   )
-        // ) {
-        //   unknownCarModels.push({
-        //     CarId: car.TeamCarDetails.CarModelType,
-        //     DriverName: car.TeamCarDetails.CurrentDriver.FirstName,
-        //     DriverSurname: car.TeamCarDetails.CurrentDriver.LastName,
-        //   });
-        //   console.log(
-        //     `Unknown car model: ${car.TeamCarDetails.CarModelType} - ${car.TeamCarDetails.Drivers[0].FirstName} ${car.TeamCarDetails.Drivers[0].LastName}`
-        //   );
-        // }
-        // }
-      }, 1000 / 60);
+      this.udpConnection?.addListener(
+        "realtime_cars_and_entry_data_update",
+        (data: RealtimeCarAndEntryDataUpdate[]) => {
+          this.emit("acc_udp_cars_update", data);
+        }
+      );
     }
 
-    this.udpConnection?.addListener(
-      "entry_list_car",
-      // (data: TeamCarDetails) => {
-      //   const teamFound = this.entryList.find(
-      //     (team) => team.TeamId === data.TeamId
-      //   );
-      //   if (teamFound) {
-      //     Object.assign(teamFound, data);
-      //   } else {
-      //     this.entryList.push(data);
-      //   }
-      // }
-      (data: TeamCarDetails) => {
-        console.log("entry_list_car", data);
-      }
-    );
+    this.udpConnection?.addListener("entry_list", (data: TeamCarDetails[]) => {
+      this.entryList = data;
+    });
 
     this.udpConnection?.addListener(
       "realtime_update",
