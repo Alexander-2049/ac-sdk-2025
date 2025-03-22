@@ -8,7 +8,7 @@ It uses Shared Memory for Assetto Corsa and Shared Memory x UDP for Assetto Cors
 ## Installation
 
 ```bash
-npm install ac-sdk-2025
+npm install https://github.com/Alexander-2049/ac-sdk-2025
 ```
 
 ### Assetto Corsa
