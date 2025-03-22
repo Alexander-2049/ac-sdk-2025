@@ -1,4 +1,4 @@
-# TypeScript Projects Templates
+# Assetto Corsa \[Competizione\] SDK
 
 ## Description
 
