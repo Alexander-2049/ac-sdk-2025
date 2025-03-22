@@ -1,16 +1,42 @@
 import AssettoCorsaSDK from ".";
+import { Game } from "./features/sharedMemory/detectGame";
 
 const acsdk = new AssettoCorsaSDK({
-  sharedMemoryUpdateIntervalMs: 1000 / 25,
+  updateIntervalMs: 1000 / 60, // 60fps
   broadcast: {
-    name: "asd",
     password: "asd",
   },
 });
 
-// acsdk.addListener("acc_shared_memory_update", (data) => {
-//   console.log(data.speedKmh);
-// });
+acsdk.addListener("ac_shared_memory_update", (data) => {
+  console.log(data.speedKmh);
+});
+
+acsdk.addListener("open", (game: Game) => {
+  if (game === "Assetto Corsa Competizione") {
+    console.log("ACC open");
+  }
+  if (game === "Assetto Corsa") {
+    console.log("AC open");
+  }
+});
+
+acsdk.addListener("close", () => {
+  console.log("Game closed");
+});
+
+acsdk.addListener("acc_shared_memory_update", (data) => {
+  console.log(data.speedKmh);
+});
+acsdk.addListener("acc_udp_cars_update", (data) => {
+  // ...
+});
+acsdk.addListener("acc_udp_realtime_update", (data) => {
+  // ...
+});
+acsdk.addListener("acc_udp_track_data", (data) => {
+  // ...
+});
 
 // let last = "";
 // acsdk.addListener("acc_udp_cars_update", (data) => {

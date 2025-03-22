@@ -12,14 +12,14 @@ export type IGameData =
 
 // Overloads to enforce return type based on `game` input
 export function getGameDataFromSharedMemory(
-  game: Game.AssettoCorsa,
+  game: "Assetto Corsa",
   graphicsData: IGraphics,
   physicsData: IPhysics,
   staticData: IStatic
 ): IAssettoCorsaData;
 
 export function getGameDataFromSharedMemory(
-  game: Game.AssettoCorsaCompetizione,
+  game: "Assetto Corsa Competizione",
   graphicsData: IGraphics,
   physicsData: IPhysics,
   staticData: IStatic
@@ -31,7 +31,7 @@ export function getGameDataFromSharedMemory(
   physicsData: IPhysics,
   staticData: IStatic
 ): IGameData {
-  if (game === Game.AssettoCorsa) {
+  if (game === "Assetto Corsa") {
     const data: IAssettoCorsaData = {
       /*
        * Graphics data
@@ -134,7 +134,7 @@ export function getGameDataFromSharedMemory(
       carSkin: staticData.carSkin,
     };
     return data;
-  } else if (game === Game.AssettoCorsaCompetizione) {
+  } else if (game === "Assetto Corsa Competizione") {
     const data: IAssettoCorsaCompetizioneData = {
       // Graphics data
       stepIndex: graphicsData.stepIndex,

@@ -4,7 +4,6 @@ import {
   parsePhysicsArray,
 } from "./features/sharedMemory/parsePhysicsArray";
 import {
-  GAME_STATUS,
   IGraphics,
   parseGraphicsArray,
 } from "./features/sharedMemory/parseGraphicsArray";
@@ -13,11 +12,7 @@ import {
   parseStaticArray,
 } from "./features/sharedMemory/parseStaticArray";
 import AccBroadcast from "./features/udpBroadcast/AccBroadcast";
-import {
-  BestSessionLap,
-  Lap,
-  RealtimeCarUpdate,
-} from "./types/broadcast/interfaces/realtimeCarUpdate";
+import { RealtimeCarUpdate } from "./types/broadcast/interfaces/realtimeCarUpdate";
 import { detectGame, Game } from "./features/sharedMemory/detectGame";
 import { IAssettoCorsaData } from "./types/broadcast/interfaces/AssettoCorsaData";
 import { IAssettoCorsaCompetizioneData } from "./types/broadcast/interfaces/AssettoCorsaCompetizioneData";
@@ -47,7 +42,7 @@ interface AssettoCorsaEvents {
 }
 
 interface ACSDKBroadcastInterface {
-  name: string;
+  name?: string;
   password: string;
   cmdPassword?: string;
   port?: number;
@@ -55,7 +50,7 @@ interface ACSDKBroadcastInterface {
 }
 
 interface ACSDKConstructorInterface {
-  sharedMemoryUpdateIntervalMs?: number;
+  updateIntervalMs?: number;
   broadcast?: ACSDKBroadcastInterface;
 }
 
@@ -78,10 +73,11 @@ interface ACSDKConstructorInterface {
  * - Listen to events such as `ac_shared_memory_update`, `acc_shared_memory_update`, `acc_cars_update`, and more.
  * - Call `disconnect()` to clean up resources when done.
  */
+
 export default class AssettoCorsaSDK extends EventEmitter {
   private udpConnection: AccBroadcast | null = null;
   private sharedMemoryInterval?: NodeJS.Timeout;
-  private sharedMemoryUpdateIntervalMs: number;
+  private updateIntervalMs: number;
   private broadcast?: {
     password: string;
     name: string;
@@ -90,26 +86,22 @@ export default class AssettoCorsaSDK extends EventEmitter {
     updateMs: number;
   };
   private cars: Map<number, RealtimeCarUpdate> = new Map();
-  private lastCarsUpdate: number = Date.now();
   private carsEmitTimeout: NodeJS.Timeout | null = null;
-  private game: Game = Game.None;
-  private entryList: TeamCarDetails[] = [];
+  private game: Game = "None";
 
-  constructor({
-    broadcast,
-    sharedMemoryUpdateIntervalMs,
-  }: ACSDKConstructorInterface) {
+  constructor(props?: ACSDKConstructorInterface) {
     super();
 
-    this.sharedMemoryUpdateIntervalMs =
-      sharedMemoryUpdateIntervalMs || 1000 / 60;
+    this.updateIntervalMs = props?.updateIntervalMs || 1000 / 60;
 
-    this.broadcast = broadcast && {
-      name: broadcast.name,
-      cmdPassword: broadcast.cmdPassword || "",
-      password: broadcast.password,
-      port: broadcast.port || 9000,
-      updateMs: broadcast.updateMs || this.sharedMemoryUpdateIntervalMs,
+    this.broadcast = props?.broadcast && {
+      name:
+        props.broadcast.name ||
+        "ac-sdk-2025-" + Math.floor(Math.random() * 100000).toString(),
+      cmdPassword: props.broadcast.cmdPassword || "",
+      password: props.broadcast.password,
+      port: props.broadcast.port || 9000,
+      updateMs: props.broadcast.updateMs || this.updateIntervalMs,
     };
 
     if (this.broadcast) {
@@ -128,7 +120,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
       const game = detectGame(staticData);
 
       if (this.game !== game) {
-        const isGameClosed = game === Game.None;
+        const isGameClosed = game === "None";
         const isGameOpened = !isGameClosed;
         this.game = game;
 
@@ -136,7 +128,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
         if (isGameClosed) return this.onGameClose();
       }
 
-      if (this.game === Game.None) return;
+      if (this.game === "None") return;
 
       const graphicsRawArray = AC_SDK.getGraphics();
       const graphics: IGraphics = parseGraphicsArray(graphicsRawArray);
@@ -144,7 +136,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
       const physicsRawArray = AC_SDK.getPhysics();
       const physics: IPhysics = parsePhysicsArray(physicsRawArray);
 
-      if (game === Game.AssettoCorsa) {
+      if (game === "Assetto Corsa") {
         const data = getGameDataFromSharedMemory(
           game,
           graphics,
@@ -152,7 +144,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
           staticData
         );
         this.emit("ac_shared_memory_update", data);
-      } else if (game === Game.AssettoCorsaCompetizione) {
+      } else if (game === "Assetto Corsa Competizione") {
         const data = getGameDataFromSharedMemory(
           game,
           graphics,
@@ -161,7 +153,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
         );
         this.emit("acc_shared_memory_update", data);
       }
-    }, this.sharedMemoryUpdateIntervalMs);
+    }, this.updateIntervalMs);
   }
 
   // Type-safe emit method
@@ -190,7 +182,7 @@ export default class AssettoCorsaSDK extends EventEmitter {
   private onGameOpen(game: Game) {
     this.emit("open", this.game);
 
-    if (game === Game.AssettoCorsaCompetizione) {
+    if (game === "Assetto Corsa Competizione") {
       this.udpConnection?.connect();
       this.udpConnection?.addListener(
         "realtime_car_update",
@@ -206,10 +198,6 @@ export default class AssettoCorsaSDK extends EventEmitter {
         }
       );
     }
-
-    this.udpConnection?.addListener("entry_list", (data: TeamCarDetails[]) => {
-      this.entryList = data;
-    });
 
     this.udpConnection?.addListener(
       "realtime_update",
