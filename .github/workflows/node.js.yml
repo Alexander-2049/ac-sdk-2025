@@ -61,6 +61,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
+      - run: npm ci
       - run: npm install -g node-gyp@11.1.0
       - name: Run node-gyp rebuild
         run: node-gyp rebuild --target=31.7.7 --arch=x64 --dist-url=https://electronjs.org/headers
