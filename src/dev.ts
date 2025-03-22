@@ -4,7 +4,6 @@ import { Game } from "./features/sharedMemory/detectGame";
 const acsdk = new AssettoCorsaSDK({
   updateIntervalMs: 1000 / 60, // 60fps
   broadcast: {
-    name: "asd",
     password: "asd",
   },
 });

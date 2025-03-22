@@ -42,7 +42,7 @@ interface AssettoCorsaEvents {
 }
 
 interface ACSDKBroadcastInterface {
-  name: string;
+  name?: string;
   password: string;
   cmdPassword?: string;
   port?: number;
@@ -95,7 +95,9 @@ export default class AssettoCorsaSDK extends EventEmitter {
     this.updateIntervalMs = props?.updateIntervalMs || 1000 / 60;
 
     this.broadcast = props?.broadcast && {
-      name: props.broadcast.name,
+      name:
+        props.broadcast.name ||
+        "ac-sdk-2025-" + Math.floor(Math.random() * 100000).toString(),
       cmdPassword: props.broadcast.cmdPassword || "",
       password: props.broadcast.password,
       port: props.broadcast.port || 9000,
